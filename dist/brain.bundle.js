@@ -17798,7 +17798,6 @@ window.createEditor = (selector, flags = {})=>{
         mode: environments[flags.hostname] || ENV.PROD,
         path: path.split('/').slice(0, -1).join('/')
     };
-    debugger;
     const $20 = tag(selector);
     mount1($20, newFlags);
     onAutosave($20, {

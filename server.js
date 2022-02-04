@@ -56,7 +56,6 @@ async function handleGet(request) {
   try {
     file = await Deno.readFile(`.${pathname}`)
   } catch(e) {
-
     return await fourOH4(request)
   }
 
@@ -69,10 +68,7 @@ async function handleGet(request) {
   })
 }
 
-async function editor(request) {
-	const { pathname } = new URL(request.url);
-  const [realpath] = pathname.split('/edit')
-
+async function editor(_request) {
 	return html(
     await Deno.readFile(`${Deno.cwd()}/editor.html`)
   )
@@ -81,12 +77,16 @@ async function editor(request) {
 async function fourOH4(request) {
 	const { pathname } = new URL(request.url);
 
-  const file = await Deno.readFile(`${Deno.cwd()}/404.html`)
-  await Deno.writeTextFile(`.${pathname}`, file);
+  try {
+    const file = await Deno.readFile(`${Deno.cwd()}/404.html`)
+    await Deno.writeFile(`.${pathname}`, file);
 
-  return html(
-    await Deno.readFile(`.${pathname}`)
-  )
+    return html(
+      await Deno.readFile(`.${pathname}`)
+    )
+  } catch(e) {
+    console.log(e)
+  }
 }
 
 function html(content) {
