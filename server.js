@@ -70,7 +70,7 @@ async function handleGet(request) {
 
 async function editor(_request) {
 	return html(
-    await Deno.readFile(`${Deno.cwd()}/editor.html`)
+    await Deno.readFile(`${Deno.cwd()}/dist/editor.html`)
   )
 }
 
