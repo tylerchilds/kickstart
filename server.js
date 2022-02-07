@@ -111,6 +111,6 @@ console.log("Listening on http://localhost:8000");
 serve(handleRequest);
 
 const firefox = Deno.run({ cmd: [
-  "firefox", "http://localhost:8000/README.md/edit"
+  "firefox", "http://localhost:8000/src/select/index.html/edit"
 ] });
 console.log({ firefox })
