@@ -1,4 +1,6 @@
 #!/bin/sh
+mkdir -p dist
+
 deno bundle --unstable ./src/brain.js ./dist/brain.bundle.js
 
 cat src/head.html > dist/editor.html
