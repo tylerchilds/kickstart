@@ -58,7 +58,8 @@ const config = {
     basicSetup,
     html(),
     css(),
-    javascript()
+    javascript(),
+    EditorView.lineWrapping
   ]
 }
 
@@ -93,8 +94,9 @@ function initialize(target, $, flags) {
   target.innerHTML = `
     <nav class="navigation"></nav>
     <aside class="sidebar"></aside>
+    <main class="code"></main>
     <section class="preview">
-      <iframe></jframe>
+      <iframe></iframe>
     </section>
   `
 
@@ -113,8 +115,9 @@ function initialize(target, $, flags) {
   })
 
   const view = new EditorView({
+    lineWrapping: true,
     dispatch: persist($, flags),
-    parent: target,
+    parent: target.querySelector('.code'),
     state
   })
 
@@ -221,6 +224,8 @@ function layout($, _flags) {
     & {
       display: grid;
       grid-template-areas: "nav nav nav" "sidebar editor preview";
+      grid-auto-columns: 180px 1fr 1fr;
+      max-width: 100%;
     }
 
     & .navigation {
@@ -231,8 +236,16 @@ function layout($, _flags) {
       grid-area: sidebar;
     }
 
+    & .code {
+      grid-area: editor;
+    }
+
     & .preview {
       grid-area: preview;
+    }
+
+    & iframe {
+      height: 100%; border: 0; width: 100%;
     }
   `
 
