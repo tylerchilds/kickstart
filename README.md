@@ -12,6 +12,7 @@ A prototyping tool for rapid iteration
 * [Hello Map](/hello-map.html)
 * [Hello Reddit](/hello-reddit.html)
 * [Hello Launcher](/hello-launcher.html)
+* [Hello Games](/hello-games.html)
 
 ## Edit
 
@@ -24,3 +25,4 @@ A prototyping tool for rapid iteration
 * [Hello Map](/hello-map.html/edit)
 * [Hello Reddit](/hello-reddit.html/edit)
 * [Hello Launcher](/hello-launcher.html/edit)
+* [Hello Games](/hello-games.html/edit)
