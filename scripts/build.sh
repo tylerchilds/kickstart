@@ -2,6 +2,7 @@
 mkdir -p build
 
 deno bundle --unstable ./src/brain.js ./build/brain.bundle.js
+deno bundle ./src/tag.js ./build/tag.bundle.js
 
 cat src/head.html > build/editor.html
 echo '<script>' >> build/editor.html

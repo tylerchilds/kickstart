@@ -18091,8 +18091,14 @@ function persist($, flags) {
     };
 }
 function preview($, flags) {
+    let { value  } = flags;
+    if (!value) return;
+    const singleQuote = `'${window.location.origin}/`;
+    const doubleQuote = `"${window.location.origin}/`;
+    value = value.replace(/'\//g, singleQuote);
+    value = value.replace(/"\//g, doubleQuote);
     const blob = new Blob([
-        flags.value
+        value
     ], {
         type: 'text/html'
     });

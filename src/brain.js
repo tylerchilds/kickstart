@@ -213,7 +213,16 @@ function persist($, flags) {
 }
 
 function preview($, flags) {
-  const blob = new Blob([flags.value], { type: 'text/html' });
+  let { value } = flags
+  if(!value) return
+
+  const singleQuote = `'${window.location.origin}/`
+  const doubleQuote = `"${window.location.origin}/`
+
+  value = value.replace(/'\//g, singleQuote)
+  value = value.replace(/"\//g, doubleQuote)
+
+  const blob = new Blob([value], { type: 'text/html' });
   const href = URL.createObjectURL(blob);
   document.querySelector(`${$.selector} iframe`).src = href
 }
