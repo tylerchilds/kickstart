@@ -1,10 +1,10 @@
 #!/bin/sh
-mkdir -p dist
+mkdir -p build
 
-deno bundle --unstable ./src/brain.js ./dist/brain.bundle.js
+deno bundle --unstable ./src/brain.js ./build/brain.bundle.js
 
-cat src/head.html > dist/editor.html
-echo '<script>' >> dist/editor.html
-cat dist/brain.bundle.js >> dist/editor.html
-echo '</script>' >> dist/editor.html
-cat src/body.html >> dist/editor.html
+cat src/head.html > build/editor.html
+echo '<script>' >> build/editor.html
+cat build/brain.bundle.js >> build/editor.html
+echo '</script>' >> build/editor.html
+cat src/body.html >> build/editor.html

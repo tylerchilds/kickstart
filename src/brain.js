@@ -261,6 +261,8 @@ function layout($, _flags) {
       display: grid;
       grid-template-areas: "nav nav nav" "sidebar editor preview";
       grid-auto-columns: 180px 1fr 1fr;
+      grid-auto-rows: 2rem calc(100vh - 2rem);
+      height: 100vh;
       max-width: 100%;
     }
 
@@ -270,10 +272,12 @@ function layout($, _flags) {
 
     & .sidebar {
       grid-area: sidebar;
+      overflow: auto;
     }
 
     & .code {
       grid-area: editor;
+      overflow: auto;
     }
 
     & .preview {

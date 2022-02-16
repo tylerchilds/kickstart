@@ -5,6 +5,9 @@ from "https://deno.land/x/markdown_wasm/mod.ts"
 import { walk } from "https://deno.land/std/fs/mod.ts";
 
 import sortPaths from "https://esm.sh/sort-paths"
+
+const buildPath = `${Deno.cwd()}/build`
+
 let state = {}
 function select(selector, initialState) {
   state[selector] = { ...initialState }
@@ -39,13 +42,13 @@ const modes = {
 
 async function autosave(pathname, params) {
   const { value } = params
-  await Deno.writeTextFile(`./.${pathname}.autosave`, value)
+  await Deno.writeTextFile(`./build/.${pathname}.autosave`, value)
   return await editor(request)
 }
 
 async function save(pathname, params) {
   const { value } = params
-  await Deno.writeTextFile(`./${pathname}`, value)
+  await Deno.writeTextFile(`./build/${pathname}`, value)
   return await editor(request)
 }
 
@@ -82,7 +85,7 @@ async function handleGet(request) {
   let file = ''
 
   try {
-    file = await Deno.readFile(`.${pathname}`)
+    file = await Deno.readFile(`./build${pathname}`)
   } catch(e) {
     return await fourOH4(request)
   }
@@ -108,7 +111,7 @@ async function getStatus(_request) {
 
 async function editor(_request) {
   return html(
-    await Deno.readFile(`${Deno.cwd()}/dist/editor.html`)
+    await Deno.readFile(`${buildPath}/editor.html`)
   )
 }
 
@@ -116,7 +119,7 @@ async function fourOH4(request) {
   const { pathname } = new URL(request.url);
 
   try {
-    const file = await Deno.readFile(`${Deno.cwd()}/404.html`)
+    const file = await Deno.readFile(`${buildPath}/404.html`)
     await Deno.writeFile(`.${pathname}`, file);
 
     return html(
@@ -149,14 +152,14 @@ const byPath = (x) => x.path
 const byName = (x) => x.name
 async function crawl($, _flags) {
   let paths = []
-  const files = walk(Deno.cwd(), {
+  const files = walk(buildPath, {
     skip: [/\.git/, /\.autosave/],
     includeDirs: false
   })
 
   for await(const file of files) {
     const { name } = file
-    const [_, path] = file.path.split(Deno.cwd())
+    const [_, path] = file.path.split(buildPath)
     paths.push({ path, name })
   }
 
@@ -166,8 +169,3 @@ async function crawl($, _flags) {
 
 console.log("Listening on http://localhost:8000");
 serve(handleRequest);
-
-const firefox = Deno.run({ cmd: [
-  "firefox", "http://localhost:8000/src/select/index.html/edit"
-] });
-console.log({ firefox })
