@@ -33,11 +33,5 @@
   "https://deno.land/std@0.121.0/path/posix.ts": "34349174b9cd121625a2810837a82dd8b986bbaaad5ade690d1de75bbb4555b2",
   "https://deno.land/std@0.121.0/path/separator.ts": "8fdcf289b1b76fd726a508f57d3370ca029ae6976fcde5044007f062e643ff1c",
   "https://deno.land/std@0.121.0/path/win32.ts": "11549e8c6df8307a8efcfa47ad7b2a75da743eac7d4c89c9723a944661c8bd2e",
-  "https://deno.land/x/brotli@v0.1.4/mod.ts": "d2e68b13f7fc7f7b3d6c27e554b02fbf75a651ab6e88aff056c81ef82646b4f2",
-  "https://deno.land/x/brotli@v0.1.4/wasm.js": "09253260e66fbf04715971d0a4281a8dfe56ddba9e9b0c4dedfcf3aa6bf63ea6",
-  "https://deno.land/x/lz4@v0.1.2/mod.ts": "4decfc1a3569d03fd1813bd39128b71c8f082850fe98ecfdde20025772916582",
-  "https://deno.land/x/lz4@v0.1.2/wasm.js": "b9c65605327ba273f0c76a6dc596ec534d4cda0f0225d7a94ebc606782319e46",
-  "https://deno.land/x/markdown_wasm@1.2.2/mod.ts": "f62bd338ce40827bf9e07ae8eaef578772e5e66376e5801c9dc1e2f4576b7962",
-  "https://deno.land/x/markdown_wasm@1.2.2/wasm.js": "f15a6c9830d412e8aa6cac958bfca02ce4a6a083d3595c6512a59c2d75628576",
   "https://esm.sh/sort-paths": "49271d9279842113dffbe2ae0012ac2531263c2158a3a224a5a0f0c47718f2a6"
 }

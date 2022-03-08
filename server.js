@@ -1,7 +1,5 @@
 import { serve }
 from "https://deno.land/std@0.114.0/http/server.ts";
-import { parseMarkdown }
-from "https://deno.land/x/markdown_wasm/mod.ts"
 import { walk } from "https://deno.land/std/fs/mod.ts";
 
 import sortPaths from "https://esm.sh/sort-paths"
@@ -74,8 +72,8 @@ async function handleGet(request) {
   const extensionPosition = isAutosave ? -2 : -1
 
   if (pathname === '/') {
-    const file = await Deno.readFile('README.md')
-    return html(parseMarkdown(file))
+    const file = await Deno.readFile('./build/index.html')
+    return html(file)
   }
 
   if (pathname.endsWith('/edit')) {
