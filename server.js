@@ -29,12 +29,11 @@ async function router(request, context) {
 	}
 
 	try {
-
-	if(request.method === 'PUT') {
-		const { file } = await request.json()	
-		await Deno.writeTextFile(`./home/${pathname}`, file)	
-		return new Response()
-	}
+		if(request.method === 'PUT') {
+			const { file } = await request.json()	
+			await Deno.writeTextFile(`./home/${pathname}`, file)	
+			return new Response()
+		}
 
 		if(pathname.startsWith('/routes')) {
 			const edge = await Deno.readTextFile(`./home/${pathname}`)
@@ -46,7 +45,6 @@ async function router(request, context) {
 
 		const file = await Deno.readTextFile(`./home/${pathname}`)
 		return new Response(file)
-
 	} catch (e) {
 		console.error(pathname + '\n' + e)
 	}
