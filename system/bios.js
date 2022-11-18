@@ -1,24 +1,12 @@
 import module from '/system/module.js'
 import { inject } from '/system/utils.js'
 
-const $ = module('bios', {
-  pattern: '-----'
-})
+const $ = module('bios')
 
 $.draw(() => {
-  const script = `/scripts/hello.js`
-
-  const buttons = [...new Array(5)].map((x,i) =>
-    `<button class="b-${i}"></button>`
-  ).join('')
+  const script = `/scripts${window.location.pathname}.js`
 
   return `
-    <select>
-      <option>Hello</option>
-      <option>goodbye</option>
-    </select>
-    ${buttons}
-
     <code-module src="${script}"></code-module>
     <button data-action="undo" data-script="${script}">undo</button>
     <button data-action="redo" data-script="${script}">redo</button>

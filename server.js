@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
+import { ensureFileSync } from "https://deno.land/std@0.165.0/fs/ensure_file.ts";
 import { inject } from './system/utils.js'
 
 const core = [
@@ -31,6 +32,7 @@ async function router(request, context) {
 	try {
 		if(request.method === 'PUT') {
 			const { file } = await request.json()	
+      ensureFileSync(`./home/${pathname}`)
 			await Deno.writeTextFile(`./home/${pathname}`, file)	
 			return new Response()
 		}
