@@ -1,4 +1,4 @@
 #!/bin/sh
 mkdir -p build
 
-deno bundle ./src/main.js ./build/bundle.js
+deno bundle ./system/main.js ./build/bundle.js

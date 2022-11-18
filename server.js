@@ -6,6 +6,7 @@ const core = [
 	'/system/bios.js',
 	'/system/utils.js',
 	'/system/module.js',
+	'/system/modal-module.js',
 	'/build/bundle.js',
 ]
 
@@ -46,7 +47,13 @@ async function router(request, context) {
 		}
 
 		const file = await Deno.readTextFile(`./home/${pathname}`)
-		return new Response(file)
+		const extension = pathname.split('.').slice(-1)
+
+		return new Response(file, {
+			headers: {
+				'content-type': getType(extension),
+			},
+		})
 	} catch (e) {
 		console.error(pathname + '\n' + e)
 	}
@@ -67,6 +74,16 @@ async function router(request, context) {
 
 	const { handler } = await inject(func)
 	return await handler(request, context)
+}
+
+const types = {
+	'css': 'text/css; charset=utf-8',
+	'html': 'text/html; charset=utf-8',
+	'js': 'text/javascript; charset=utf-8'
+}
+
+function getType(ext) {
+	return types[ext] || types['html']
 }
 
 serve(router);

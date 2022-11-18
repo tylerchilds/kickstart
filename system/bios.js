@@ -1,5 +1,4 @@
 import module from '/system/module.js'
-import { inject } from '/system/utils.js'
 
 const $ = module('bios')
 
@@ -15,8 +14,7 @@ $.draw(() => {
 
 $.when('click', '[data-script]', async (event) => {
   const { action, script } = event.target.dataset
-  const dispatch = (await inject(
-    await fetch(script).then(x => x.text())
-  ))[action]
+	debugger
+  const dispatch = (await import(script))[action]
   dispatch(event, $)
 })
