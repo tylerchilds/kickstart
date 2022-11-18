@@ -1,25 +1,24 @@
+// deno-fmt-ignore-file
+// deno-lint-ignore-file
+// This code was bundled using `deno bundle` and it's not recommended to edit it manually
+
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 3 | 8;
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
         return v.toString(16);
     });
 }
 const CACHE = "CACHE";
-function createStore(initialState = {
-}, notify = ()=>null
-, save = ()=>null
-) {
+function createStore(initialState = {}, notify = ()=>null, save = ()=>null) {
     let state = {
-        [CACHE]: {
-        },
+        [CACHE]: {},
         ...initialState
     };
     const context = {
         set: function(schema, payload, handler = defaultHandler) {
             if (typeof handler === 'function') {
                 const newCache = touchCache(state[CACHE], schema);
-                const newResource = handler(state[schema] || {
-                }, payload);
+                const newResource = handler(state[schema] || {}, payload);
                 state = {
                     ...state,
                     [CACHE]: newCache,
@@ -103,9 +102,9 @@ async function save(schema, data) {
                 request.onsuccess = resolve;
             };
         } catch (e) {
-            const request = objectStore.add(record);
-            request.onsuccess = resolve;
-            request.onerror = reject;
+            const request1 = objectStore.add(record);
+            request1.onsuccess = resolve;
+            request1.onerror = reject;
         }
     });
 }
@@ -115,7 +114,7 @@ const __default = {
 };
 function uuidv41() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 3 | 8;
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8;
         return v.toString(16);
     });
 }
@@ -167,8 +166,7 @@ const config = {
 function mutationObserverCallback(mutationsList, observer) {
     const subscriberCollections = [
         ...mutationsList
-    ].map((m)=>getSubscribers(m.target)
-    );
+    ].map((m)=>getSubscribers(m.target));
     subscriberCollections.forEach(dispatchRender);
 }
 const observer = new MutationObserver(mutationObserverCallback);
@@ -200,8 +198,7 @@ function on(type, selector, handler) {
         unbind();
     };
 }
-let lastState = {
-};
+let lastState = {};
 let subscribers = [
     render
 ];
@@ -211,23 +208,19 @@ const notify = (state)=>{
         notify(state);
     });
 };
-const store = createStore({
-}, notify, __default.save);
+const store = createStore({}, notify, __default.save);
 const ion = {
     set: store.set,
     get: store.get,
     load: function load(schema) {
         __default.load(schema).then(function restoreFromCache(rows) {
-            rows.map(({ schema , data  })=>store.set(schema, data)
-            );
+            rows.map(({ schema , data  })=>store.set(schema, data));
         });
     },
     restore: function restore(schema) {
         return __default.load(schema).then(function restoreFromCache(rows) {
-            const row = rows.find((x)=>x.schema === schema
-            ) || {
-                data: {
-                }
+            const row = rows.find((x)=>x.schema === schema) || {
+                data: {}
             };
             return row.data;
         });
@@ -247,10 +240,8 @@ ion.relay;
 ion.set;
 ion.get;
 let virtualDOM;
-let equal = (a, b)=>a === b
-;
-const cleanStates = {
-};
+let equal = (a, b)=>a === b;
+const cleanStates = {};
 const dom = (target, html)=>{
     if (virtualDOM) {
         virtualDOM(target, html);
@@ -289,8 +280,7 @@ function style(selector, stylesheet) {
     document.body.insertAdjacentHTML("beforeend", styles);
 }
 function read(selector) {
-    return ion.get(selector) || {
-    };
+    return ion.get(selector) || {};
 }
 function write(selector, payload, middleware) {
     ion.set(selector, payload, middleware);
@@ -317,8 +307,7 @@ function clean(id, selector, ...more) {
     ];
     const cacheIndex = `${id}${new Error().stack}`;
     const cache = cleanStates[cacheIndex] || function init() {
-        return cleanStates[cacheIndex] = {
-        };
+        return cleanStates[cacheIndex] = {};
     }();
     return selectors.every((x)=>{
         const previous = cache[x];
@@ -328,19 +317,16 @@ function clean(id, selector, ...more) {
         return same;
     });
 }
-function tag(selector, initialState = {
-}) {
+function tag(selector, initialState = {}) {
     let thisTagReady = false;
     function ready(hook) {
         if (!thisTagReady) {
-            requestAnimationFrame(()=>ready(hook)
-            );
+            requestAnimationFrame(()=>ready(hook));
             return;
         }
         hook();
     }
-    restore(selector, initialState).then(()=>thisTagReady = true
-    );
+    restore(selector, initialState).then(()=>thisTagReady = true);
     return {
         ready,
         selector,
@@ -360,6 +346,5 @@ function tag(selector, initialState = {
         set: write.bind(null, selector)
     };
 }
-import('https://esm.sh/fast-equals@2.0.4').then(({ deepEqual  })=>equal = deepEqual
-);
+import('https://esm.sh/fast-equals@2.0.4').then(({ deepEqual  })=>equal = deepEqual);
 export { tag as default };
