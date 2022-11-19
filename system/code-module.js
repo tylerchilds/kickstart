@@ -44,9 +44,16 @@ $.draw(target => {
   if(!file && !fetching) {
     $.teach({ fetching: true })
     fetch(link)
+      .then(res => res.status === 404 ? (() => {throw new Error()})() : res )
       .then(res => res.text())
       .then((file) => {
         $.teach({ file, fetching: false })
+      }).catch(e => {
+        fetch('/scripts/hello.js')
+          .then(res => res.text())
+          .then((file) => {
+            $.teach({ file, fetching: false })
+          })
       })
     return
   }

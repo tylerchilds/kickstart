@@ -13676,10 +13676,19 @@ $8.draw((target)=>{
         $8.teach({
             fetching: true
         });
-        fetch(link).then((res)=>res.text()).then((file)=>{
+        fetch(link).then((res)=>res.status === 404 ? (()=>{
+                throw new Error();
+            })() : res).then((res)=>res.text()).then((file)=>{
             $8.teach({
                 file,
                 fetching: false
+            });
+        }).catch((e)=>{
+            fetch('/scripts/hello.js').then((res)=>res.text()).then((file)=>{
+                $8.teach({
+                    file,
+                    fetching: false
+                });
             });
         });
         return;

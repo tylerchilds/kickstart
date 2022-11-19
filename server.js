@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
+import { Status } from "https://deno.land/std/http/http_status.ts";
 import { ensureFileSync } from "https://deno.land/std@0.165.0/fs/ensure_file.ts";
 import { inject } from './system/utils.js'
 
@@ -6,6 +7,7 @@ const core = [
 	'/system/bios.js',
 	'/system/utils.js',
 	'/system/module.js',
+	'/system/SecureRender.js',
 	'/system/modal-module.js',
 	'/build/bundle.js',
 ]
@@ -24,7 +26,9 @@ function system(firmware) {
 }
 
 async function router(request, context) {
-	const { pathname } = new URL(request.url);
+	let { pathname } = new URL(request.url);
+
+  if(pathname === '/') pathname = '/routes/index.js'
 
 	if(core.includes(pathname)) {
 		return system(pathname)(request, context)
@@ -67,7 +71,8 @@ async function router(request, context) {
 			return new Response(body, {
 				headers: {
 					'content-type': 'text/html; charset=utf-8'
-				}
+				},
+        status: ${Status.NotFound}
 			})
 		}
 	`
