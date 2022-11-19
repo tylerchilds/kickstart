@@ -6,6 +6,7 @@ import { inject } from './system/utils.js'
 const core = [
 	'/system/bios.js',
 	'/system/utils.js',
+	'/system/devices.js',
 	'/system/module.js',
 	'/system/SecureRender.js',
 	'/system/modal-module.js',

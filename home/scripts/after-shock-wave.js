@@ -1,5 +1,6 @@
 import module from '/system/module.js'
 import { actionScript } from '/system/utils.js'
+import devices from '/system/devices.js'
 import '/system/SecureRender.js'
 
 const $ = module('AfterShockWave', {
@@ -34,9 +35,7 @@ $.draw((target) => {
       <div>
         After Shock, Wave: ${featureActive ? 'secure' : 'insecure' }
       </div>
-      <div>
-      . . . . .
-      </div>
+      <debug-devices></debug-devices>
       <div>
         ${metaverse}
       </div>
@@ -47,6 +46,12 @@ $.draw((target) => {
     </div>
   `
 })
+
+requestAnimationFrame(function loop(time) {
+	console.log('devices: ', devices().length)
+  requestAnimationFrame(loop)
+})
+
 
 $.flair(`
   & {
