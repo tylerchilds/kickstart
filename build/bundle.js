@@ -13725,7 +13725,5 @@ function persist(_target, $, _flags) {
 $8.flair(`
   & {
 		display: block;
-    max-height: 60vh;
-    overflow: scroll;
   }
 `);

@@ -7,7 +7,8 @@ export const handler = (req, res) => {
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>After Shock, Wave</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="/system.css" rel="stylesheet">
+        <link href="/styles/system.css" rel="stylesheet">
+        <link href="/routes/rice.js" rel="stylesheet">
       </head>
       <body>
         <AfterShockWave>

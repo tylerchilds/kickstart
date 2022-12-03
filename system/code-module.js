@@ -96,7 +96,5 @@ function persist(_target, $, _flags) {
 $.flair(`
   & {
 		display: block;
-    max-height: 60vh;
-    overflow: scroll;
   }
 `)

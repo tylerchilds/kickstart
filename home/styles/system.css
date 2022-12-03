@@ -136,20 +136,20 @@
 
 html {
   font-family: 'Recursive';
+  height: 100%;
 	overflow-x: hidden;
 }
 
 html,
 body {
 	box-sizing: border-box;
-  height: 100%;
-	min-height: 100%;
   margin: 0;
   padding: 0;
 }
 
 body {
 	font-size: 1.2rem;
+  min-height: 100%;
 	line-height: 1.5;
 	font-family: var(--font-body);
   position: relative;

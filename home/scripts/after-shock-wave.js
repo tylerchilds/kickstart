@@ -19,6 +19,12 @@ export function off() {
   $.teach({ featureActive: false })
 }
 
+requestAnimationFrame(function loop(time) {
+	console.log('devices: ', devices().length)
+  requestAnimationFrame(loop)
+})
+
+
 $.draw((target) => {
   if(!target.ogTextContent) {
     target.ogTextContent = target.textContent
@@ -31,7 +37,7 @@ $.draw((target) => {
     ` : target.ogTextContent
 
   return `
-    <div class="mod-shop">
+    <display>
       <div>
         After Shock, Wave: ${featureActive ? 'secure' : 'insecure' }
       </div>
@@ -43,23 +49,22 @@ $.draw((target) => {
         <button data-action="off" data-script="/scripts/after-shock-wave.js">off</button>
         <button data-action="on" data-script="/scripts/after-shock-wave.js">on</button>
       </div>
-    </div>
+    </display>
   `
 })
 
-requestAnimationFrame(function loop(time) {
-	console.log('devices: ', devices().length)
-  requestAnimationFrame(loop)
-})
-
-
 $.flair(`
   & {
-    height: 100%;
-  }
-  & .mod-shop {
     display: grid;
-    grid-template-rows: 2rem 2rem 1fr 2rem;
+    place-items: center;
     height: 100%;
+    width: 100%;
+  }
+  & display {
+    aspect-ratio: 1/1;
+    display: grid;
+    grid-template-rows: 2rem auto 1fr 2rem;
+    height: 100vmin;
+    width: 100vmin;
   }
 `)
