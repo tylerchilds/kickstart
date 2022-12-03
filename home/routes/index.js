@@ -11,14 +11,9 @@ export const handler = (req, res) => {
         <link href="/routes/rice.js" rel="stylesheet">
       </head>
       <body>
-        <AfterShockWave>
-          hello
-        </AfterShockWave>
-        <script type="module">
-          import { on as enter2005 } from "/scripts/after-shock-wave.js"
-          enter2005()
-        </script>
+        <authentication></authentication>
         <script type="module" src="/build/bundle.js"></script>
+        <script type="module" src="/scripts/authentication.js"></script>
       </body>
     </html>
   `, {
