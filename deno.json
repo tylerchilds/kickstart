@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "start": "deno run -A server.js",
+    "null": "deno run null.js"
+  },
+  "importMap": "./import_map.json",
+  "compilerOptions": {
+  }
+}
