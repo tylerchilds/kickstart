@@ -1,10 +1,11 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "deno task null",
+    "beforeBuildCommand": "deno task bundle",
     "beforeDevCommand": "deno task start",
     "devPath": "http://localhost:8000",
-    "distDir": "../home"
+    "distDir": "../home",
+    "withGlobalTauri": true
   },
   "package": {
     "productName": "home",
@@ -29,7 +30,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "computer.sillyz.kickstart",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
