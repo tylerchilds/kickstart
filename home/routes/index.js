@@ -12,7 +12,9 @@ export const handler = (req, res) => {
       </head>
       <body>
         <authentication></authentication>
+        <debug-devices></debug-devices>
         <script type="module" src="/build/bundle.js"></script>
+        <script type="module" src="/system/devices.js"></script>
         <script type="module" src="/scripts/authentication.js"></script>
       </body>
     </html>

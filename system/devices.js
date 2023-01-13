@@ -1,31 +1,83 @@
 import module from '/system/module.js'
 
-export default function devices() {
-  const ids = Object.keys(controllers) || []
-
-	return ids
-    .map(x => controllers[x])
-    .map(gatherInputs)
-}
-
-const controllers = {};
-
 const initialState = { gamepads: [] }
-
 const $ = module('debug-devices', initialState)
 
+
+// access the pre-bundled global API functions
+const { invoke } = window.__TAURI__.tauri
+const { listen } = window.__TAURI__.event
+
+const defaultGamepad = { axes: {}, buttons: {} }
+const EVENTS = {
+  'AxisChanged': onAxisChange,
+  'ButtonChanged': onButtonChange,
+}
+
+function send(payload) {
+  console.log("js: js2rs: " + payload)
+  invoke('js2rs', { message: payload })
+}
+
+await listen('rs2js', function receive(event) {
+  console.log("js: rs2js: " + event.payload)
+	const payload = JSON.parse(event.payload) || {}
+
+  if(EVENTS[payload.event]) {
+    console.log(payload)
+    EVENTS[payload.event](payload)
+  }
+})
+
+function onAxisChange({ id, key, value }) {
+  $.teach({ key, value }, mergeAxisChange(id))
+}
+
+function onButtonChange({ id, key, value }) {
+  $.teach({ key, value }, mergeButtonChange(id))
+}
+
+function mergeAxisChange(id) {
+  return (state, payload) => {
+    const gamepad = state.gamepads[id] || defaultGamepad
+
+    return {
+      ...state,
+      gamepads: {
+        ...state.gamepads,
+        [id]: {
+          ...gamepad,
+          axes: {
+            ...gamepad.axes,
+            [payload.key]: payload.value
+          }
+        }
+      }
+    }
+  }
+}
+
+function mergeButtonChange(id) {
+  return (state, payload) => {
+    const gamepad = state.gamepads[id] || defaultGamepad
+
+    return {
+      ...state,
+      gamepads: {
+        ...state.gamepads,
+        [id]: {
+          ...gamepad,
+          buttons: {
+            ...gamepad.buttons,
+            [payload.key]: payload.value
+          }
+        }
+      }
+    }
+  }
+}
+
 $.draw((target) => renderGamepads(target, $))
-
-function connecthandler(e) {
-  const { index } = e.gamepad
-  controllers[index] = e.gamepad;
-  requestAnimationFrame(gamepadLoop);
-}
-
-function disconnecthandler(e) {
-  const { index } = e.gamepad
-  delete controllers[index];
-}
 
 $.flair(`
   & .gamepads {
@@ -53,79 +105,16 @@ $.flair(`
   }
 `)
 
-function renderValue(value, index) {
-  const offset = parseFloat(value) - 2 + 'rem'
-  return `
-    <div
-      class="input"
-      style="--value: ${offset};"
-    >${index}</div>
-  `
-}
-
-function renderInputs($, flags) {
-  const { gamepad } = flags
-
-	const buttons = flags.buttonMapping
-		? flags.buttonMapping.map(x => gamepad.buttons[x])
-		: gamepad.buttons
-
-	const axes = flags.axesMapping
-		? flags.axesMapping.map(x => gamepad.axes[x])
-		: gamepad.axes
-
-  return `
-    <div class="buttons">
-      ${buttons.map(renderValue).join('')}
-      ${axes.map(renderValue).join('')}
-    </div>
-  `
-}
-
 function renderGamepads(_target, $) {
   const { gamepads } = $.learn()
-	const buttonMapping = [0, 1, 3, 2, 4]
-	const axesMapping = [7]
-  const list = gamepads
+  const list = Object.keys(gamepads)
+    .map(key => gamepads[key])
     .map((gamepad, index) => `
       <div class="gamepad" id="${gamepad.id}">
-        ${renderInputs($, { gamepad, buttonMapping, axesMapping })}
+        Buttons: ${Object.keys(gamepad.buttons).map(key => key +': '+gamepad.buttons[key])}
+        <br/>
+        Axes: ${Object.keys(gamepad.axes).map(key => key +': '+gamepad.axes[key])}
       </div>
     `).join('')
-
   return `<div class="gamepads">${list}</div>`
 }
-
-function gamepadLoop(tick) {
-  const ids = Object.keys(controllers) || []
-  const gamepads = ids
-    .map(x => controllers[x])
-    .map(gatherInputs)
-
-  $.teach({ tick, gamepads })
-
-  requestAnimationFrame(gamepadLoop);
-}
-
-function gatherInputs(gamepad, index) {
-  const buttons = [...gamepad.buttons].map((button, i) => {
-    let value = button
-
-    if (typeof(value) == "object") {
-      value = value.value;
-    }
-
-    return value
-  })
-
-  const axes = [...gamepad.axes].map((axis, i) => {
-    const value = axis
-
-    return value
-  })
-
-  return { buttons, axes, id: gamepad.id, index: gamepad.index }
-}
-
-window.addEventListener("gamepadconnected", connecthandler);
-window.addEventListener("gamepaddisconnected", disconnecthandler);

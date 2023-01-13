@@ -828,6 +828,7 @@ dependencies = [
  "fnv",
  "gilrs-core",
  "log",
+ "serde",
  "uuid 1.2.2",
  "vec_map",
 ]

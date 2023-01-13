@@ -1,35 +1,9 @@
 import module from '/system/module.js'
 import $controlBox from '/scripts/control-box.js'
 
-// access the pre-bundled global API functions
-const { invoke } = window.__TAURI__.tauri
-const { listen } = window.__TAURI__.event
-
 const $ = module('authentication', {
   filter: '',
-	inbox: [],
-	outbox: []
 })
-
-function send(payload) {
-	const { outbox } = $.learn()
-  console.log("js: js2rs: " + payload)
-
-	const message = { timestamp: Date.now(), message: payload }
-
-	$.teach({ outbox: [...outbox, message] })
-  invoke('js2rs', { message: payload })
-}
-
-await listen('rs2js', function receive(event) {
-	const { inbox } = $.learn()
-  console.log("js: rs2js: " + event)
-
-	const message = { timestamp: Date.now(), message: event.payload }
-
-	$.teach({ inbox: [...inbox, message] })
-})
-
 
 export function on() {
   $.teach({ featureActive: true })
@@ -62,7 +36,7 @@ $.when('submit', 'form', event => {
   event.preventDefault()
   const { choices = [] } = $controlBox.learn()
   const [provider] = choices
-  send(provider)
+  alert(provider)
 })
 
 function attributes(node, $) {

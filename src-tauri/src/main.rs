@@ -8,6 +8,8 @@ use tokio::sync::mpsc;
 use tokio::sync::Mutex;
 use tracing::info;
 use tracing_subscriber;
+use serde_json::json;
+use gilrs::{Gilrs, Event, Axis, Button, EventType};
 
 struct AsyncProcInputTx {
     inner: Mutex<mpsc::Sender<String>>,
@@ -41,6 +43,51 @@ fn main() {
                 }
             });
 
+            let app_handle = app.handle();
+			tauri::async_runtime::spawn(async move {
+				let mut gilrs = Gilrs::new().unwrap();
+
+				// Iterate over all connected gamepads
+				for (_id, gamepad) in gilrs.gamepads() {
+					println!("{} is {:?}", gamepad.name(), gamepad.power_info());
+				}
+
+				loop {
+					// Examine new events
+					while let Some(Event { id, event, time }) = gilrs.next_event() {
+						match event {
+							EventType::AxisChanged(axis, value, _code) => {
+								let message = json!({
+									"id": id.to_string(),
+									"key": format!("{:?}", axis),
+									"event": "AxisChanged",
+									"value": value
+								}).to_string();
+								rs2js(message, &app_handle);
+							}
+							EventType::ButtonChanged(button, value, _code) => {
+								let message = json!({
+									"id": id.to_string(),
+									"key": format!("{:?}", button),
+									"event": "ButtonChanged",
+									"value": value
+								}).to_string();
+								rs2js(message, &app_handle);
+							}
+							EventType::Connected => {
+								let message = json!({
+									"id": id.to_string(),
+									"event": "Connected",
+								}).to_string();
+								rs2js(message, &app_handle);
+							}
+							_ => ()
+						}
+
+					}
+				}
+            });
+
             Ok(())
         })
         .run(tauri::generate_context!())
@@ -50,7 +97,7 @@ fn main() {
 fn rs2js<R: tauri::Runtime>(message: String, manager: &impl Manager<R>) {
     info!(?message, "rs2js");
     manager
-        .emit_all("rs2js", format!("rs: {}", message))
+        .emit_all("rs2js", format!("{}", message))
         .unwrap();
 }
 

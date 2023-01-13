@@ -18,7 +18,7 @@ tauri-build = { version = "1.2.1", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.2.2", features = [] }
-gilrs = "0.10.1"
+gilrs = { version = "0.10.1", features = ["serde"] }
 tokio = { version = "1.24.1", features = ["full"] }
 tracing = "0.1.37"
 tracing-subscriber = "0.3.16"

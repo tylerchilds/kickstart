@@ -46,7 +46,6 @@ async function router(request, context) {
 
 		if(pathname.startsWith('/routes')) {
 			const edge = await Deno.readTextFile(`./home/${pathname}`)
-			console.log(edge)
 			const { handler } = await inject(edge)
 
 			return await handler(request, context)
