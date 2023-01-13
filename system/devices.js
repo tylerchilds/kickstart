@@ -1,9 +1,16 @@
 import module from '/system/module.js'
 
-const initialState = { gamepads: [] }
+const initialState = { gamepads: {} }
 const $ = module('debug-devices', initialState)
 
-
+export function gamepads() {
+  const { gamepads } = $.learn()
+  return Object.keys(gamepads)
+    .map(id => ({
+      id,
+      ...gamepads[id]
+    }))
+}
 // access the pre-bundled global API functions
 const { invoke } = window.__TAURI__.tauri
 const { listen } = window.__TAURI__.event

@@ -61,6 +61,15 @@ async function router(request, context) {
       })
 		}
 
+		if(pathname.startsWith('/samples')) {
+			const file = await Deno.readFile(`./home/${pathname}`)
+
+      return new Response(file, {
+        headers: {
+          'content-type': getType(pathname),
+        },
+      })
+		}
 
 		const file = await Deno.readTextFile(`./home/${pathname}`)
 
