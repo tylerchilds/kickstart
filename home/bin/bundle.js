@@ -13727,3 +13727,190 @@ $8.flair(`
 		display: block;
   }
 `);
+const initialState = {
+    gamepads: {}
+};
+const $9 = module('debug-devices', initialState);
+function gamepads() {
+    const { gamepads  } = $9.learn();
+    return Object.keys(gamepads).map((id)=>({
+            id,
+            ...gamepads[id]
+        }));
+}
+const { invoke  } = window.__TAURI__.tauri;
+const { listen: listen1  } = window.__TAURI__.event;
+const defaultGamepad = {
+    axes: {},
+    buttons: {}
+};
+const EVENTS = {
+    'AxisChanged': onAxisChange,
+    'ButtonChanged': onButtonChange
+};
+await listen1('rs2js', function receive(event) {
+    console.log("js: rs2js: " + event.payload);
+    const payload = JSON.parse(event.payload) || {};
+    if (EVENTS[payload.event]) {
+        EVENTS[payload.event](payload);
+        requestAnimationFrame(tick);
+    }
+});
+function tick() {
+    const panes = [
+        document.querySelector('stickies iframe')
+    ];
+    console.log({
+        panes
+    });
+    panes.map((node)=>{
+        node.contentWindow.postMessage({
+            event: 'tick',
+            gamepads: gamepads()
+        }, '*');
+    });
+}
+function onAxisChange({ id , key , value  }) {
+    $9.teach({
+        key,
+        value
+    }, mergeAxisChange(id));
+}
+function onButtonChange({ id , key , value  }) {
+    $9.teach({
+        key,
+        value
+    }, mergeButtonChange(id));
+}
+function mergeAxisChange(id) {
+    return (state, payload)=>{
+        const gamepad = state.gamepads[id] || defaultGamepad;
+        return {
+            ...state,
+            gamepads: {
+                ...state.gamepads,
+                [id]: {
+                    ...gamepad,
+                    axes: {
+                        ...gamepad.axes,
+                        [payload.key]: payload.value
+                    }
+                }
+            }
+        };
+    };
+}
+function mergeButtonChange(id) {
+    return (state, payload)=>{
+        const gamepad = state.gamepads[id] || defaultGamepad;
+        return {
+            ...state,
+            gamepads: {
+                ...state.gamepads,
+                [id]: {
+                    ...gamepad,
+                    buttons: {
+                        ...gamepad.buttons,
+                        [payload.key]: payload.value
+                    }
+                }
+            }
+        };
+    };
+}
+$9.draw((target)=>renderGamepads(target, $9));
+$9.flair(`
+  & .gamepads {
+    list-style-type: none;
+  }
+  & .gamepad {
+  }
+  & .buttons,
+  & .axes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2rem, 1fr));
+    list-style-type: none;
+    padding: .5rem 0 0;
+  }
+  & .input {
+    background: linear-gradient(lime 0%, orange 50%, rebeccapurple 100%);
+    background-size: 1px 6rem;
+    background-repeat: repeat-x;
+    background-position-y: var(--value);
+    border-radius: 2rem;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-content: center;
+  }
+`);
+function renderGamepads(_target, $) {
+    const { gamepads  } = $.learn();
+    const list = Object.keys(gamepads).map((key)=>gamepads[key]).map((gamepad, index)=>`
+      <div class="gamepad" id="${gamepad.id}">
+        Buttons: ${Object.keys(gamepad.buttons).map((key)=>key + ': ' + gamepad.buttons[key])}
+        <br/>
+        Axes: ${Object.keys(gamepad.axes).map((key)=>key + ': ' + gamepad.axes[key])}
+      </div>
+    `).join('');
+    return `<div class="gamepads">${list}</div>`;
+}
+const $10 = module('stickies', {
+    memory: firstMemories(),
+    active: 'http://localhost:8000/routes/press-start-and-win.js'
+});
+$10.draw((target)=>{
+    const { memory , active  } = $10.learn();
+    const memories = Object.keys(memory).map((key)=>memory[key]).filter(thinking);
+    const stickies = memories.map((about)=>`
+      <button data-key="${about.key}">
+        ${about.title}
+      </button>
+    `).join('');
+    return `
+    ${stickies}
+    <iframe src="${active}" title="Active Window"></iframe>
+  `;
+});
+function thinking(about) {
+    return about ? true : false;
+}
+function firstMemories() {
+    return {
+        '0': {
+            key: '0',
+            title: 'Authentication',
+            embed: `
+        <authentication></authentication>
+        <script type="module" src="/scripts/authentication.js"></script>
+      `
+        },
+        '1': {
+            key: '1',
+            title: 'Devices',
+            embed: `
+        <debug-devices></debug-devices>
+        <script type="module" src="/system/devices.js"></script>
+      `
+        },
+        '2': {
+            key: '2',
+            title: 'Synthia',
+            embed: `
+        <synth-module></synth-module>
+        <script type="module" src="/scripts/synth-module.js"></script>
+      `
+        }
+    };
+}
+$10.when('click', 'button[data-key]', (event)=>{
+    const { key  } = event.target.dataset;
+    const memory = $10.learn().memory[key];
+    console.log(memory.embed);
+    const blob = new Blob([
+        memory.embed
+    ], {
+        type: 'text/html'
+    });
+    URL.createObjectURL(blob);
+});

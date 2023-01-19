@@ -1,6 +1,12 @@
 import module from '/system/module.js'
 import $guitar from "./guitar.js"
-import { gamepads } from "/system/devices.js"
+
+let gamepads = []
+addEventListener("message", (event) => {
+  if (event.data.event == 'tick') {
+    gamepads = [...event.data.gamepads]
+  }
+}, false);
 
 const context = new AudioContext();
 
@@ -153,11 +159,10 @@ let activeSynths = []
 requestAnimationFrame(loop)
 function loop(time) {
   const { activeRegisters, activeFrets } = $guitar.learn()
-  gamepads().map((gamepad, i) => {
+  gamepads.map((gamepad, i) => {
     const register = activeRegisters[i]
     const up = gamepad.buttons['DPadUp'] === 1
     const down = gamepad.buttons['DPadDown'] === 1
-    console.log({up,down})
     if(activeFrets[i] === 'x x x') {
       [[up, octaveUp], [down, octaveDown]].map(([flag, feature]) => {
         flag && throttle({ key: 'octave-shift', time, feature })
@@ -447,9 +452,9 @@ function recalculate() {
       }
     })
   })
-
+/*
   upload(colors)
-
+*/
   return colors
 }
 

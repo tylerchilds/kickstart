@@ -1,4 +1,4 @@
-import module from '/system/module.js'
+import module from './module.js'
 
 const initialState = { gamepads: {} }
 const $ = module('debug-devices', initialState)
@@ -31,10 +31,24 @@ await listen('rs2js', function receive(event) {
 	const payload = JSON.parse(event.payload) || {}
 
   if(EVENTS[payload.event]) {
-    console.log(payload)
     EVENTS[payload.event](payload)
+    requestAnimationFrame(tick)
   }
 })
+
+function tick() {
+
+	const panes = [document.querySelector('stickies iframe')]
+  console.log({ panes })
+  panes.map(node => {
+    node
+      .contentWindow
+      .postMessage({
+        event: 'tick',
+        gamepads: gamepads()
+      }, '*')
+  })
+}
 
 function onAxisChange({ id, key, value }) {
   $.teach({ key, value }, mergeAxisChange(id))

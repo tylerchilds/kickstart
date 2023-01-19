@@ -3,7 +3,6 @@
 	windows_subsystem = "windows"
 )]
 
-use std::error::Error;
 use tauri::{
 	api::process::{Command, CommandEvent},
 	Manager,

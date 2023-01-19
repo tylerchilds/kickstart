@@ -11,13 +11,8 @@ export const handler = (req, res) => {
         <link href="/routes/rice.js" rel="stylesheet">
       </head>
       <body>
-        <authentication></authentication>
-        <debug-devices></debug-devices>
-        <synth-module></synth-module>
-        <script type="module" src="/build/bundle.js"></script>
-        <script type="module" src="/system/devices.js"></script>
-        <script type="module" src="/scripts/authentication.js"></script>
-        <script type="module" src="/scripts/synth-module.js"></script>
+        <stickies></stickies>
+        <script type="module" src="/bin/bundle.js"></script>
       </body>
     </html>
   `, {

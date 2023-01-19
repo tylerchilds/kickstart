@@ -1,5 +1,13 @@
 import module from '/system/module.js'
-import { gamepads } from "/system/devices.js"
+
+let gamepads = []
+
+addEventListener("message", (event) => {
+  if (event.data.event == 'tick') {
+	console.log(event.data)
+    gamepads = [...event.data.gamepads]
+  }
+}, false);
 
 const initialState = {
   activeFrets: [],
@@ -36,7 +44,7 @@ const registers = [
 
 requestAnimationFrame(loop)
 function loop(time) {
-  const activeFrets = gamepads().map(x => toFrets($, x))
+  const activeFrets = gamepads.map(x => toFrets($, x))
   const activeRegisters = activeFrets.map(x => toRegisters($, x))
 
   $.teach({

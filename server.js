@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
 import { Status } from "https://deno.land/std/http/http_status.ts";
 import { ensureFileSync } from "https://deno.land/std@0.165.0/fs/ensure_file.ts";
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
-import { inject } from './system/utils.js'
+import { inject } from './home/system/utils.js'
 
 const core = [
 	'/system/bios.js',
@@ -11,7 +11,7 @@ const core = [
 	'/system/module.js',
 	'/system/SecureRender.js',
 	'/system/modal-module.js',
-	'/build/bundle.js',
+	'/bin/bundle.js',
 ]
 
 function system(firmware) {
@@ -33,7 +33,7 @@ async function router(request, context) {
   if(pathname === '/') pathname = '/routes/index.js'
 
 	if(core.includes(pathname)) {
-		return system(pathname)(request, context)
+		return system('/home'+pathname)(request, context)
 	}
 
 	try {

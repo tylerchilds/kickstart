@@ -1,7 +1,7 @@
 {
   "tasks": {
     "start": "deno task bundle && deno run -A server.js",
-    "bundle": "deno bundle ./system/main.js ./build/bundle.js"
+    "bundle": "deno bundle ./home/system/main.js ./home/bin/bundle.js"
   },
   "importMap": "./import_map.json",
   "compilerOptions": {

@@ -2,6 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
     "beforeBuildCommand": "deno task bundle",
+    "beforeDevCommand": "deno task start",
     "devPath": "../home",
     "distDir": "../home",
     "withGlobalTauri": true
