@@ -3,11 +3,13 @@ import '../system/devices.js'
 
 const $ = module('stickies', {
   memory: firstMemories(),
-  active: 'http://localhost:8000/routes/press-start-and-win.js'
+  activeEmbed: `
+    <iframe src="http://localhost:8000/routes/press-start-and-win.js"></iframe>
+  `,
 })
 
 $.draw((target) => {
-  const { memory, active } = $.learn()
+  const { memory, activeEmbed } = $.learn()
   const memories = Object
     .keys(memory)
     .map(key => memory[key])
@@ -23,7 +25,9 @@ $.draw((target) => {
 
   return `
     ${stickies}
-    <iframe src="${active}" title="Active Window"></iframe>
+    <div class="embed">
+      ${activeEmbed}
+    </div>
   `
 })
 
@@ -37,24 +41,21 @@ function firstMemories() {
       key: '0',
       title: 'Authentication',
       embed: `
-        <authentication></authentication>
-        <script type="module" src="/scripts/authentication.js"></script>
+        <iframe src="http://localhost:8000/routes/authentication.js"></iframe>
       `,
     },
     '1': {
       key: '1',
       title: 'Devices',
       embed: `
-        <debug-devices></debug-devices>
-        <script type="module" src="/system/devices.js"></script>
+        <iframe src="http://localhost:8000/routes/devices.js"></iframe>
       `,
     },
     '2': {
       key: '2',
       title: 'Synthia',
       embed: `
-        <synth-module></synth-module>
-        <script type="module" src="/scripts/synth-module.js"></script>
+        <iframe src="http://localhost:8000/routes/synthia.js"></iframe>
       `,
     }
   }
@@ -62,9 +63,8 @@ function firstMemories() {
 
 $.when('click', 'button[data-key]', (event) => {
   const { key } = event.target.dataset
-  const memory = $.learn().memory[key]
-  console.log(memory.embed)
-  const blob = new Blob([memory.embed], { type: 'text/html' })
-  const active = URL.createObjectURL(blob)
-  /*$.teach({ active })*/
+  const { embed } = $.learn().memory[key]
+  $.teach({
+    activeEmbed: embed
+  })
 })
