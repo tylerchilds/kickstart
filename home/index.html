@@ -6,20 +6,27 @@
     <title>After Shock, Wave</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/styles/system.css" rel="stylesheet">
-    <!--
-    <link href="/routes/rice.js" rel="stylesheet">
-    -->
   </head>
   <body>
     <stickies></stickies>
-
     <script type="module" src="/bin/bundle.js"></script>
     <script>
-    /*
+      /*
       const { Command } = window.__TAURI__.shell
       const command = Command.sidecar('binaries/sillyz.computer')
-      command.execute().then(console.log)
-    */
+      const sidecar = command.execute()
+
+      sidecar
+        .then(result => {
+          const stickies = document.createElement('stickies')
+          const script = document.createElement('script')
+          script.type = 'module'
+          script.src = '/bin/bundle.js'
+          document.body.appendChild(stickies)
+          document.body.appendChild(script)
+        })
+      window.sidecar = sidecar
+     */
     </script>
   </body>
 </html>

@@ -95,6 +95,7 @@ fn main() {
 			});
 
 			/* get sillyz.computer binary to run*/
+            /*
 			let window = app.get_window("main").unwrap();
 			tauri::async_runtime::spawn(async move {
 				let (mut rx, mut child) = Command::new_sidecar("sillyz.computer")
@@ -113,7 +114,7 @@ fn main() {
 					}
 				}
 			});
-
+*/
 			Ok(())
 		})
 	.run(tauri::generate_context!())

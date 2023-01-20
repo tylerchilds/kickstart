@@ -13858,7 +13858,7 @@ function renderGamepads(_target, $) {
 const $10 = module('stickies', {
     memory: firstMemories(),
     activeEmbed: `
-    <iframe src="http://localhost:8000/routes/press-start-and-win.js"></iframe>
+    <iframe src="https://sillyz.computer/pages/slides/2022-js"></iframe>
   `
 });
 $10.draw((target)=>{
@@ -13885,21 +13885,28 @@ function firstMemories() {
             key: '0',
             title: 'Authentication',
             embed: `
-        <iframe src="http://localhost:8000/routes/authentication.js"></iframe>
+        <iframe src="/stickies/authentication.html"></iframe>
       `
         },
         '1': {
             key: '1',
             title: 'Devices',
             embed: `
-        <iframe src="http://localhost:8000/routes/devices.js"></iframe>
+        <iframe src="/stickies/devices.html"></iframe>
       `
         },
         '2': {
             key: '2',
             title: 'Synthia',
             embed: `
-        <iframe src="http://localhost:8000/routes/synthia.js"></iframe>
+        <iframe src="/stickies/synthia.html"></iframe>
+      `
+        },
+        '3': {
+            key: '3',
+            title: 'Slides',
+            embed: `
+        <iframe src="https://sillyz.computer/pages/slides/2022-js"></iframe>
       `
         }
     };
@@ -13911,3 +13918,15 @@ $10.when('click', 'button[data-key]', (event)=>{
         activeEmbed: embed
     });
 });
+$10.flair(`
+  .embed {
+    position: fixed;
+    inset: 0;
+  }
+
+  .embed iframe {
+    border: 0;
+    width: 100%;
+    height: 100%;
+  }
+`);
