@@ -8,8 +8,8 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "home",
-    "version": "0.1.0"
+    "productName": "grapevine",
+    "version": "0.1.1"
   },
   "tauri": {
     "allowlist": {
@@ -73,7 +73,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "home",
+        "title": "Safe",
         "width": 800
       }
     ]
