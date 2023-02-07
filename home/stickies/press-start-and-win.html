@@ -14,6 +14,7 @@
 
     <script>
       window.onmessage = function(e) {
+        console.log(e)
 
         if (e.data.event == 'tick') {
           const startPressed = e.data.gamepads

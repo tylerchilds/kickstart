@@ -13856,23 +13856,29 @@ function renderGamepads(_target, $) {
     return `<div class="gamepads">${list}</div>`;
 }
 const $10 = module('stickies', {
+    rootActive: false,
     memory: firstMemories(),
     activeEmbed: `
-    <iframe src="https://sillyz.computer/pages/slides/2022-js"></iframe>
+    <iframe src="https://sillyz.computer"></iframe>
   `
 });
 $10.draw((target)=>{
-    const { memory , activeEmbed  } = $10.learn();
+    const { memory , activeEmbed , rootActive  } = $10.learn();
     const memories = Object.keys(memory).map((key)=>memory[key]).filter(thinking);
     const stickies = memories.map((about)=>`
       <button data-key="${about.key}">
         ${about.title}
       </button>
     `).join('');
+    const rootClass = rootActive ? 'active' : '';
     return `
-    ${stickies}
-    <div class="embed">
-      ${activeEmbed}
+    <div class="${rootClass}">
+      <div class="root">
+        ${stickies}
+      </div>
+      <div class="leaf">
+        ${activeEmbed}
+      </div>
     </div>
   `;
 });
@@ -13919,14 +13925,22 @@ $10.when('click', 'button[data-key]', (event)=>{
     });
 });
 $10.flair(`
-  .embed {
+  .root {
+    position: fixed;
+    inset: 0;
+  }
+  .leaf {
+    background: dodgerblue;
     position: fixed;
     inset: 0;
   }
 
-  .embed iframe {
+  .leaf iframe {
+    background: dodgerblue;
     border: 0;
     width: 100%;
     height: 100%;
   }
 `);
+const { appWindow  } = window.__TAURI__.window;
+appWindow.show();

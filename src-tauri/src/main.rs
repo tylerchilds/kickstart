@@ -93,6 +93,15 @@ fn main() {
 				}
 			});
 
+			let app_handle = app.handle();
+			let main_window =
+				tauri::WindowBuilder::new(&app_handle, "main", tauri::WindowUrl::App("index.html".into()))
+					.visible(false)
+					.build()
+					.expect("failed to create main window");
+			main_window.set_title("Hyper").unwrap();
+			main_window.center().unwrap();
+
 			Ok(())
 		})
 	.run(tauri::generate_context!())

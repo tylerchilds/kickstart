@@ -12,9 +12,6 @@
     "version": "0.1.1"
   },
   "tauri": {
-    "allowlist": {
-      "all": false
-    },
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
@@ -58,6 +55,9 @@
     },
 		"allowlist": {
       "all": false,
+      "window": {
+        "show": true
+      },
       "shell": {
         "sidecar": true,
         "scope": [
@@ -67,15 +67,6 @@
           }
         ]
       }
-    },
-    "windows": [
-      {
-        "fullscreen": false,
-        "height": 600,
-        "resizable": true,
-        "title": "Safe",
-        "width": 800
-      }
-    ]
+    }
   }
 }

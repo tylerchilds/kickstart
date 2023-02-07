@@ -2,14 +2,15 @@ import module from '../system/module.js'
 import '../system/devices.js'
 
 const $ = module('stickies', {
+  rootActive: false,
   memory: firstMemories(),
   activeEmbed: `
-    <iframe src="https://sillyz.computer/pages/slides/2022-js"></iframe>
+    <iframe src="https://sillyz.computer"></iframe>
   `,
 })
 
 $.draw((target) => {
-  const { memory, activeEmbed } = $.learn()
+  const { memory, activeEmbed, rootActive } = $.learn()
   const memories = Object
     .keys(memory)
     .map(key => memory[key])
@@ -23,10 +24,16 @@ $.draw((target) => {
     `)
     .join('')
 
+  const rootClass = rootActive ? 'active' : ''
+
   return `
-    ${stickies}
-    <div class="embed">
-      ${activeEmbed}
+    <div class="${rootClass}">
+      <div class="root">
+        ${stickies}
+      </div>
+      <div class="leaf">
+        ${activeEmbed}
+      </div>
     </div>
   `
 })
@@ -77,12 +84,18 @@ $.when('click', 'button[data-key]', (event) => {
 })
 
 $.flair(`
-  .embed {
+  .root {
+    position: fixed;
+    inset: 0;
+  }
+  .leaf {
+    background: dodgerblue;
     position: fixed;
     inset: 0;
   }
 
-  .embed iframe {
+  .leaf iframe {
+    background: dodgerblue;
     border: 0;
     width: 100%;
     height: 100%;
