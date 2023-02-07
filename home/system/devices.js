@@ -1,4 +1,5 @@
 import module from './module.js'
+import safeTauri from './safe-tauri.js'
 
 const initialState = { gamepads: {} }
 const $ = module('debug-devices', initialState)
@@ -12,8 +13,8 @@ export function gamepads() {
     }))
 }
 // access the pre-bundled global API functions
-const { invoke } = window.__TAURI__.tauri
-const { listen } = window.__TAURI__.event
+const { invoke } = safeTauri.tauri
+const { listen } = safeTauri.event
 
 const defaultGamepad = { axes: {}, buttons: {} }
 const EVENTS = {

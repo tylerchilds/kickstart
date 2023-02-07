@@ -13727,6 +13727,20 @@ $8.flair(`
 		display: block;
   }
 `);
+function noop1() {}
+const tauri = window.__TAURI__ || {
+    window: {
+        appWindow: {
+            show: noop1
+        }
+    },
+    tauri: {
+        invoke: noop1
+    },
+    event: {
+        listen: noop1
+    }
+};
 const initialState = {
     gamepads: {}
 };
@@ -13738,8 +13752,8 @@ function gamepads() {
             ...gamepads[id]
         }));
 }
-const { invoke  } = window.__TAURI__.tauri;
-const { listen: listen1  } = window.__TAURI__.event;
+const { invoke  } = tauri.tauri;
+const { listen: listen1  } = tauri.event;
 const defaultGamepad = {
     axes: {},
     buttons: {}
@@ -13859,7 +13873,7 @@ const $10 = module('stickies', {
     rootActive: false,
     memory: firstMemories(),
     activeEmbed: `
-    <iframe src="https://sillyz.computer"></iframe>
+    <iframe src="/stickies/synthia.html"></iframe>
   `
 });
 $10.draw((target)=>{
@@ -13942,5 +13956,4 @@ $10.flair(`
     height: 100%;
   }
 `);
-const { appWindow  } = window.__TAURI__.window;
-appWindow.show();
+tauri.window.appWindow.show();

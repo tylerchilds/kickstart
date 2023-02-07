@@ -5,7 +5,7 @@ const $ = module('stickies', {
   rootActive: false,
   memory: firstMemories(),
   activeEmbed: `
-    <iframe src="https://sillyz.computer"></iframe>
+    <iframe src="/stickies/synthia.html"></iframe>
   `,
 })
 

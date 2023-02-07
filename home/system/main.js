@@ -1,5 +1,5 @@
 import './code-module.js'
 import './stickies.js'
+import safeTauri from './safe-tauri.js'
 
-const { appWindow } = window.__TAURI__.window
-appWindow.show()
+safeTauri.window.appWindow.show()
