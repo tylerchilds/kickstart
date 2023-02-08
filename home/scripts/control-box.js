@@ -1,4 +1,4 @@
-import * as focusTrap from 'https://esm.sh/focus-trap'
+import { focusTrap } from '/system/deps.js'
 import module from '/system/module.js'
 
 const $ = module('control-box', {

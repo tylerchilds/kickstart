@@ -1,4 +1,5 @@
 import module from '/system/module.js'
+import { Color } from '/system/deps.js'
 import $guitar from "./guitar.js"
 
 let gamepads = []
@@ -109,17 +110,7 @@ function attack(event) {
   //synths[synth].triggerAttack(`${note}${octave}`, "2n");
 	event.target.classList.add('active')
 
-  const body = '#ffff00'
-  /*
   const body = new Color(colors[parseInt(hue)][parseInt(octave)].value).to('srgb')
-  fetch('/last-color', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
-  })
-  */
 
   document.querySelector('body').style.setProperty("background", body)
 }
@@ -405,20 +396,6 @@ function invertedLabels() {
   return rulesets.join('')
 }
 
-function upload(colors) {
-  const palette = colors.flatMap(x => x).map(({ name, value }) => `
-    ${name}: ${value};
-  `).join('')
-
-  fetch('/design-system', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ palette })
-  })
-}
-
 function gradient(scale, stops) {
 	return `
     background: linear-gradient(${stops.map(x => scale[x]).join(', ')})
@@ -436,13 +413,9 @@ function recalculate() {
 
     return lightnessStops.map(([l, c], i) => {
       const name = `--wheel-${hueIndex}-${i}`
-      /*
       const value = new Color('lch', [l, c, hue])
         .display()
         .toString({format: 'hex'})
-        */
-
-      const value = '#ffff00'
 
       return {
         name,
