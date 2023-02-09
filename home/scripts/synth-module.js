@@ -1,6 +1,11 @@
 import module from '/system/module.js'
-import { Color } from '/system/deps.js'
+import { Color, Tone, Midi } from '/system/deps.js'
 import $guitar from "./guitar.js"
+
+const start = new Date()
+const midi = new Midi()
+const track = midi.addTrack()
+console.log(midi)
 
 let gamepads = []
 addEventListener("message", (event) => {
@@ -18,7 +23,13 @@ async function loadSample(url) {
   return sample
 }
 
-function playSample(sample, sampleNote, noteToPlay) {
+function playSample(name, sample, sampleNote, noteToPlay) {
+  track.addNote({
+      name,
+      time: (new Date() - start) / 1000,
+      duration: 0.2
+  })
+
   const source = context.createBufferSource();
   source.buffer = sample;
   source.playbackRate.value = 2 ** ((noteToPlay - sampleNote) / 12);
@@ -104,9 +115,9 @@ const synthDown =() => {
 function attack(event) {
 	event.preventDefault()
 	const { colors, synth } = $.learn()
-  const { octave, note, hue } = event.target.dataset
+  const { octave, note, hue, name } = event.target.dataset
 
-  playSample(synths[synth], 60, parseInt(octave) * 12 + (12 + parseInt(note)));
+  playSample(name, synths[synth], 60, parseInt(octave) * 12 + (12 + parseInt(note)));
   //synths[synth].triggerAttack(`${note}${octave}`, "2n");
 	event.target.classList.add('active')
 
@@ -257,6 +268,7 @@ $.draw(() => {
 					data-index="${majorSynth}"
           data-octave="${octave}"
           data-note="${note}"
+          data-name="${majorScale[note]}${octave}"
 					data-hue="${majorColorIndex}"
           style="${gradient(majorColorScales, [4,3,2])}"
         >
@@ -266,6 +278,7 @@ $.draw(() => {
 					data-index="${minorSynth}"
           data-octave="${octave}"
           data-note="${minorScaleIndex}"
+          data-name="${minorScale[minorScaleIndex]}${octave}"
 					data-hue="${minorColorIndex}"
           style="${gradient(minorColorScales, [4,3,2])}"
         >
@@ -275,11 +288,25 @@ $.draw(() => {
   }).join('')
 
   return `
+    <a href="javascript://lol;">Export</a>
     <div class="wheel">
       ${wheel}
 			${controls()}
     </div>
   `
+})
+
+$.when('click', '[href="javascript://lol;"]', (event) => {
+  event.preventDefault()
+  const exportUrl = URL.createObjectURL(new Blob([
+    midi.toArray()
+  ], {type: 'audio/midi'} ))
+  const href = document.createElement('a');
+  href.href = exportUrl
+  href.download = `${new Date().toISOString()}.mid`
+  href.target = '_blank'
+  href.click()
+  URL.revokeObjectURL(exportUrl)
 })
 
 function controls() {
