@@ -12,7 +12,8 @@ export const handler = (req, res) => {
       </head>
       <body>
         <synth-module></synth-module>
-        <script type="module" src="/scripts/synth-module.js"></script>
+
+        <script type="module" src="/bin/bundle.js"></script>
       </body>
     </html>
   `, {

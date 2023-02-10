@@ -1,4 +1,4 @@
-import module from '/system/module.js'
+import module from '../system/module.js'
 
 let gamepads = []
 
