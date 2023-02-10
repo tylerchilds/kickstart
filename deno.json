@@ -1,8 +1,7 @@
 {
   "tasks": {
     "start": "deno task build && deno run -A server.js",
-    "build": "deno task bundle",
-    "bundle": "deno bundle ./home/system/main.js ./home/bin/bundle.js"
+    "build": "esbuild home/system/main.js --bundle --outfile=home/bin/bundle.js --format=esm"
   },
   "importMap": "./import_map.json",
   "compilerOptions": {
