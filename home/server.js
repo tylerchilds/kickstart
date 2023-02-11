@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
 import { Status } from "https://deno.land/std/http/http_status.ts";
 import { ensureFileSync } from "https://deno.land/std@0.165.0/fs/ensure_file.ts";
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
-import { inject } from './home/system/utils.js'
+import { inject } from './system/utils.js'
 
 const core = [
 	'/system/bios.js',
@@ -16,10 +16,9 @@ const core = [
 
 function system(firmware) {
 	return async (_request, _context) => {
+		const process = await Deno.readFile(`.${firmware}`)
 
-		const bios = await Deno.readFile(`.${firmware}`)
-
-		return new Response(bios, {
+		return new Response(process, {
 			headers: {
 				'content-type': 'text/javascript; charset=utf-8'
 			},
@@ -30,30 +29,30 @@ function system(firmware) {
 async function router(request, context) {
 	let { pathname } = new URL(request.url);
 
-  console.log(pathname)
   if(pathname === '/') pathname = '/routes/index.js'
 
 	if(core.includes(pathname)) {
-		return system('/home'+pathname)(request, context)
+  console.log(pathname)
+		return system(pathname)(request, context)
 	}
 
 	try {
 		if(request.method === 'PUT') {
 			const { file } = await request.json()	
-      ensureFileSync(`./home/${pathname}`)
-			await Deno.writeTextFile(`./home/${pathname}`, file)	
+      ensureFileSync(`.${pathname}`)
+			await Deno.writeTextFile(`.${pathname}`, file)	
 			return new Response()
 		}
 
 		if(pathname.startsWith('/routes')) {
-			const edge = await Deno.readTextFile(`./home/${pathname}`)
+			const edge = await Deno.readTextFile(`.${pathname}`)
 			const { handler } = await inject(edge)
 
 			return await handler(request, context)
 		}
 
 		if(pathname.startsWith('/sprites')) {
-			const file = await Deno.readFile(`./home/${pathname}`)
+			const file = await Deno.readFile(`.${pathname}`)
 
       return new Response(file, {
         headers: {
@@ -63,7 +62,7 @@ async function router(request, context) {
 		}
 
 		if(pathname.startsWith('/samples')) {
-			const file = await Deno.readFile(`./home/${pathname}`)
+			const file = await Deno.readFile(`.${pathname}`)
 
       return new Response(file, {
         headers: {
@@ -72,7 +71,7 @@ async function router(request, context) {
       })
 		}
 
-		const file = await Deno.readTextFile(`./home/${pathname}`)
+		const file = await Deno.readTextFile(`.${pathname}`)
 
 		return new Response(file, {
 			headers: {
@@ -89,7 +88,7 @@ async function router(request, context) {
         '<link href="/system.css" rel="stylesheet">' +
         '<bios></bios>' +
 				'<script type="module" src="/system/bios.js"></script>' +
-				'<script type="module" src="/build/bundle.js"></script>'
+				'<script type="module" src="/bin/bundle.js"></script>'
 
 			return new Response(body, {
 				headers: {
