@@ -7,13 +7,13 @@ import {
 import module from '../system/module.js'
 
 const $ = module('scripttype-editor')
-const link = '/customs/' + window.location.pathname.split('/%/')[1]
-console.log(link)
+const sourceLocation = '/customs/' + window.location.pathname.split('/%/')[1]
+const viewLocation = '/$/' + window.location.pathname.split('/%/')[1]
 
 $.when('click', '.publish', (event) => {
   const { file } = $.learn()
 
-	fetch(link, {
+	fetch(sourceLocation, {
 		method: 'PUT',
 		headers: {
 			'Accept': 'application/json',
@@ -27,12 +27,19 @@ $.when('click', '.publish', (event) => {
   })
 })
 
+$.when('click', '.print', (event) => {
+  const node = event.target.closest($.selector)
+  const preview = node.querySelector('[name="view"] iframe').contentWindow
+  preview.focus()
+  preview.print()
+})
+
 $.draw(target => {
   const { file, fetching } = $.learn()
 
   if(!file && !fetching) {
     $.teach({ fetching: true })
-    fetch(link)
+    fetch(sourceLocation)
       .then(res => res.status === 404 ? (() => {throw new Error()})() : res )
       .then(res => res.text())
       .then((file) => {
@@ -49,7 +56,14 @@ $.draw(target => {
 
   if(file && !target.view) {
     target.innerHTML = `
-      <button class="publish">Publish</button>
+      <div name="transport">
+        <button class="publish">Publish</button>
+        <button class="print">print</button>
+      </div>
+      <div name="edit"></div>
+      <div name="view">
+        <iframe src="${viewLocation}" title="Print Preview"></iframe>
+      </div>
     `
 
     const config = {
@@ -67,7 +81,7 @@ $.draw(target => {
     })
 
     target.view = new EditorView({
-      parent: target,
+      parent: target.querySelector('[name="edit"]'),
       state
     })
   }
@@ -84,6 +98,30 @@ function persist(_target, $, _flags) {
 
 $.flair(`
   & {
-		display: block;
+		display: grid;
+    grid-template-areas: "transport transport" "edit view";
+    grid-template-columns: 1fr 1fr;
+  }
+
+  & [name="transport"] {
+    grid-area: transport;
+  }
+  & [name="view"] {
+    grid-area: view;
+  }
+
+  & [name="edit"] {
+    grid-area: edit;
+  }
+
+  @media print {
+    & [name="view"] {
+      display: block;
+    }
+
+    & [name="transport"],
+    & [name="edit"] {
+      display: none;
+    }
   }
 `)

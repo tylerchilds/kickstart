@@ -32889,11 +32889,11 @@ $10.flair(`
   }
 `);
 const $11 = module('scripttype-editor');
-const link = '/customs/' + window.location.pathname.split('/%/')[1];
-console.log(link);
+const sourceLocation = '/customs/' + window.location.pathname.split('/%/')[1];
+const viewLocation = '/$/' + window.location.pathname.split('/%/')[1];
 $11.when('click', '.publish', (event)=>{
     const { file  } = $11.learn();
-    fetch(link, {
+    fetch(sourceLocation, {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
@@ -32906,13 +32906,19 @@ $11.when('click', '.publish', (event)=>{
         window.location.href = window.location.href;
     });
 });
+$11.when('click', '.print', (event)=>{
+    const node = event.target.closest($11.selector);
+    const preview = node.querySelector('[name="view"] iframe').contentWindow;
+    preview.focus();
+    preview.print();
+});
 $11.draw((target)=>{
     const { file , fetching  } = $11.learn();
     if (!file && !fetching) {
         $11.teach({
             fetching: true
         });
-        fetch(link).then((res)=>res.status === 404 ? (()=>{
+        fetch(sourceLocation).then((res)=>res.status === 404 ? (()=>{
                 throw new Error();
             })() : res).then((res)=>res.text()).then((file)=>{
             $11.teach({
@@ -32931,7 +32937,14 @@ $11.draw((target)=>{
     }
     if (file && !target.view) {
         target.innerHTML = `
-      <button class="publish">Publish</button>
+      <div name="transport">
+        <button class="publish">Publish</button>
+        <button class="print">print</button>
+      </div>
+      <div name="edit"></div>
+      <div name="view">
+        <iframe src="${viewLocation}" title="Print Preview"></iframe>
+      </div>
     `;
         const config = {
             extensions: [
@@ -32944,7 +32957,7 @@ $11.draw((target)=>{
             doc: file
         });
         target.view = new C6({
-            parent: target,
+            parent: target.querySelector('[name="edit"]'),
             state
         });
     }
@@ -32960,7 +32973,31 @@ function persist1(_target, $, _flags) {
 }
 $11.flair(`
   & {
-		display: block;
+		display: grid;
+    grid-template-areas: "transport transport" "edit view";
+    grid-template-columns: 1fr 1fr;
+  }
+
+  & [name="transport"] {
+    grid-area: transport;
+  }
+  & [name="view"] {
+    grid-area: view;
+  }
+
+  & [name="edit"] {
+    grid-area: edit;
+  }
+
+  @media print {
+    & [name="view"] {
+      display: block;
+    }
+
+    & [name="transport"],
+    & [name="edit"] {
+      display: none;
+    }
   }
 `);
 function noop1() {}
