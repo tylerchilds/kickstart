@@ -27,7 +27,7 @@ function send(payload) {
   invoke('js2rs', { message: payload })
 }
 
-await listen('rs2js', function receive(event) {
+listen('rs2js', function receive(event) {
   console.log("js: rs2js: " + event.payload)
 	const payload = JSON.parse(event.payload) || {}
 

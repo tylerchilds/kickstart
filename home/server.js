@@ -3,6 +3,7 @@ import { Status } from "https://deno.land/std/http/http_status.ts";
 import { ensureFileSync } from "https://deno.land/std@0.165.0/fs/ensure_file.ts";
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
 import { inject } from './system/utils.js'
+import { compile } from './system/ScriptType.js'
 
 const core = [
 	'/system/bios.js',
@@ -32,7 +33,6 @@ async function router(request, context) {
   if(pathname === '/') pathname = '/routes/index.js'
 
 	if(core.includes(pathname)) {
-  console.log(pathname)
 		return system(pathname)(request, context)
 	}
 
@@ -43,6 +43,24 @@ async function router(request, context) {
 			await Deno.writeTextFile(`.${pathname}`, file)	
 			return new Response()
 		}
+
+    if(pathname.startsWith('/%/')) {
+			const edge = await Deno.readTextFile(`./routes/script-editor.js`)
+			const { handler } = await inject(edge)
+
+			return await handler(request, context)
+    }
+
+    if(pathname.startsWith('/$/')) {
+      const link = '/customs/' + pathname.split('/$/')[1]
+			const script = await Deno.readTextFile(`.${link}`)
+
+      return new Response(compile(script), {
+        headers: {
+					'content-type': 'text/html; charset=utf-8'
+        },
+      })
+    }
 
 		if(pathname.startsWith('/routes')) {
 			const edge = await Deno.readTextFile(`.${pathname}`)
