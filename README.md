@@ -15,12 +15,6 @@ Publish to the web.
 
 ## Building
 
-Dependencies
-
-```
-npm install -g --save-exact esbuild
-```
-
 Development
 
 ```
