@@ -9,7 +9,7 @@ export {
   Midi,
   Tone,
   focusTrap,
-  randomString,
+  randomString
 }
 
 const randomString = (length) =>

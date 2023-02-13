@@ -33146,28 +33146,28 @@ const $13 = module('stickies', {
     rootActive: false,
     memory: firstMemories(),
     activeEmbed: `
-    <iframe src="/stickies/synthia.html"></iframe>
-  `
+		<iframe src="/stickies/synthia.html"></iframe>
+	`
 });
 $13.draw((target)=>{
     const { memory , activeEmbed , rootActive  } = $13.learn();
     const memories = Object.keys(memory).map((key)=>memory[key]).filter(thinking);
     const stickies = memories.map((about)=>`
-      <button data-key="${about.key}">
-        ${about.title}
-      </button>
-    `).join('');
+			<button data-key="${about.key}">
+				${about.title}
+			</button>
+		`).join('');
     const rootClass = rootActive ? 'active' : '';
     return `
-    <div class="${rootClass}">
-      <div class="root">
-        ${stickies}
-      </div>
-      <div class="leaf">
-        ${activeEmbed}
-      </div>
-    </div>
-  `;
+		<div class="${rootClass}">
+			<div class="root">
+				${stickies}
+			</div>
+			<div class="leaf">
+				${activeEmbed}
+			</div>
+		</div>
+	`;
 });
 function thinking(about) {
     return about ? true : false;
@@ -33178,29 +33178,36 @@ function firstMemories() {
             key: '0',
             title: 'Authentication',
             embed: `
-        <iframe src="/stickies/authentication.html"></iframe>
-      `
+				<iframe src="/stickies/authentication.html"></iframe>
+			`
         },
         '1': {
             key: '1',
             title: 'Devices',
             embed: `
-        <iframe src="/stickies/devices.html"></iframe>
-      `
+				<iframe src="/stickies/devices.html"></iframe>
+			`
         },
         '2': {
             key: '2',
             title: 'Synthia',
             embed: `
-        <iframe src="/stickies/synthia.html"></iframe>
-      `
+				<iframe src="/stickies/synthia.html"></iframe>
+			`
         },
         '3': {
             key: '3',
             title: 'Slides',
             embed: `
-        <iframe src="https://sillyz.computer/pages/slides/2022-js"></iframe>
-      `
+				<iframe src="https://sillyz.computer/pages/slides/2022-js"></iframe>
+			`
+        },
+        '4': {
+            key: '4',
+            title: 'hello script',
+            embed: `
+				<iframe src="/%/hello.script"></iframe>
+			`
         }
     };
 }
@@ -33208,27 +33215,55 @@ $13.when('click', 'button[data-key]', (event)=>{
     const { key  } = event.target.dataset;
     const { embed  } = $13.learn().memory[key];
     $13.teach({
-        activeEmbed: embed
+        activeEmbed: embed,
+        rootActive: false
     });
 });
 $13.flair(`
-  .root {
-    position: fixed;
-    inset: 0;
-  }
-  .leaf {
-    background: dodgerblue;
-    position: fixed;
-    inset: 0;
-  }
+	& .root {
+		position: fixed;
+		inset: 0;
+	}
 
-  .leaf iframe {
-    background: dodgerblue;
-    border: 0;
-    width: 100%;
-    height: 100%;
-  }
+	& .active .leaf {
+		transform: translateY(-100%);
+	}
+
+	& .leaf {
+		background: dodgerblue;
+		position: fixed;
+		inset: 0;
+		transform: translateY(0);
+		transition: transform 200 ease-in-out;
+	}
+
+	& .leaf iframe {
+		background: dodgerblue;
+		border: 0;
+		width: 100%;
+		height: 100%;
+	}
 `);
+window.onmessage = function(event) {
+    const { safeEvent  } = event.data;
+    const { type  } = safeEvent;
+    if (type === 'keydown') {
+        window.dispatchEvent(new KeyboardEvent(type, {
+            key: safeEvent.key
+        }));
+    }
+};
+window.addEventListener('keydown', (event)=>{
+    if (event.key === 'Escape') {
+        const isNotCombinedKey = !(event.ctrlKey || event.altKey || event.shiftKey);
+        if (isNotCombinedKey) {
+            const { rootActive  } = $13.learn();
+            $13.teach({
+                rootActive: !rootActive
+            });
+        }
+    }
+});
 let gamepads1 = [];
 addEventListener("message", (event)=>{
     if (event.data.event == 'tick') {
