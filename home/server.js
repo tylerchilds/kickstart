@@ -30,7 +30,7 @@ function system(firmware) {
 async function router(request, context) {
 	let { pathname } = new URL(request.url);
 
-  if(pathname === '/') pathname = '/routes/index.js'
+  if(pathname === '/') pathname = './routes/index.js'
 
 	if(core.includes(pathname)) {
 		return system(pathname)(request, context)
