@@ -18,7 +18,7 @@ const core = [
 
 function system(firmware) {
 	return async (_request, _context) => {
-		const process = await Deno.readFile(`./home/${firmware}`)
+		const process = await Deno.readFile(`${Deno.cwd()}/home${firmware}`)
 
 		return new Response(process, {
 			headers: {
@@ -50,8 +50,8 @@ async function router(request, context) {
     }
 
     if(pathname.startsWith('/$/')) {
-      const link = '/home/customs/' + pathname.split('/$/')[1]
-			const script = await Deno.readTextFile(`.${link}`)
+      const link = `${Deno.cwd()}/home/customs/` + pathname.split('/$/')[1]
+			const script = await Deno.readTextFile(link)
 
       return new Response(compile(script), {
         headers: {
@@ -61,14 +61,14 @@ async function router(request, context) {
     }
 
 		if(pathname.startsWith('/routes')) {
-			const edge = await Deno.readTextFile(`./home/${pathname}`)
+			const edge = await Deno.readTextFile(`${Deno.cwd()}/home${pathname}`)
 			const { handler } = await inject(edge)
 
 			return await handler(request, context)
 		}
 
 		if(pathname.startsWith('/sprites')) {
-			const file = await Deno.readFile(`./home/${pathname}`)
+			const file = await Deno.readFile(`${Deno.cwd()}/home${pathname}`)
 
       return new Response(file, {
         headers: {
@@ -78,7 +78,7 @@ async function router(request, context) {
 		}
 
 		if(pathname.startsWith('/samples')) {
-			const file = await Deno.readFile(`./home/${pathname}`)
+			const file = await Deno.readFile(`${Deno.cwd()}/home${pathname}`)
 
       return new Response(file, {
         headers: {
@@ -87,7 +87,7 @@ async function router(request, context) {
       })
 		}
 
-		const file = await Deno.readTextFile(`./home/${pathname}`)
+		const file = await Deno.readTextFile(`${Deno.cwd()}/home${pathname}`)
     console.log(pathname)
 
 		return new Response(file, {
