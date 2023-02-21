@@ -1,0 +1,37 @@
+{ ScriptType
+title: Sample Script
+author: Tyler Childs
+contact: yo@tychi.me
+agent: team@sillyz.computer
+
+^ FADE IN:
+# INT: ROOM
+! The room itself feels naturally artificial. As if it takes place inside of a piece of paper.
+
+TYLER stands behind a podium with a projector displaying "Hello." in a swanky font. On his right breast is a post it note that reads "Ty"
+
+@ TYLER
+" Hey. Welcome.
+
+Tyler walks off camera and returns momentarily with a plastic guitar with circuit boards taped on and loose cables hanging out.
+
+@ TYLER
+" I know you're thinking this is the computer.
+( smirking
+" This is the computer.
+
+Tyler points at the post it note on his chest.
+
+CLOSE UP:
+Tyler's finger is pointing directly at the QR code in the top right corner of the post it. Preceding the QR code is the text "sillyz.computer"
+
+The swanky "Hello." that was on the wall begins to fade in on the post-it note.
+
+^ CUT TO:
+
+# INT: Piano
+
+< synth-keyboard
+instrument: piano
+
+^ Cut to:
