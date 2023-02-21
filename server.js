@@ -4,6 +4,7 @@ import { ensureFileSync } from "https://deno.land/std@0.165.0/fs/ensure_file.ts"
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
 import { inject } from './home/system/utils.js'
 import { compile } from './home/system/ScriptType.js'
+import { handler as scriptEditor} from './home/routes/script-editor.js'
 
 const core = [
 	'/system/bios.js',
@@ -17,7 +18,7 @@ const core = [
 
 function system(firmware) {
 	return async (_request, _context) => {
-		const process = await Deno.readFile(`.${firmware}`)
+		const process = await Deno.readFile(`./home/${firmware}`)
 
 		return new Response(process, {
 			headers: {
@@ -30,7 +31,7 @@ function system(firmware) {
 async function router(request, context) {
 	let { pathname } = new URL(request.url);
 
-  if(pathname === '/') pathname = './home/routes/index.js'
+  if(pathname === '/') pathname = '/routes/index.js'
 
 	if(core.includes(pathname)) {
 		return system(pathname)(request, context)
@@ -45,10 +46,7 @@ async function router(request, context) {
 		}
 
     if(pathname.startsWith('/%/')) {
-			const edge = await Deno.readTextFile(`./home/routes/script-editor.js`)
-			const { handler } = await inject(edge)
-
-			return await handler(request, context)
+			return scriptEditor(request, context)
     }
 
     if(pathname.startsWith('/$/')) {
@@ -90,6 +88,7 @@ async function router(request, context) {
 		}
 
 		const file = await Deno.readTextFile(`./home/${pathname}`)
+    console.log(pathname)
 
 		return new Response(file, {
 			headers: {
