@@ -4,38 +4,36 @@ export const compile = (script) => {
   }
 
   const ScriptType = {
-    '{': metaCode,
-    '#': place,
-    '@': actor,
-    '-': message,
-    '(': subtext,
-    '!': context,
-    '^': composition,
-    '<': dynamicCode,
+    '{': scriptType,
+    '#': append.bind({}, 'address'),
+    '@': append.bind({}, 'character'),
+    '"': append.bind({}, 'quote'),
+    '(': append.bind({}, 'parenthetical'),
+    '!': append.bind({}, 'information'),
+    '^': append.bind({}, 'effect'),
+    '<': plugin,
   }
 
   const symbols = Object.keys(ScriptType)
 
   const NORMAL_MODE = 'normal'
-  const META_MODE = 'meta'
-  const DYNAMIC_MODE = 'dynamic'
+  const GOD_MODE = 'god'
+  const PLUGIN_MODE = 'plugin'
 
   const modes = {
     [NORMAL_MODE]: normalMode,
-    [META_MODE]: metaMode,
-    [DYNAMIC_MODE]: dynamicMode,
+    [GOD_MODE]: godMode,
+    [PLUGIN_MODE]: pluginMode,
   }
 
   const isolate = {
     scope: 'global',
-    dynamic: '',
+    plugin: '',
     mode: NORMAL_MODE,
     result: ``
   }
 
   const lines = script.split('\n')
-
-  console.log(lines)
 
   for (const line of lines) {
     (modes[isolate.mode] || noop)(line)
@@ -56,29 +54,28 @@ export const compile = (script) => {
     return freetext(line)
   }
 
-  function metaMode(line) {
+  function godMode(line) {
     const [key, value] = line.split(':')
 
     if(!value) {
       headers()
-      metapage()
+      title()
       return setMode(NORMAL_MODE)
     }
 
     bus.state[isolate.scope][key.trim()] = value.trim()
   }
 
-  function dynamicMode(line) {
+  function pluginMode(line) {
     const [key, value] = line.split(':')
 
     if(!value) {
-      module()
+      embed()
       return setMode(NORMAL_MODE)
     }
 
-    bus.state[isolate.dynamic][key.trim()] = value.trim()
+    bus.state[isolate.plugin][key.trim()] = value.trim()
   }
-
 
   function setMode(m) {
     isolate.mode = m
@@ -88,20 +85,20 @@ export const compile = (script) => {
     isolate.scope = s
   }
 
-  function setDynamic(d) {
-    isolate.dynamic = d
+  function setPlugin(d) {
+    isolate.plugin = d
   }
 
-  function metaCode(scope) {
-    setScope(scope)
-    resetAttributes(scope)
-    setMode(META_MODE)
+  function scriptType(type) {
+    setScope(type)
+    resetAttributes(type)
+    setMode(GOD_MODE)
   }
 
-  function dynamicCode(x) {
-    setDynamic(x)
+  function plugin(x) {
+    setPlugin(x)
     resetAttributes(x)
-    setMode(DYNAMIC_MODE)
+    setMode(PLUGIN_MODE)
   }
 
   function resetAttributes(x) {
@@ -113,7 +110,6 @@ export const compile = (script) => {
       title,
       author,
     } = bus.state[isolate.scope]
-
 
     const html = `<!DOCTYPE html>
     <html lang="en">
@@ -161,13 +157,13 @@ body {
   }
 }
 
-screenplay-metapage {
+screenplay-title {
   display: block;
   height: 100%;
   width: 100%;
 }
 
-metapage-cover {
+title-cover {
   display: grid;
   grid-template-areas:
     "main main"
@@ -178,77 +174,77 @@ metapage-cover {
   height: 100%;
 }
 
-metapage-main {
+title-main {
   place-self: center;
   grid-area: main;
   text-align: center;
 }
 
-metapage-title {
+title-title {
   margin-bottom: 1rem;
 }
 
-metapage-title,
-metapage-author {
+title-title,
+title-author {
   display: block;
 }
 
-metapage-contact {
+title-contact {
   grid-area: contact;
 }
 
-metapage-agent {
+title-agent {
   grid-area: agent;
 }
 
-screenplay-place,
-screenplay-actor,
-screenplay-message,
-screenplay-subtext,
-screenplay-context,
-screenplay-composition,
+screenplay-address,
+screenplay-character,
+screenplay-quote,
+screenplay-parenthetical,
+screenplay-information,
+screenplay-effect,
 screenplay-freetext,
 screenplay-blank {
   display: block;
 }
 
-screenplay-place,
-screenplay-context {
+screenplay-address,
+screenplay-information {
   text-transform: uppercase;
   margin: 1rem 0;
 }
 
-screenplay-actor,
-screenplay-subtext {
+screenplay-character,
+screenplay-parenthetical {
   text-align: center;
 }
 
-screenplay-actor {
+screenplay-character {
   text-align: center;
   text-transform: uppercase;
   margin: 1rem 0 0;
 }
 
-screenplay-composition {
+screenplay-effect {
   margin: 1rem 0;
   text-align: right;
 }
 
-screenplay-message {
+screenplay-quote {
   margin: 0 1in;
 }
 
-screenplay-message:first-child::before {
+screenplay-quote:first-child::before {
   content: "(CONT'D)" !important;
   display: block;
   text-align: center;
 }
 
-screenplay-subtext::before {
+screenplay-parenthetical::before {
   content: '(';
 }
 
-screenplay-subtext::after {
+screenplay-parenthetical::after {
   content: ')';
 }
 
@@ -264,7 +260,7 @@ screenplay-freetext {
     isolate.result += html
   }
 
-  function metapage() {
+  function title() {
     const {
       title,
       author,
@@ -272,57 +268,39 @@ screenplay-freetext {
       agent
     } = bus.state[isolate.scope]
 
-    append('metapage', `
-      <metapage-cover>
-        <metapage-main>
-          <metapage-title>
+    append('title', `
+      <title-cover>
+        <title-main>
+          <title-title>
             ${title}
-          </metapage-title>
+          </title-title>
           by
-          <metapage-author>
+          <title-author>
             ${author}
-          </metapage-author>
-        </metapage-main>
-        <metapage-contact>
+          </title-author>
+        </title-main>
+        <title-contact>
           ${markup(contact) || '' }
-        </metapage-contact>
-        <metapage-agent>
+        </title-contact>
+        <title-agent>
           ${markup(agent) || '' }
-        </metapage-agent>
-      </metapage-cover>
+        </title-agent>
+      </title-cover>
     `)
   }
-  function module() {
-    const properties = bus.state[isolate.dynamic]
+  function embed() {
+    const properties = bus.state[isolate.plugin]
 
     const attributes = Object.keys(properties)
       .map(x => `${x}="${properties[x]}"`).join('')
 
-    isolate.result += `<${isolate.dynamic} ${attributes}></${isolate.dynamic}>`
+    isolate.result += `<${isolate.plugin} ${attributes}></${isolate.plugin}>`
   }
 
   function markup(string) {
     return string && string.replaceAll('\\', '<br>')
   }
 
-  function place(line) {
-    append('place', line)
-  }
-  function actor(line) {
-    append('actor', line)
-  }
-  function message(line) {
-    append('message', line)
-  }
-  function subtext(line) {
-    append('subtext', line)
-  }
-  function context(line) {
-    append('context', line)
-  }
-  function composition(line) {
-    append('composition', line)
-  }
   function freetext(line) {
     append('freetext', line)
   }
