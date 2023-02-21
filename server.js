@@ -2,8 +2,8 @@ import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
 import { Status } from "https://deno.land/std/http/http_status.ts";
 import { ensureFileSync } from "https://deno.land/std@0.165.0/fs/ensure_file.ts";
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
-import { inject } from './system/utils.js'
-import { compile } from './system/ScriptType.js'
+import { inject } from './home/system/utils.js'
+import { compile } from './home/system/ScriptType.js'
 
 const core = [
 	'/system/bios.js',
@@ -30,7 +30,7 @@ function system(firmware) {
 async function router(request, context) {
 	let { pathname } = new URL(request.url);
 
-  if(pathname === '/') pathname = './routes/index.js'
+  if(pathname === '/') pathname = './home/routes/index.js'
 
 	if(core.includes(pathname)) {
 		return system(pathname)(request, context)
@@ -45,14 +45,14 @@ async function router(request, context) {
 		}
 
     if(pathname.startsWith('/%/')) {
-			const edge = await Deno.readTextFile(`./routes/script-editor.js`)
+			const edge = await Deno.readTextFile(`./home/routes/script-editor.js`)
 			const { handler } = await inject(edge)
 
 			return await handler(request, context)
     }
 
     if(pathname.startsWith('/$/')) {
-      const link = '/customs/' + pathname.split('/$/')[1]
+      const link = '/home/customs/' + pathname.split('/$/')[1]
 			const script = await Deno.readTextFile(`.${link}`)
 
       return new Response(compile(script), {
@@ -63,14 +63,14 @@ async function router(request, context) {
     }
 
 		if(pathname.startsWith('/routes')) {
-			const edge = await Deno.readTextFile(`.${pathname}`)
+			const edge = await Deno.readTextFile(`./home/${pathname}`)
 			const { handler } = await inject(edge)
 
 			return await handler(request, context)
 		}
 
 		if(pathname.startsWith('/sprites')) {
-			const file = await Deno.readFile(`.${pathname}`)
+			const file = await Deno.readFile(`./home/${pathname}`)
 
       return new Response(file, {
         headers: {
@@ -80,7 +80,7 @@ async function router(request, context) {
 		}
 
 		if(pathname.startsWith('/samples')) {
-			const file = await Deno.readFile(`.${pathname}`)
+			const file = await Deno.readFile(`./home/${pathname}`)
 
       return new Response(file, {
         headers: {
@@ -89,7 +89,7 @@ async function router(request, context) {
       })
 		}
 
-		const file = await Deno.readTextFile(`.${pathname}`)
+		const file = await Deno.readTextFile(`./home/${pathname}`)
 
 		return new Response(file, {
 			headers: {
