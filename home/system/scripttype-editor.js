@@ -7,8 +7,8 @@ import {
 import module from '../system/module.js'
 
 const $ = module('scripttype-editor')
-const sourceLocation = '/customs/' + window.location.pathname.split('/%/')[1]
-const viewLocation = '/$/' + window.location.pathname.split('/%/')[1]
+const sourceLocation = '/customs/' + window.location.pathname.split('/edit/')[1]
+const viewLocation = '/view/' + window.location.pathname.split('/edit/')[1]
 
 $.when('click', '.publish', (event) => {
   const { file } = $.learn()
@@ -45,7 +45,7 @@ $.draw(target => {
       .then((file) => {
         $.teach({ file, fetching: false })
       }).catch(e => {
-        fetch('/$/hello.script')
+        fetch('/view/hello.script')
           .then(res => res.text())
           .then((file) => {
             $.teach({ file, fetching: false })
@@ -69,6 +69,7 @@ $.draw(target => {
     const config = {
       extensions: [
         basicSetup,
+        EditorView.lineWrapping,
         EditorView.updateListener.of(
           persist(target, $, {})
         )
@@ -98,20 +99,16 @@ function persist(_target, $, _flags) {
 
 $.flair(`
   & {
-		display: grid;
-    grid-template-areas: "transport transport" "edit view";
-    grid-template-columns: 1fr 1fr;
+    display: block;
   }
 
-  & [name="transport"] {
-    grid-area: transport;
-  }
-  & [name="view"] {
-    grid-area: view;
-  }
-
-  & [name="edit"] {
-    grid-area: edit;
+  @media screen {
+    & [name="view"] {
+      width: 0;
+      height: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
   }
 
   @media print {

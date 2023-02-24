@@ -1,4 +1,4 @@
-export const handler = (req, res) => {
+export const handler = (_request, _context) => {
   return new Response(`
     <!DOCTYPE html>
     <html lang="en">

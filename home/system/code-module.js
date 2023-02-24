@@ -66,12 +66,13 @@ $.draw(target => {
     const config = {
       extensions: [
         basicSetup,
+        EditorView.lineWrapping,
         EditorView.updateListener.of(
           persist(target, $, {})
         )
       ]
     }
-
+    console.log({config})
     const state = EditorState.create({
       ...config,
       doc: file

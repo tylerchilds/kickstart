@@ -1,10 +1,13 @@
-export const compile = (script) => {
-  const bus = {
-    state: {}
-  }
+const bus = {
+  state: {}
+}
 
+const NORMAL_MODE = 'normal'
+const SCOPE_MODE = 'scope'
+const PLUGIN_MODE = 'plugin'
+
+export const compile = (script) => {
   const ScriptType = {
-    '{': scriptType,
     '#': append.bind({}, 'address'),
     '@': append.bind({}, 'character'),
     '"': append.bind({}, 'quote'),
@@ -12,17 +15,26 @@ export const compile = (script) => {
     '!': append.bind({}, 'information'),
     '^': append.bind({}, 'effect'),
     '<': plugin,
+    '{': scope,
+  }
+
+  function scope(type) {
+    setScope(type)
+    resetAttributes(type)
+    setMode(SCOPE_MODE)
+  }
+
+  function plugin(x) {
+    setPlugin(x)
+    resetAttributes(x)
+    setMode(PLUGIN_MODE)
   }
 
   const symbols = Object.keys(ScriptType)
 
-  const NORMAL_MODE = 'normal'
-  const GOD_MODE = 'god'
-  const PLUGIN_MODE = 'plugin'
-
   const modes = {
     [NORMAL_MODE]: normalMode,
-    [GOD_MODE]: godMode,
+    [SCOPE_MODE]: scopeMode,
     [PLUGIN_MODE]: pluginMode,
   }
 
@@ -54,7 +66,7 @@ export const compile = (script) => {
     return freetext(line)
   }
 
-  function godMode(line) {
+  function scopeMode(line) {
     const [key, value] = line.split(':')
 
     if(!value) {
@@ -87,18 +99,6 @@ export const compile = (script) => {
 
   function setPlugin(d) {
     isolate.plugin = d
-  }
-
-  function scriptType(type) {
-    setScope(type)
-    resetAttributes(type)
-    setMode(GOD_MODE)
-  }
-
-  function plugin(x) {
-    setPlugin(x)
-    resetAttributes(x)
-    setMode(PLUGIN_MODE)
   }
 
   function resetAttributes(x) {

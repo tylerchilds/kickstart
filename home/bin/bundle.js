@@ -32861,9 +32861,13 @@ $10.draw((target)=>{
         const config = {
             extensions: [
                 I10,
+                C6.lineWrapping,
                 C6.updateListener.of(persist(target, $10, {}))
             ]
         };
+        console.log({
+            config
+        });
         const state = w3.create({
             ...config,
             doc: file
@@ -32889,8 +32893,8 @@ $10.flair(`
   }
 `);
 const $11 = module('scripttype-editor');
-const sourceLocation = '/customs/' + window.location.pathname.split('/%/')[1];
-const viewLocation = '/$/' + window.location.pathname.split('/%/')[1];
+const sourceLocation = '/customs/' + window.location.pathname.split('/edit/')[1];
+const viewLocation = '/view/' + window.location.pathname.split('/edit/')[1];
 $11.when('click', '.publish', (event)=>{
     const { file  } = $11.learn();
     fetch(sourceLocation, {
@@ -32926,7 +32930,7 @@ $11.draw((target)=>{
                 fetching: false
             });
         }).catch((e)=>{
-            fetch('/$/hello.script').then((res)=>res.text()).then((file)=>{
+            fetch('/view/hello.script').then((res)=>res.text()).then((file)=>{
                 $11.teach({
                     file,
                     fetching: false
@@ -32949,6 +32953,7 @@ $11.draw((target)=>{
         const config = {
             extensions: [
                 I10,
+                C6.lineWrapping,
                 C6.updateListener.of(persist1(target, $11, {}))
             ]
         };
@@ -32973,20 +32978,16 @@ function persist1(_target, $, _flags) {
 }
 $11.flair(`
   & {
-		display: grid;
-    grid-template-areas: "transport transport" "edit view";
-    grid-template-columns: 1fr 1fr;
+    display: block;
   }
 
-  & [name="transport"] {
-    grid-area: transport;
-  }
-  & [name="view"] {
-    grid-area: view;
-  }
-
-  & [name="edit"] {
-    grid-area: edit;
+  @media screen {
+    & [name="view"] {
+      width: 0;
+      height: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
   }
 
   @media print {

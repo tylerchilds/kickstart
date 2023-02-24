@@ -45,12 +45,12 @@ async function router(request, context) {
 			return new Response()
 		}
 
-    if(pathname.startsWith('/%/')) {
+    if(pathname.startsWith('/edit/')) {
 			return scriptEditor(request, context)
     }
 
-    if(pathname.startsWith('/$/')) {
-      const link = `${Deno.cwd()}/home/customs/` + pathname.split('/$/')[1]
+    if(pathname.startsWith('/view/')) {
+      const link = `${Deno.cwd()}/home/customs/` + pathname.split('/view/')[1]
 			const script = await Deno.readTextFile(link)
 
       return new Response(compile(script), {
