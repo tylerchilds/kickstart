@@ -8,6 +8,13 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+  "dependencies": {
+    "@tonejs/midi": "^2.0.28",
+    "colorjs.io": "^0.4.3",
+    "focus-trap": "^7.3.1",
+    "gun": "^0.2020.1239",
+    "tone": "^14.8.49"
+  },
   "devDependencies": {
     "vite": "^4.1.0"
   }

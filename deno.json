@@ -1,7 +1,7 @@
 {
   "tasks": {
-    "start": "cd src-ui && npm run dev",
-    "build": "cd src-ui && npm run build"
+    "start": "cd src-ui && npm i && npm run dev",
+    "build": "cd src-ui && npm i && npm run build"
 
   },
   "compilerOptions": {
