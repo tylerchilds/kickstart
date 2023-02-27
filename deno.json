@@ -1,7 +1,9 @@
 {
   "tasks": {
-    "start": "cd src-ui && npm i && npm run dev",
-    "build": "cd src-ui && npm i && npm run build"
+    "start": "cargo tauri dev",
+    "build": "cargo tauri build",
+    "start-ui": "cd src-ui && npm i && npm run dev",
+    "build-ui": "cd src-ui && npm i && npm run build"
 
   },
   "compilerOptions": {

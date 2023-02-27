@@ -1,5 +1,5 @@
-import module from '../system/module.js'
-import '../system/devices.js'
+import module from './module.js'
+import './devices.js'
 
 const $ = module('stickies', {
 	rootActive: false,
