@@ -2,9 +2,9 @@
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
     "beforeBuildCommand": "deno task build",
-    "beforeDevCommand": "deno task build",
-    "devPath": "../home",
-    "distDir": "../home",
+    "beforeDevCommand": "deno task start",
+    "devPath": "http://localhost:5173",
+    "distDir": "../src-ui/dist",
     "withGlobalTauri": true
   },
   "package": {

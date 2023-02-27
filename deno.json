@@ -1,10 +1,9 @@
 {
   "tasks": {
-    "start": "deno task build && deno run -A server.js",
-    "build": "deno bundle home/system/main.js home/bin/bundle.js"
+    "start": "cd src-ui && npm run dev",
+    "build": "cd src-ui && npm run build"
 
   },
-  "importMap": "./import_map.json",
   "compilerOptions": {
   }
 }
