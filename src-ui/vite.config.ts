@@ -1,5 +1,9 @@
 import { defineConfig } from 'vite'
 
+const stickies = {
+	'synthia': 'public/stickies/synthia.html'
+}
+
 export default defineConfig({
   // prevent vite from obscuring rust errors
   clearScreen: false,
@@ -18,5 +22,12 @@ export default defineConfig({
     minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
+    rollupOptions: {
+      input: {
+        main: 'index.html',
+				homiii: 'homiii.html',
+				synthia: 'stickies/synthia.html',
+      }
+    }
   },
 })

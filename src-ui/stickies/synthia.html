@@ -1,0 +1,12 @@
+<synth-module></synth-module>
+<script type="module" src="../src/synth-module.js"></script>
+<script>
+window.addEventListener('keydown', (event) => {
+  window.top.postMessage({
+    safeEvent: {
+      type: event.type,
+      key: event.key
+    }
+  }, '*')
+});
+</script>

@@ -15,14 +15,14 @@ Publish to the web.
 
 ## Building
 
-Development
+Development requires tauri.app, deno.land, and nodejs.org. Install those dependencies before proceeding.
 
 ```
-cargo tauri dev
+deno task start
 ```
 
-Distribution
+Packaging
 
 ```
-cargo tauri build
+deno task build
 ```
