@@ -6,16 +6,6 @@ import { inject } from './home/system/utils.js'
 import { compile } from './home/system/ScriptType.js'
 import { handler as scriptEditor} from './home/routes/script-editor.js'
 
-const core = [
-	'/system/bios.js',
-	'/system/utils.js',
-	'/system/devices.js',
-	'/system/module.js',
-	'/system/SecureRender.js',
-	'/system/modal-module.js',
-	'/bin/bundle.js',
-]
-
 function system(firmware) {
 	return async (_request, _context) => {
 		const process = await Deno.readFile(`${Deno.cwd()}/home${firmware}`)
@@ -32,10 +22,6 @@ async function router(request, context) {
 	let { pathname } = new URL(request.url);
 
   if(pathname === '/') pathname = '/routes/index.js'
-
-	if(core.includes(pathname)) {
-		return system(pathname)(request, context)
-	}
 
 	try {
 		if(request.method === 'PUT') {
@@ -65,26 +51,6 @@ async function router(request, context) {
 			const { handler } = await inject(edge)
 
 			return await handler(request, context)
-		}
-
-		if(pathname.startsWith('/sprites')) {
-			const file = await Deno.readFile(`${Deno.cwd()}/home${pathname}`)
-
-      return new Response(file, {
-        headers: {
-          'content-type': getType(pathname),
-        },
-      })
-		}
-
-		if(pathname.startsWith('/samples')) {
-			const file = await Deno.readFile(`${Deno.cwd()}/home${pathname}`)
-
-      return new Response(file, {
-        headers: {
-          'content-type': getType(pathname),
-        },
-      })
 		}
 
 		const file = await Deno.readTextFile(`${Deno.cwd()}/home${pathname}`)

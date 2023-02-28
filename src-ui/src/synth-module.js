@@ -1,5 +1,5 @@
 import module from './system/module.js'
-import { Color, Tone, Midi } from '../deps.js'
+import { Color, Tone, Midi, fgun } from '../deps.js'
 import $guitar from "./guitar.js"
 
 const start = new Date()
@@ -296,17 +296,27 @@ $.draw(() => {
   `
 })
 
-$.when('click', '[href="javascript://lol;"]', (event) => {
-  event.preventDefault()
-  const exportUrl = URL.createObjectURL(new Blob([
-    midi.toArray()
-  ], {type: 'audio/midi'} ))
+const row = fgun.get($.selector).get('midi')
+row.on(({ buffer }) => {
+  const blob = new Blob([
+		buffer
+  ], {type: 'audio/midi'} )
+
+	const exportUrl = URL.createObjectURL(blob)
   const href = document.createElement('a');
   href.href = exportUrl
   href.download = `${new Date().toISOString()}.mid`
   href.target = '_blank'
   href.click()
+
   URL.revokeObjectURL(exportUrl)
+});
+$.when('click', '[href="javascript://lol;"]', (event) => {
+  event.preventDefault()
+  row.put({ 
+    buffer: midi.toArray()
+	})
+
 })
 
 function controls() {

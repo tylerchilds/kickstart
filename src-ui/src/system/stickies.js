@@ -1,8 +1,6 @@
 import module from './module.js'
 import './devices.js'
-
-const $ = module('stickies', {
-	rootActive: false,
+const $ = module('stickies', { rootActive: false,
 	memory: firstMemories(),
 	activeEmbed: `
 		<iframe src="/stickies/synthia.html"></iframe>
@@ -76,7 +74,7 @@ function firstMemories() {
 			key: '4',
 			title: 'hello script',
 			embed: `
-				<iframe src="/%/hello.script"></iframe>
+				<iframe src="/view/hello.script"></iframe>
 			`,
 		},
 
