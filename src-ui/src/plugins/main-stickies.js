@@ -1,6 +1,6 @@
-import module from './module.js'
-import './devices.js'
-const $ = module('stickies', { rootActive: false,
+import { module } from '../../deps.js'
+
+const $ = module('main-stickies', { rootActive: false,
 	memory: firstMemories(),
 	activeEmbed: `
 		<iframe src="/stickies/synthia.html"></iframe>

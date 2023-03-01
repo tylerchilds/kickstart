@@ -4,6 +4,14 @@ import { Midi } from '@tonejs/midi'
 import * as Tone from 'tone'
 
 import * as focusTrap from 'focus-trap';
+import module from './src/system/module.js'
+
+new MutationObserver((mutationsList) => {
+  const targets = [...mutationsList]
+    .filter(x => x.target.matches(':not(:defined)'))
+
+    console.log({ targets })
+}).observe(document.body, { childList: true, subtree: true });
 
 const gun = Gun(['https://gun-manhattan.herokuapp.com/gun'])
 const fgun = foot(gun, window.location.pathname)
@@ -14,6 +22,7 @@ export {
   Tone,
   focusTrap,
   randomString,
+  module,
 	foot,
   fgun
 }
@@ -52,7 +61,7 @@ function foot(gun, path) {
 	}
 
 	function standardHandler() {
-		render('stickies')
+		render('main-stickies')
 	}
 
 	function render(element, properties={}, innards='') {
@@ -68,3 +77,4 @@ function foot(gun, path) {
 		`)
 	}
 }
+
