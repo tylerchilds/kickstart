@@ -5,6 +5,7 @@ import * as Tone from 'tone'
 
 import * as focusTrap from 'focus-trap';
 import module from './src/system/module.js'
+import devices from './src/system/devices.js'
 
 const gun = Gun(['https://gun-manhattan.herokuapp.com/gun'])
 const fgun = foot(gun, window.location.pathname)
@@ -17,7 +18,8 @@ export {
   randomString,
   module,
 	foot,
-  fgun
+  fgun,
+  devices
 }
 
 const randomString = (length) =>

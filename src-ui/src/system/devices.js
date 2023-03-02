@@ -4,6 +4,10 @@ import safeTauri from './safe-tauri.js'
 const initialState = { gamepads: {} }
 const $ = module('debug-devices', initialState)
 
+export default {
+  gamepads
+}
+
 export function gamepads() {
   const { gamepads } = $.learn()
   return Object.keys(gamepads)
@@ -122,9 +126,7 @@ $.flair(`
 `)
 
 function renderGamepads(_target, $) {
-  const { gamepads } = $.learn()
-  const list = Object.keys(gamepads)
-    .map(key => gamepads[key])
+  const list = gamepads()
     .map((gamepad, index) => `
       <div class="gamepad" id="${gamepad.id}">
         Buttons: ${Object.keys(gamepad.buttons).map(key => key +': '+gamepad.buttons[key])}
@@ -134,7 +136,7 @@ function renderGamepads(_target, $) {
     `).join('')
   return `<div class="gamepads">${list}</div>`
 }
-
+/*
 invoke('list_midi_connections').then(() => {
     invoke('open_midi_connection', { inputIdx: 1 })
 })
@@ -169,4 +171,4 @@ function setActiveNotes(callback) {
 }
 
 
-
+*/

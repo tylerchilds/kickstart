@@ -1,5 +1,4 @@
 import { module } from '../../deps.js'
-import '../system/devices.js'
 
 const $ = module('main-stickies', { rootActive: false,
 	memory: firstMemories(),
