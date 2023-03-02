@@ -22,11 +22,6 @@ const EVENTS = {
   'ButtonChanged': onButtonChange,
 }
 
-function send(payload) {
-  console.log("js: js2rs: " + payload)
-  invoke('js2rs', { message: payload })
-}
-
 listen('rs2js', function receive(event) {
   console.log("js: rs2js: " + event.payload)
 	const payload = JSON.parse(event.payload) || {}
@@ -38,8 +33,7 @@ listen('rs2js', function receive(event) {
 })
 
 function tick() {
-
-	const panes = [document.querySelector('stickies iframe')]
+	const panes = [document.querySelector('main-stickies iframe')]
   console.log({ panes })
   panes.map(node => {
     node
@@ -140,3 +134,39 @@ function renderGamepads(_target, $) {
     `).join('')
   return `<div class="gamepads">${list}</div>`
 }
+
+invoke('list_midi_connections').then(() => {
+    invoke('open_midi_connection', { inputIdx: 1 })
+})
+
+listen('midi_message', (event) => {
+  const payload = event.payload
+  const [command, note, velocity] = payload.message
+
+  if (command === 144) {
+    setActiveNotes((an) => ({
+      ...an,
+      velocity,
+      [note]: true,
+    }))
+  }
+
+  // some midi keyboards don't send the off signal,
+  // they just set the velocity to 0
+  if (command === 128 || velocity === 0) {
+    setActiveNotes((an) => ({
+      ...an,
+      velocity,
+      [note]: false,
+    }))
+  }
+})
+  .then((ul) => (unlistenRef.current = ul))
+  .catch(console.error)
+
+function setActiveNotes(callback) {
+  console.log(callback())
+}
+
+
+

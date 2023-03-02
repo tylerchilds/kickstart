@@ -22,6 +22,7 @@ export default defineConfig({
       input: {
         main: 'index.html',
 				synthia: 'stickies/synthia.html',
+				devices: 'stickies/devices.html',
       },
 			output: {
 				assetFileNames: "[name].[ext]",
