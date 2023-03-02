@@ -1,4 +1,4 @@
-function noop() {}
+function noop() { return new Promise((resolve) =>resolve())}
 
 const tauri = window.__TAURI__ || {
   window: {

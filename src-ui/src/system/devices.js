@@ -1,11 +1,15 @@
 import module from './module.js'
 import safeTauri from './safe-tauri.js'
 
-const initialState = { gamepads: {} }
+const initialState = {
+  gamepads: {},
+  midiDevices: {}
+}
 const $ = module('debug-devices', initialState)
 
 export default {
-  gamepads
+  gamepads,
+  midiDevices
 }
 
 export function gamepads() {
@@ -16,11 +20,22 @@ export function gamepads() {
       ...gamepads[id]
     }))
 }
+
+export function midiDevices() {
+  const { midiDevices } = $.learn()
+  return Object.keys(midiDevices)
+    .map(id => ({
+      id,
+      ...midiDevices[id]
+    }))
+}
+
 // access the pre-bundled global API functions
 const { invoke } = safeTauri.tauri
 const { listen } = safeTauri.event
 
 const defaultGamepad = { axes: {}, buttons: {} }
+const defaultMidiDevice = { keys: {} }
 const EVENTS = {
   'AxisChanged': onAxisChange,
   'ButtonChanged': onButtonChange,
@@ -55,6 +70,11 @@ function onAxisChange({ id, key, value }) {
 
 function onButtonChange({ id, key, value }) {
   $.teach({ key, value }, mergeButtonChange(id))
+}
+
+function onKeyChange({ id, key, on, velocity }) {
+  console.log(id, key, velocity)
+  $.teach({ key, value: { on, velocity, key }}, mergeKeyChange(id))
 }
 
 function mergeAxisChange(id) {
@@ -97,7 +117,28 @@ function mergeButtonChange(id) {
   }
 }
 
-$.draw((target) => renderGamepads(target, $))
+function mergeKeyChange(id) {
+  return (state, payload) => {
+    const midiDevice = state.midiDevices[id] || defaultMidiDevice
+
+    return {
+      ...state,
+      midiDevices: {
+        ...state.midiDevices,
+        [id]: {
+          ...midiDevice,
+          keys: {
+            ...midiDevice.keys,
+            [payload.key]: payload.value
+          }
+        }
+      }
+    }
+  }
+}
+
+
+$.draw((target) => renderDevices(target, $))
 
 $.flair(`
   & .gamepads {
@@ -125,8 +166,8 @@ $.flair(`
   }
 `)
 
-function renderGamepads(_target, $) {
-  const list = gamepads()
+function renderDevices(_target, $) {
+  const gamepadList = gamepads()
     .map((gamepad, index) => `
       <div class="gamepad" id="${gamepad.id}">
         Buttons: ${Object.keys(gamepad.buttons).map(key => key +': '+gamepad.buttons[key])}
@@ -134,9 +175,19 @@ function renderGamepads(_target, $) {
         Axes: ${Object.keys(gamepad.axes).map(key => key +': '+gamepad.axes[key])}
       </div>
     `).join('')
-  return `<div class="gamepads">${list}</div>`
+  const midiList = midiDevices()
+    .map((midi, index) => `
+      <div class="midi" id="${midi.id}">
+        Keys: ${Object.keys(midi.keys).map(key => midi.keys[key]).filter(({ on }) => on).map(({ key, velocity }) => key +': '+velocity)}
+      </div>
+    `).join('')
+
+  return `
+    <div class="gamepads">${gamepadList}</div>
+    <div class="midi">${midiList}</div>
+  `
 }
-/*
+
 invoke('list_midi_connections').then(() => {
     invoke('open_midi_connection', { inputIdx: 1 })
 })
@@ -146,29 +197,24 @@ listen('midi_message', (event) => {
   const [command, note, velocity] = payload.message
 
   if (command === 144) {
-    setActiveNotes((an) => ({
-      ...an,
+    onKeyChange({
+      id: '1',
+      key: note,
       velocity,
-      [note]: true,
-    }))
+      on: true
+    })
   }
 
   // some midi keyboards don't send the off signal,
   // they just set the velocity to 0
   if (command === 128 || velocity === 0) {
-    setActiveNotes((an) => ({
-      ...an,
+    onKeyChange({
+      id: '1',
+      key: note,
       velocity,
-      [note]: false,
-    }))
+      on: false
+    })
   }
 })
   .then((ul) => (unlistenRef.current = ul))
   .catch(console.error)
-
-function setActiveNotes(callback) {
-  console.log(callback())
-}
-
-
-*/
