@@ -2,8 +2,8 @@ import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
 import { Status } from "https://deno.land/std/http/http_status.ts";
 import { ensureFileSync } from "https://deno.land/std@0.165.0/fs/ensure_file.ts";
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
-import { inject } from './home/system/utils.js'
-import { compile } from './home/system/ScriptType.js'
+import { inject } from './src-ui/src/system/utils.js'
+import { compile } from './src-ui/src/system/ScriptType.js'
 import { handler as scriptEditor} from './home/routes/script-editor.js'
 
 function system(firmware) {

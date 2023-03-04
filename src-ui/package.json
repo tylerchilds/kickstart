@@ -11,6 +11,8 @@
   "dependencies": {
     "@tonejs/midi": "^2.0.28",
     "colorjs.io": "^0.4.3",
+    "diffhtml": "^1.0.0-beta.29",
+    "fast-equals": "^4.0.3",
     "focus-trap": "^7.3.1",
     "glob": "^9.0.1",
     "gun": "^0.2020.1239",

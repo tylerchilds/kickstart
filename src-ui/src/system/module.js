@@ -1,69 +1,90 @@
+import Gun from 'gun';
+import { innerHTML } from 'diffhtml';
+import { deepEqual } from 'fast-equals';
+
+const gun = Gun(['https://gun-manhattan.herokuapp.com/gun'])
+
 const noop = () => null
 const CREATE_EVENT = 'create'
 
 const observableEvents = [CREATE_EVENT]
 
 const reactiveFunctions = {}
+const reactiveData = {}
 
-function react(selector) {
-  (reactiveFunctions[selector] || noop)()
+function react(link) {
+  (reactiveFunctions[link] || noop)()
 }
 
 const store = createStore({}, react)
 
 function update(target, compositor) {
   const html = compositor(target)
-  if(html) target.innerHTML = html
+  if(html) innerHTML(target, html)
 }
 
-function draw(selector, compositor) {
-  listen(CREATE_EVENT, selector, (event) => {
+function draw(link, compositor) {
+  listen(CREATE_EVENT, link, (event) => {
     const draw = update.bind(null, event.target, compositor)
-    reactiveFunctions[selector] = draw
+    reactiveFunctions[link] = draw
     draw()
   })
 }
 
-function flair(selector, stylesheet) {
+function flair(link, stylesheet) {
   const styles = `
-    <style type="text/css" data-module=${selector}>
-      ${stylesheet.replaceAll('&', selector)}
+    <style type="text/css" data-module=${link}>
+      ${stylesheet.replaceAll('&', link)}
     </style>
   `;
 
-  document
-    .body
-    .insertAdjacentHTML("beforeend", styles)
+  document.body.insertAdjacentHTML("beforeend", styles)
 }
 
-export function learn(selector) {
-  return store.get(selector) || {}
+export function learn(link) {
+  return store.get(link) || {}
 }
 
-export function teach(selector, payload, handler = (s, p) => ({...s,...p})) {
-  store.set(selector, payload, handler)
-}
-
-export function when(selector1, eventName, selector2, callback) {
-  listen(eventName, `${selector1} ${selector2}`, callback)
-}
-
-export default function module(selector, initialState = {}) {
-  teach(selector, initialState)
-
-  return {
-    selector,
-    learn: learn.bind(null, selector),
-    draw: draw.bind(null, selector),
-    flair: flair.bind(null, selector),
-    when: when.bind(null, selector),
-    teach: teach.bind(null, selector),
+export function teach(link, knowledge, nuance = (s, p) => ({...s,...p})) {
+  store.set(link, knowledge, nuance)
+  const current = learn(link)
+  if(!deepEqual(current, knowledge)) {
+    gun.get('module').get(link).put(JSON.stringify(current))
   }
 }
 
-export function listen(type, selector, handler = () => null) {
+export function when(link1, eventName, link2, callback) {
+  listen(eventName, `${link1} ${link2}`, callback)
+}
+
+export default function module(link, initialState = {}) {
+  teach(link, initialState)
+
+  reactiveData[link] = (() => {
+    if(reactiveData[link]) {
+      reactiveData[link].off()
+    }
+
+    const data = gun.get('module').get(link)
+    data.on(latest => teach(link, JSON.parse(latest)))
+
+    return data
+  })()
+
+  return {
+    link,
+    ready: (callback) => reactiveData[link].once(callback),
+    learn: learn.bind(null, link),
+    draw: draw.bind(null, link),
+    flair: flair.bind(null, link),
+    when: when.bind(null, link),
+    teach: teach.bind(null, link),
+  }
+}
+
+export function listen(type, link, handler = () => null) {
   const callback = (event) => {
-    if(event.target && event.target.matches && event.target.matches(selector)) {
+    if(event.target && event.target.matches && event.target.matches(link)) {
       handler.call(null, event);
     }
   };
@@ -71,32 +92,31 @@ export function listen(type, selector, handler = () => null) {
   document.addEventListener(type, callback, true);
 
   if(observableEvents.includes(type)) {
-    observe(selector);
+    observe(link);
   }
 
   return function unlisten() {
     if(type === CREATE_EVENT) {
-      disregard(selector);
+      disregard(link);
     }
 
     document.removeEventListener(type, callback, true);
   }
 }
 
-let selectors = []
+let links = []
 
-function observe(selector) {
-  selectors = [...new Set([...selectors, selector])];
-
-  maybeCreateReactive([...document.querySelectorAll(selector)])
+function observe(link) {
+  links = [...new Set([...links, link])];
+  maybeCreateReactive([...document.querySelectorAll(link)])
 }
 
-function disregard(selector) {
-  const index = selectors.indexOf(selector);
+function disregard(link) {
+  const index = links.indexOf(link);
   if(index >= 0) {
-    selectors = [
-      ...selectors.slice(0, index),
-      ...selectors.slice(index + 1)
+    links = [
+      ...links.slice(0, index),
+      ...links.slice(index + 1)
     ];
   }
 }
@@ -108,8 +128,8 @@ function maybeCreateReactive(targets) {
 }
 
 function getSubscribers({ target }) {
-  if(selectors.length > 0)
-    return [...target.querySelectorAll(selectors.join(', '))];
+  if(links.length > 0)
+    return [...target.querySelectorAll(links.join(', '))];
   else
     return []
 }
@@ -124,7 +144,6 @@ new MutationObserver((mutationsList) => {
   const targets = [...mutationsList]
     .map(getSubscribers)
     .flatMap(x => x)
-
   maybeCreateReactive(targets)
 }).observe(document.body, { childList: true, subtree: true });
 
@@ -136,30 +155,25 @@ function sufficientlyUniqueId() {
   });
 }
 
-function createStore(
-  initialState = {},
-  notify = () => null
-) {
+function createStore(initialState = {}, subscribe = () => null) {
   let state = {
     ...initialState
   };
 
-  const context = {
-    set: function(selector, payload, mergeHandler) {
-      const newResource = mergeHandler(state[selector] || {}, payload);
+  return {
+    set: function(link, knowledge, nuance) {
+      const wisdom = nuance(state[link] || {}, knowledge);
 
       state = {
         ...state,
-        [selector]: newResource
+        [link]: wisdom
       };
 
-      notify(selector);
+      subscribe(link);
     },
 
-    get: function(selector) {
-      return state[selector];
+    get: function(link) {
+      return state[link];
     }
   }
-
-  return context;
 }

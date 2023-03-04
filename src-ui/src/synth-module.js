@@ -1,11 +1,11 @@
 import module from './system/module.js'
-import { Color, Tone, Midi, fgun } from '../deps.js'
+import { Color, Tone, Midi } from '../deps.js'
 import $guitar from "./guitar.js"
 
 const start = new Date()
-const midi = new Midi()
-const track = midi.addTrack()
-console.log(midi)
+let midiOut
+const midiIn = new Midi()
+const track = midiIn.addTrack()
 
 let gamepads = []
 addEventListener("message", (event) => {
@@ -118,6 +118,8 @@ function attack(event) {
   const { octave, note, hue, name } = event.target.dataset
 
   playSample(name, synths[synth], 60, parseInt(octave) * 12 + (12 + parseInt(note)));
+  const midiString = JSON.stringify(midiIn.toJSON())
+  $.teach({ midiString })
   //synths[synth].triggerAttack(`${note}${octave}`, "2n");
 	event.target.classList.add('active')
 
@@ -129,6 +131,8 @@ function attack(event) {
 function release (event) {
 	event.preventDefault()
 	event.target.classList.remove('active')
+  const midiString = JSON.stringify(midiIn.toJSON())
+  $.teach({ midiString })
 }
 
 const chords = [
@@ -228,7 +232,10 @@ function queueAttack(node, i) {
   }, i * strumVelocity)
 }
 
-$.teach({ colors: recalculate() })
+$.ready(() => {
+  $.teach({ colors: recalculate() })
+})
+
 $.draw(() => {
   const { start, length, reverse, colors, octave, pitch, debug } = $.learn()
   const wheel = majorScale.map((majorNote, index) => {
@@ -296,26 +303,26 @@ $.draw(() => {
   `
 })
 
-const row = fgun.get($.selector).get('midi')
-row.on(({ buffer }) => {
+$.when('click', '[href="javascript://lol;"]', (event) => {
+  event.preventDefault()
+  const { midiString } = $.learn()
+  const data = JSON.parse(midiString)
+  midiOut = new Midi()
+  midiOut.fromJSON(data)
+
   const blob = new Blob([
-		buffer
+	  midiOut.toArray()	
   ], {type: 'audio/midi'} )
 
 	const exportUrl = URL.createObjectURL(blob)
   const href = document.createElement('a');
+
   href.href = exportUrl
   href.download = `${new Date().toISOString()}.mid`
   href.target = '_blank'
   href.click()
 
   URL.revokeObjectURL(exportUrl)
-});
-$.when('click', '[href="javascript://lol;"]', (event) => {
-  event.preventDefault()
-  row.put({ 
-    buffer: midi.toArray()
-	})
 
 })
 

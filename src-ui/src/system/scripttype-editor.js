@@ -28,7 +28,7 @@ $.when('click', '.publish', (event) => {
 })
 
 $.when('click', '.print', (event) => {
-  const node = event.target.closest($.selector)
+  const node = event.target.closest($.link)
   const preview = node.querySelector('[name="view"] iframe').contentWindow
   preview.focus()
   preview.print()

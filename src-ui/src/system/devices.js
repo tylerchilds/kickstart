@@ -216,5 +216,5 @@ listen('midi_message', (event) => {
     })
   }
 })
-  .then((ul) => (unlistenRef.current = ul))
+  .then((unlistener) => console.log(unlistener))
   .catch(console.error)

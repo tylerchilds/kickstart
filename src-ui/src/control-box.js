@@ -1,5 +1,5 @@
-import { focusTrap } from '/system/deps.js'
-import module from '/system/module.js'
+import { focusTrap } from '../deps.js'
+import module from './system/module.js'
 
 const $ = module('control-box', {
   filter: ''
@@ -132,7 +132,7 @@ function filterList(node, $) {
 }
 
 function attributes(node, $) {
-  const target = node.closest($.selector)
+  const target = node.closest($.link)
 
   const list = target.getAttribute('list');
   const [resource, path] = list.split('#');

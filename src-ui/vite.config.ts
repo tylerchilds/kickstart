@@ -21,6 +21,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
+				authentication: 'stickies/authentication.html',
 				synthia: 'stickies/synthia.html',
 				devices: 'stickies/devices.html',
       },

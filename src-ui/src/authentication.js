@@ -1,5 +1,5 @@
-import module from '/system/module.js'
-import $controlBox from '/scripts/control-box.js'
+import module from './system/module.js'
+import $controlBox from './control-box.js'
 
 const $ = module('authentication', {
   filter: '',
@@ -28,7 +28,7 @@ $.draw(target => {
         <control-box id="identity-provider" label="Identity Provider" list="/routes/known-hosts.js#providers" limit="1"></control-box>
         <button type="submit">Authenticate</button>
       </fieldset>
-    <but
+    </form>
   `
 })
 
@@ -40,7 +40,7 @@ $.when('submit', 'form', event => {
 })
 
 function attributes(node, $) {
-  const target = node.closest($.selector)
+  const target = node.closest($.link)
 
   const src = target.getAttribute('src');
   const [resource, path] = src.split('#');

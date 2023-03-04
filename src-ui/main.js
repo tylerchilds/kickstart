@@ -12,4 +12,6 @@ console.log.apply(null, [
   ...Object.keys(dependencies)
 ])
 
+if(true) {
 safeTauri.window.appWindow.show()
+}
