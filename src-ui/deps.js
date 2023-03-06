@@ -72,4 +72,3 @@ function foot(gun, path) {
 		`)
 	}
 }
-
