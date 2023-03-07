@@ -1,5 +1,5 @@
 import module from './system/module.js'
-import { Color, Tone, Midi } from '../deps.js'
+import { Color, Tone, Midi, devices } from '../deps.js'
 import $guitar from "./guitar.js"
 
 const start = new Date()
@@ -123,7 +123,7 @@ function release (event) {
 const chords = [
   [],
 
-  [0, 4, 1], // c major: c - e - g
+  [60,64, 61], // c major: c - e - g
   [0, 9, 1], // c minor: c - eb - g
 
   [1, 5, 2], // g major: g - b - d
@@ -150,7 +150,7 @@ let activeSynths = []
 requestAnimationFrame(loop)
 function loop(time) {
   const { activeRegisters, activeFrets } = $guitar.learn()
-  gamepads.map((gamepad, i) => {
+  devices.gamepads().map((gamepad, i) => {
     const register = activeRegisters[i]
     const up = gamepad.buttons['DPadUp'] === 1
     const down = gamepad.buttons['DPadDown'] === 1
@@ -171,8 +171,8 @@ function loop(time) {
       if(up || down && register > 0) {
         activeSynths = chords[register]
         activeSynths.map((x, i) => {
-          const index = down ? x : activeSynths[activeSynths.length - 1 - i]
-          const node = document.querySelector(`[data-index='${index}']`)
+          const tone = down ? x : activeSynths[activeSynths.length - 1 - i]
+          const node = document.querySelector(`[data-tone='${tone}']`)
           node && queueAttack(node, i)
         })
       }
@@ -181,6 +181,14 @@ function loop(time) {
     feature()
   })
 
+  devices.midiDevices().map((midi, i) => {
+    Object.keys(midi.keys).map(x => midi.keys[x]).map((key) => {
+      const node = document.querySelector(`[data-tone='${key.key}']`)
+      if(!node) return
+      const caller = key.on ? quickAttack : quickRelease
+      caller(node, key.velocity)
+    })
+  })
   requestAnimationFrame(loop)
 }
 
@@ -215,6 +223,16 @@ function queueAttack(node, i) {
     node.dispatchEvent(new Event('touchstart'))
     queueRelease(node)
   }, i * strumVelocity)
+}
+
+function quickAttack(node) {
+  console.log('wtf')
+  node.dispatchEvent(new Event('touchstart'))
+}
+
+function quickRelease(node) {
+  console.log('yeet')
+  node.dispatchEvent(new Event('touchend'))
 }
 
 $.ready(() => {

@@ -14,20 +14,20 @@ export default {
 
 export function gamepads() {
   const { gamepads } = $.learn()
-  return Object.keys(gamepads)
+  return [...Object.keys(gamepads)
     .map(id => ({
       id,
       ...gamepads[id]
-    }))
+    }))]
 }
 
 export function midiDevices() {
   const { midiDevices } = $.learn()
-  return Object.keys(midiDevices)
+  return [...Object.keys(midiDevices)
     .map(id => ({
       id,
       ...midiDevices[id]
-    }))
+    }))]
 }
 
 // access the pre-bundled global API functions
