@@ -8,9 +8,9 @@ async function router(request, context) {
 	let file
 	let statusCode = Status.Success
 	try {
-		file = await Deno.readTextFile(`../src-ui/dist${pathname}`)
+		file = await Deno.readTextFile(`./dist${pathname}`)
 	} catch (e) {
-  	pathname = '../src-ui/dist/index.html'
+  	pathname = './dist/index.html'
 		file = await Deno.readTextFile(pathname)
 		statusCode = Status.NotFound
 		console.error(pathname + '\n' + e)
