@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "start": "deno run --allow-read=../src-ui/dist --allow-net mod.js"
+  },
+  "compilerOptions": {
+  }
+}
