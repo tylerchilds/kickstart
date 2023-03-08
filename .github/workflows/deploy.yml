@@ -32,5 +32,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: sillyz-beta # the name of the project on Deno Deploy
-          entrypoint: src-edge/mod.js # the entrypoint to deploy
-          root: src-ui/dist
+          entrypoint: mod.js # the entrypoint to deploy
+          root: src-edge

@@ -4,7 +4,7 @@
     "beforeBuildCommand": "deno task build-ui",
     "beforeDevCommand": "deno task start-ui",
     "devPath": "http://localhost:5173",
-    "distDir": "../src-ui/dist",
+    "distDir": "../src-edge/dist",
     "withGlobalTauri": true
   },
   "package": {
