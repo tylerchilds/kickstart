@@ -19,6 +19,7 @@ export default defineConfig({
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
     outDir: '../src-edge/dist',
+    emptyOutDir: true,
     rollupOptions: {
       input: {
         main: 'index.html',

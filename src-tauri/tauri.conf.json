@@ -2,8 +2,8 @@
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
     "beforeBuildCommand": "deno task build-ui",
-    "beforeDevCommand": "deno task start-ui",
-    "devPath": "http://localhost:5173",
+    "beforeDevCommand": "deno task start-edge",
+    "devPath": "http://localhost:8000",
     "distDir": "../src-edge/dist",
     "withGlobalTauri": true
   },

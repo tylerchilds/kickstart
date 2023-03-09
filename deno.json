@@ -4,7 +4,7 @@
     "build": "cargo tauri build",
     "start-ui": "cd src-ui && npm i && npm run dev",
     "build-ui": "cd src-ui && npm i && npm run build",
-    "start-edge": "cd src-edge && deno task start"
+    "start-edge": "deno task build-ui && cd src-edge && deno task start"
   },
   "compilerOptions": {
   }

@@ -1,10 +1,15 @@
 import { module } from '../../deps.js'
 
 const $ = module('main-stickies', { rootActive: false,
-	memory: firstMemories(),
+	memory: [],
 	activeEmbed: `
 		<iframe src="/stickies/synthia.html"></iframe>
 	`,
+})
+
+$.ready(() => {
+  const memory = firstMemories()
+  $.teach({ memory })
 })
 
 $.draw((target) => {
@@ -72,9 +77,16 @@ function firstMemories() {
 		},
 		'4': {
 			key: '4',
-			title: 'hello script',
+			title: 'view script',
 			embed: `
 				<iframe src="/view/hello.script"></iframe>
+			`,
+		},
+    '5': {
+			key: '5',
+			title: 'edit script',
+			embed: `
+				<iframe src="/edit/hello.script"></iframe>
 			`,
 		},
 
@@ -101,7 +113,7 @@ $.flair(`
 	}
 
 	& .leaf {
-		background: dodgerblue;
+		background: white;
 		position: fixed;
 		inset: 0;
 		transform: translateY(0);
@@ -109,7 +121,6 @@ $.flair(`
 	}
 
 	& .leaf iframe {
-		background: dodgerblue;
 		border: 0;
 		width: 100%;
 		height: 100%;
