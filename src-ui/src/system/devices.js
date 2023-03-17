@@ -73,7 +73,7 @@ function onButtonChange({ id, key, value }) {
 }
 
 function onKeyChange({ id, key, on, velocity }) {
-  console.log(id, key, velocity)
+  console.log({ id, key, velocity })
   $.teach({ key, value: { on, velocity, key }}, mergeKeyChange(id))
 }
 

@@ -13,5 +13,5 @@ console.log.apply(null, [
 ])
 
 if(true) {
-safeTauri.window.appWindow.show()
+  safeTauri.window.appWindow.show()
 }

@@ -36,7 +36,7 @@ const $ = module('synth-module', {
   reverse: false,
 	pitch: 0,
 	synth: 0,
-  activeTones: {}
+  activeTones: {},
 })
 
 const strumVelocity = 75
@@ -182,6 +182,7 @@ function loop(time) {
   })
 
   devices.midiDevices().map((midi, i) => {
+      console.log(midi)
     Object.keys(midi.keys).map(x => midi.keys[x]).map((key) => {
       const node = document.querySelector(`[data-tone='${key.key}']`)
       if(!node) return
@@ -230,22 +231,14 @@ function quickAttack(node) {
   node.dispatchEvent(new Event('touchstart'))
 }
 
-function quickRelease(node) {
-  console.log('yeet')
-  node.dispatchEvent(new Event('touchend'))
+function quickRelease() {
 }
-
-$.ready(() => {
-  $.teach({
-    colors: recalculate(),
-    activeTones: {}
-  })
-})
 
 $.draw(() => {
   const { colors, activeTones } = $.learn()
   const wheel = chromaticScale.map((label, index) => {
-    const steps = colors[mod(index*7, colors.length)].map((x, octave) => {
+    const steps = colors[mod(index*7, colors.length)] || []
+    const buttons = steps.map((x, octave) => {
       const tone = index + LOW_TONE + (octave * 12)
       const active = activeTones[tone]
       const className = active ? `step active` : `step`
@@ -262,7 +255,7 @@ $.draw(() => {
     }).join('')
     return `
       <div class="group" style="transform: rotate(${index * 210}deg)">
-        ${steps}
+        ${buttons}
       </div>
     `
   }).join('')
@@ -419,6 +412,7 @@ function gradient(scale, stops) {
   `
 }
 
+$.teach({ colors: recalculate() })
 function recalculate() {
   const { start, length, reverse } = $.learn()
 

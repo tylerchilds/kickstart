@@ -1,8 +1,4 @@
-import Gun from 'gun';
 import { innerHTML } from 'diffhtml';
-import { deepEqual } from 'fast-equals';
-
-const gun = Gun(['https://gun-manhattan.herokuapp.com/gun'])
 
 const noop = () => null
 const CREATE_EVENT = 'create'
@@ -10,7 +6,6 @@ const CREATE_EVENT = 'create'
 const observableEvents = [CREATE_EVENT]
 
 const reactiveFunctions = {}
-const reactiveData = {}
 
 function react(link) {
   (reactiveFunctions[link] || noop)()
@@ -47,10 +42,6 @@ export function learn(link) {
 
 export function teach(link, knowledge, nuance = (s, p) => ({...s,...p})) {
   store.set(link, knowledge, nuance)
-  const current = learn(link)
-  if(!deepEqual(current, knowledge)) {
-    gun.get('module').get(link).put(JSON.stringify(current))
-  }
 }
 
 export function when(link1, eventName, link2, callback) {
@@ -60,20 +51,8 @@ export function when(link1, eventName, link2, callback) {
 export default function module(link, initialState = {}) {
   teach(link, initialState)
 
-  reactiveData[link] = (() => {
-    if(reactiveData[link]) {
-      reactiveData[link].off()
-    }
-
-    const data = gun.get('module').get(link)
-    data.on(latest => teach(link, JSON.parse(latest)))
-
-    return data
-  })()
-
   return {
     link,
-    ready: (callback) => reactiveData[link].once(callback),
     learn: learn.bind(null, link),
     draw: draw.bind(null, link),
     flair: flair.bind(null, link),
