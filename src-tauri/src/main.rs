@@ -224,6 +224,7 @@ fn main() {
 				}
 			});
 
+            /*
 			let app_handle = app.handle();
 			let main_window =
 				tauri::WindowBuilder::new(&app_handle, "main", tauri::WindowUrl::App("index.html".into()))
@@ -232,6 +233,7 @@ fn main() {
 					.expect("failed to create main window");
 			main_window.set_title("Hyper").unwrap();
 			main_window.center().unwrap();
+            */
 
             Ok(())
 		})

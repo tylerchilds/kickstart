@@ -1,15 +1,10 @@
-import { module } from '../../deps.js'
+import module from '../system/module.js'
 
 const $ = module('main-stickies', { rootActive: false,
-	memory: [],
+	memory: firstMemories(),
 	activeEmbed: `
 		<iframe src="/stickies/synthia.html"></iframe>
 	`,
-})
-
-$.ready(() => {
-  const memory = firstMemories()
-  $.teach({ memory })
 })
 
 $.draw((target) => {
