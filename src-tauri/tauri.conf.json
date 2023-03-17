@@ -52,6 +52,15 @@
     "updater": {
       "active": false
     },
+    "windows": [
+      {
+        "fullscreen": false,
+        "height": 600,
+        "resizable": true,
+        "title": "tauri-launched",
+        "width": 800
+      }
+    ],
 		"allowlist": {
       "all": false,
       "window": {

@@ -1,5 +1,6 @@
 import module from './module.js'
 import safeTauri from './safe-tauri.js'
+import { gun } from './database.js'
 
 const initialState = {
   gamepads: {},
@@ -47,34 +48,39 @@ listen('rs2js', function receive(event) {
 
   if(EVENTS[payload.event]) {
     EVENTS[payload.event](payload)
-    requestAnimationFrame(tick)
   }
 })
 
-function tick() {
-	const panes = [document.querySelector('main-stickies iframe')]
-  console.log({ panes })
-  panes.map(node => {
-    node
-      .contentWindow
-      .postMessage({
-        event: 'tick',
-        gamepads: gamepads()
-      }, '*')
+const data = gun.get('system').get('devices')
+function sync() {
+  gun.get('system').get('devices').put({
+    gamepads: JSON.stringify(gamepads()),
+    midiDevices: JSON.stringify(midiDevices()),
   })
 }
+sync()
+data.on(latest => {
+  const { gamepads, midiDevices } = latest
+  const devices = {
+    gamepads: JSON.parse(gamepads),
+    midiDevices: JSON.parse(midiDevices)
+  }
+  $.teach(devices)
+})
 
 function onAxisChange({ id, key, value }) {
   $.teach({ key, value }, mergeAxisChange(id))
+  sync()
 }
 
 function onButtonChange({ id, key, value }) {
   $.teach({ key, value }, mergeButtonChange(id))
+  sync()
 }
 
 function onKeyChange({ id, key, on, velocity }) {
-  console.log({ id, key, velocity })
   $.teach({ key, value: { on, velocity, key }}, mergeKeyChange(id))
+  sync()
 }
 
 function mergeAxisChange(id) {

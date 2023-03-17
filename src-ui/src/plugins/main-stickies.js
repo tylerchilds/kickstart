@@ -1,4 +1,4 @@
-import { module } from '../../deps.js'
+import module from '../system/module.js'
 
 const $ = module('main-stickies', { rootActive: false,
 	memory: firstMemories(),
