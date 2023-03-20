@@ -93,7 +93,6 @@ function onButtonChange({ id, key, value }) {
 }
 
 function onMidiMessage({ command, note, velocity }) {
-  debugger
   if (command === 144) {
     onKeyChange({
       id: '1',

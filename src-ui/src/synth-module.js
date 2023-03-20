@@ -26,8 +26,17 @@ addEventListener('keydown', (event) => {
 });
 
 const LOW_TONE = 24
-
-const synths = {}
+const synths = [
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+]
+const synthMap = {}
 
 const $ = module('synth-module', {
   colors: [],
@@ -90,31 +99,39 @@ const synthDown =() => {
 	$.teach({ synth })
 }
 function attack(event) {
+  Tone.start()
 	event.preventDefault()
   release(event)
   const { tone } = event.target.dataset
-  synths[tone] = {
-    destination: new Tone.Synth().toDestination(),
+  const activeSynths = Object.keys(synthMap).map(key => {
+    return synths.indexOf(synthMap[key].destination)
+  })
+  const destination = synths.find((_x, i) => {
+    return !activeSynths.includes(i)
+  })
+  synthMap[tone] = {
+    destination,
     start: (new Date()),
   }
 
   $.teach(tone, addActiveTone)
-  synths[tone].destination.triggerAttack(tone, "2n");
+  destination.triggerAttack(tone, "2n", Tone.now())
 }
 
 function release (event) {
   const { tone } = event.target.dataset
 	event.preventDefault()
-  if(synths[tone]) {
-    synths[tone].destination.triggerRelease();
+  if(synthMap[tone]) {
+    const { destination } = synthMap[tone];
+    destination.triggerRelease()
 
     track.addNote({
       midi: tone,
-      time: (synths[tone].start - start) / 1000,
-      duration: (new Date() - synths[tone].start) / 1000
+      time: (synthMap[tone].start - start) / 1000,
+      duration: (new Date() - synthMap[tone].start) / 1000
     })
 
-    delete synths[tone]
+    delete synthMap[tone]
     const midiString = JSON.stringify(midiIn.toJSON())
     $.teach({ midiString })
     $.teach(tone, removeActiveTone)
@@ -183,12 +200,11 @@ function loop(time) {
   })
 
   devices.midiDevices().map((midi, i) => {
-      console.log(midi)
     Object.keys(midi.keys).map(x => midi.keys[x]).map((key) => {
       const node = document.querySelector(`[data-tone='${key.key}']`)
       if(!node) return
       const caller = key.on ? quickAttack : quickRelease
-      caller(node, key.velocity)
+      caller(node, key)
     })
   })
   requestAnimationFrame(loop)
@@ -227,12 +243,18 @@ function queueAttack(node, i) {
   }, i * strumVelocity)
 }
 
-function quickAttack(node) {
-  console.log('wtf')
-  node.dispatchEvent(new Event('touchstart'))
+function quickAttack(node, key) {
+  const { activeTones } = $.learn()
+  if(!activeTones[key.key]) {
+    node.dispatchEvent(new Event('touchstart'))
+  }
 }
 
-function quickRelease() {
+function quickRelease(node, key) {
+  const { activeTones } = $.learn()
+  if(activeTones[key.key]) {
+    node.dispatchEvent(new Event('touchend'))
+  }
 }
 
 $.draw(() => {
