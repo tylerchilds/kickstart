@@ -1,6 +1,7 @@
 import module from './module.js'
 import safeTauri from './safe-tauri.js'
-//import { gun } from './database.js'
+import { gun } from './database.js'
+import { deepEqual } from 'fast-equals'
 
 const initialState = {
   gamepads: {},
@@ -62,34 +63,40 @@ function forward(event) {
     iframe.contentWindow.postMessage(event, '*')
   })
 }
-/*
-const data = gun.get('system').get('devices')
+
+const data = gun.get('system2').get('devices')
 
 data.on(latest => {
-  const { gamepads, midiDevices } = latest
-  const devices = {
-    gamepads: JSON.parse(gamepads),
-    midiDevices: JSON.parse(midiDevices)
+  const { gamepads, midiDevices } = $.learn()
+
+  const cloudGamepads = JSON.parse(latest.gamepads)
+  const cloudMidi = JSON.parse(latest.midiDevices)
+
+  if(!deepEqual(gamepads, cloudGamepads)) {
+    $.teach({ gamepads: cloudGamepads })
   }
-  $.teach(devices)
+
+  if(!deepEqual(midiDevices, cloudMidi)) {
+    $.teach({ midiDevices: cloudMidi })
+  }
 })
 
 function sync() {
-  gun.get('system').get('devices').put({
-    gamepads: JSON.stringify(gamepads()),
-    midiDevices: JSON.stringify(midiDevices()),
+  const { gamepads, midiDevices } = $.learn()
+  gun.get('system2').get('devices').put({
+    gamepads: JSON.stringify(gamepads),
+    midiDevices: JSON.stringify(midiDevices),
   })
-  requestAnimationFrame(sync)
 }
-requestAnimationFrame(sync)
-*/
 
 function onAxisChange({ id, key, value }) {
   $.teach({ key, value }, mergeAxisChange(id))
+  requestAnimationFrame(sync)
 }
 
 function onButtonChange({ id, key, value }) {
   $.teach({ key, value }, mergeButtonChange(id))
+  requestAnimationFrame(sync)
 }
 
 function onMidiMessage({ command, note, velocity }) {
@@ -116,6 +123,7 @@ function onMidiMessage({ command, note, velocity }) {
 
 function onKeyChange({ id, key, on, velocity }) {
   $.teach({ key, value: { on, velocity, key }}, mergeKeyChange(id))
+  requestAnimationFrame(sync)
 }
 
 function mergeAxisChange(id) {
