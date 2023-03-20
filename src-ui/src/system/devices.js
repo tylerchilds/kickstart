@@ -40,6 +40,7 @@ const defaultMidiDevice = { keys: {} }
 const EVENTS = {
   'AxisChanged': onAxisChange,
   'ButtonChanged': onButtonChange,
+  'MidiMessage': onMidiMessage
 }
 
 listen('rs2js', receive)
@@ -89,6 +90,29 @@ function onAxisChange({ id, key, value }) {
 
 function onButtonChange({ id, key, value }) {
   $.teach({ key, value }, mergeButtonChange(id))
+}
+
+function onMidiMessage({ command, note, velocity }) {
+  debugger
+  if (command === 144) {
+    onKeyChange({
+      id: '1',
+      key: note,
+      velocity,
+      on: true
+    })
+  }
+
+  // some midi keyboards don't send the off signal,
+  // they just set the velocity to 0
+  if (command === 128 || velocity === 0) {
+    onKeyChange({
+      id: '1',
+      key: note,
+      velocity,
+      on: false
+    })
+  }
 }
 
 function onKeyChange({ id, key, on, velocity }) {
@@ -211,28 +235,12 @@ invoke('list_midi_connections').then(() => {
 })
 
 listen('midi_message', (event) => {
-  const payload = event.payload
-  const [command, note, velocity] = payload.message
+  const [command, note, velocity] = event.payload.message
 
-  if (command === 144) {
-    onKeyChange({
-      id: '1',
-      key: note,
-      velocity,
-      on: true
-    })
-  }
+  if(command === 248) return
+  const payload = { event: 'MidiMessage', command, note, velocity }
 
-  // some midi keyboards don't send the off signal,
-  // they just set the velocity to 0
-  if (command === 128 || velocity === 0) {
-    onKeyChange({
-      id: '1',
-      key: note,
-      velocity,
-      on: false
-    })
-  }
+  forward({ payload: JSON.stringify(payload) })
 })
   .then((unlistener) => console.log(unlistener))
   .catch(console.error)
