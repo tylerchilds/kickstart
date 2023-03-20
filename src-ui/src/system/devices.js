@@ -1,6 +1,6 @@
 import module from './module.js'
 import safeTauri from './safe-tauri.js'
-import { gun } from './database.js'
+//import { gun } from './database.js'
 
 const initialState = {
   gamepads: {},
@@ -42,23 +42,28 @@ const EVENTS = {
   'ButtonChanged': onButtonChange,
 }
 
-listen('rs2js', function receive(event) {
+listen('rs2js', receive)
+self.onmessage = (event) => receive(event.data)
+
+function receive(event) {
   console.log("js: rs2js: " + event.payload)
 	const payload = JSON.parse(event.payload) || {}
 
   if(EVENTS[payload.event]) {
     EVENTS[payload.event](payload)
   }
-})
+  forward(event)
+}
 
-const data = gun.get('system').get('devices')
-function sync() {
-  gun.get('system').get('devices').put({
-    gamepads: JSON.stringify(gamepads()),
-    midiDevices: JSON.stringify(midiDevices()),
+function forward(event) {
+  const children = [...document.querySelectorAll('iframe')]
+  children.map(iframe => {
+    iframe.contentWindow.postMessage(event, '*')
   })
 }
-sync()
+/*
+const data = gun.get('system').get('devices')
+
 data.on(latest => {
   const { gamepads, midiDevices } = latest
   const devices = {
@@ -68,19 +73,26 @@ data.on(latest => {
   $.teach(devices)
 })
 
+function sync() {
+  gun.get('system').get('devices').put({
+    gamepads: JSON.stringify(gamepads()),
+    midiDevices: JSON.stringify(midiDevices()),
+  })
+  requestAnimationFrame(sync)
+}
+requestAnimationFrame(sync)
+*/
+
 function onAxisChange({ id, key, value }) {
   $.teach({ key, value }, mergeAxisChange(id))
-  sync()
 }
 
 function onButtonChange({ id, key, value }) {
   $.teach({ key, value }, mergeButtonChange(id))
-  sync()
 }
 
 function onKeyChange({ id, key, on, velocity }) {
   $.teach({ key, value: { on, velocity, key }}, mergeKeyChange(id))
-  sync()
 }
 
 function mergeAxisChange(id) {
