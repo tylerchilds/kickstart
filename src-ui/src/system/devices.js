@@ -41,20 +41,25 @@ const defaultMidiDevice = { keys: {} }
 const EVENTS = {
   'AxisChanged': onAxisChange,
   'ButtonChanged': onButtonChange,
-  'MidiMessage': onMidiMessage
+  'MidiMessage': onMidiMessage,
+  'KeyboardInput': onKeyboardInput,
 }
 
 listen('rs2js', receive)
 self.onmessage = (event) => receive(event.data)
 
 function receive(event) {
-  console.log("js: rs2js: " + event.payload)
-	const payload = JSON.parse(event.payload) || {}
+  if(event.payload) {
+    console.log("received: " + event.payload)
+    const payload = JSON.parse(event.payload) || {}
 
-  if(EVENTS[payload.event]) {
-    EVENTS[payload.event](payload)
+    if(EVENTS[payload.event]) {
+      EVENTS[payload.event](payload)
+    }
+
+    if(event.stopPropogation) return
+    forward(event)
   }
-  forward(event)
 }
 
 function forward(event) {
@@ -101,7 +106,7 @@ function onButtonChange({ id, key, value }) {
 
 function onMidiMessage({ command, note, velocity }) {
   if (command === 144) {
-    onKeyChange({
+    onMidiChange({
       id: '1',
       key: note,
       velocity,
@@ -112,7 +117,7 @@ function onMidiMessage({ command, note, velocity }) {
   // some midi keyboards don't send the off signal,
   // they just set the velocity to 0
   if (command === 128 || velocity === 0) {
-    onKeyChange({
+    onMidiChange({
       id: '1',
       key: note,
       velocity,
@@ -120,8 +125,11 @@ function onMidiMessage({ command, note, velocity }) {
     })
   }
 }
+function onKeyboardInput({ type, key }) {
+  self.top.dispatchEvent(new KeyboardEvent(type, { key }));
+}
 
-function onKeyChange({ id, key, on, velocity }) {
+function onMidiChange({ id, key, on, velocity }) {
   $.teach({ key, value: { on, velocity, key }}, mergeKeyChange(id))
   requestAnimationFrame(sync)
 }
@@ -241,13 +249,16 @@ invoke('list_midi_connections').then(() => {
     invoke('open_midi_connection', { inputIdx: 1 })
 })
 
-listen('midi_message', (event) => {
+function handleMidiMessage(event) {
   const [command, note, velocity] = event.payload.message
 
   if(command === 248) return
   const payload = { event: 'MidiMessage', command, note, velocity }
+  console.log('midiii', command, note, velocity)
 
   forward({ payload: JSON.stringify(payload) })
-})
+}
+
+listen('midi_message', handleMidiMessage)
   .then((unlistener) => console.log(unlistener))
   .catch(console.error)

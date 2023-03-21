@@ -9,12 +9,16 @@ const midiIn = new Midi()
 const track = midiIn.addTrack()
 
 addEventListener('keydown', (event) => {
-  window.top.postMessage({
-    safeEvent: {
-      type: event.type,
-      key: event.key
-    }
-  }, '*')
+  const message = {
+    event: 'KeyboardInput',
+    type: event.type,
+    key: event.key
+  }
+
+  self.top.postMessage({
+    payload: JSON.stringify(message),
+    stopPropogation: true
+  })
 });
 
 const LOW_TONE = 24
@@ -182,8 +186,7 @@ function loop(time) {
         activeSynths = chords[register]
         activeSynths.map((x, i) => {
           const tone = down ? x : activeSynths[activeSynths.length - 1 - i]
-          const node = document.querySelector(`[data-tone='${tone}']`)
-          node && queueAttack(node, i)
+          queueAttack(tone, i)
         })
       }
     }
@@ -222,16 +225,28 @@ function throttle({ key, time, feature }) {
   }
 }
 
-function queueRelease(node) {
+function queueRelease(tone) {
+  const message = {
+    event: 'MidiMessage',
+    command: 128,
+    note: tone,
+    velocity: 64
+  }
   setTimeout(() => {
-    node.dispatchEvent(new Event('touchend'))
+    self.top.postMessage({ payload: JSON.stringify(message) })
   }, sustainedDuration)
 }
 
-function queueAttack(node, i) {
+function queueAttack(tone, i) {
+  const message = {
+    event: 'MidiMessage',
+    command: 144,
+    note: tone,
+    velocity: 128
+  }
   setTimeout(() => {
-    node.dispatchEvent(new Event('touchstart'))
-    queueRelease(node)
+    self.top.postMessage({ payload: JSON.stringify(message) })
+    queueRelease(tone)
   }, i * strumVelocity)
 }
 
