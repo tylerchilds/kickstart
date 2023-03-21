@@ -8,14 +8,6 @@ let midiOut
 const midiIn = new Midi()
 const track = midiIn.addTrack()
 
-let gamepads = []
-addEventListener("message", (event) => {
-  if (event.data.event == 'tick') {
-    gamepads = [...event.data.gamepads]
-  }
-}, false);
-
-
 addEventListener('keydown', (event) => {
   window.top.postMessage({
     safeEvent: {
@@ -142,22 +134,22 @@ const chords = [
   [],
 
   [60,64, 61], // c major: c - e - g
-  [0, 9, 1], // c minor: c - eb - g
+  [60, 69, 61], // c minor: c - eb - g
 
-  [1, 5, 2], // g major: g - b - d
-  [1, 10, 2], // g minor: g - bb - d
+  [61, 65, 62], // g major: g - b - d
+  [61, 70, 62], // g minor: g - bb - d
 
-  [2, 6, 3], // d major: d - f# - a
-  [2, 11, 3], // d minor: d - f - a
+  [62, 66, 63], // d major: d - f# - a
+  [62, 11, 63], // d minor: d - f - a
 
-  [4, 8, 5], // e major: e - g# - b
-  [4, 2, 5], // e minor: e - g - b
+  [64, 68, 65], // e major: e - g# - b
+  [64, 62, 65], // e minor: e - g - b
 
-  [3, 9, 4], // a major: a - c# - e
-  [3, 0, 4], // a minor: a - c - e
+  [63, 69, 64], // a major: a - c# - e
+  [63, 60, 64], // a minor: a - c - e
 
-  [11, 3, 0], // f major: f - a - c
-  [11, 8, 0], // f minor: f - ab - c
+  [71, 63, 60], // f major: f - a - c
+  [71, 68, 60], // f minor: f - ab - c
   
   [],// octave picker
   [] // pitch picker
