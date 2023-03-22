@@ -45,8 +45,11 @@ const EVENTS = {
   'KeyboardInput': onKeyboardInput,
 }
 
+// client
+const socket = new WebSocket("ws://"+self.location.host + self.location.pathname)
 listen('rs2js', receive)
 self.onmessage = (event) => receive(event.data)
+socket.onmessage = receive
 
 function receive(event) {
   if(event.payload) {
@@ -59,7 +62,10 @@ function receive(event) {
 
     if(event.stopPropogation) return
     forward(event)
-  }
+    // when a user events, socket the message with the channel pathname
+    console.log(JSON.stringify(event.data))
+    //socket.send(event.data)
+  } else { console.log('nah') }
 }
 
 function forward(event) {
@@ -69,39 +75,12 @@ function forward(event) {
   })
 }
 
-const data = gun.get('system2').get('devices')
-
-data.on(latest => {
-  const { gamepads, midiDevices } = $.learn()
-
-  const cloudGamepads = JSON.parse(latest.gamepads)
-  const cloudMidi = JSON.parse(latest.midiDevices)
-
-  if(!deepEqual(gamepads, cloudGamepads)) {
-    $.teach({ gamepads: cloudGamepads })
-  }
-
-  if(!deepEqual(midiDevices, cloudMidi)) {
-    $.teach({ midiDevices: cloudMidi })
-  }
-})
-
-function sync() {
-  const { gamepads, midiDevices } = $.learn()
-  gun.get('system2').get('devices').put({
-    gamepads: JSON.stringify(gamepads),
-    midiDevices: JSON.stringify(midiDevices),
-  })
-}
-
 function onAxisChange({ id, key, value }) {
   $.teach({ key, value }, mergeAxisChange(id))
-  requestAnimationFrame(sync)
 }
 
 function onButtonChange({ id, key, value }) {
   $.teach({ key, value }, mergeButtonChange(id))
-  requestAnimationFrame(sync)
 }
 
 function onMidiMessage({ command, note, velocity }) {
@@ -131,7 +110,6 @@ function onKeyboardInput({ type, key }) {
 
 function onMidiChange({ id, key, on, velocity }) {
   $.teach({ key, value: { on, velocity, key }}, mergeKeyChange(id))
-  requestAnimationFrame(sync)
 }
 
 function mergeAxisChange(id) {
@@ -254,7 +232,6 @@ function handleMidiMessage(event) {
 
   if(command === 248) return
   const payload = { event: 'MidiMessage', command, note, velocity }
-  console.log('midiii', command, note, velocity)
 
   forward({ payload: JSON.stringify(payload) })
 }
