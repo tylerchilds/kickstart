@@ -14,16 +14,6 @@ export const handler = (_request, _context) => {
         <scripttype-editor></scripttype-editor>
 
         <script type="module" src="/bin/bundle.js"></script>
-        <script>
-        window.addEventListener('keydown', (event) => {
-          window.top.postMessage({
-            safeEvent: {
-              type: event.type,
-              key: event.key
-            }
-          }, '*')
-        });
-        </script>
       </body>
     </html>
   `, {

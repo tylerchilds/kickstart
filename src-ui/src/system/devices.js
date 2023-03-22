@@ -1,6 +1,7 @@
 import module from './module.js'
 import safeTauri from './safe-tauri.js'
 import { gun } from './database.js'
+import { deepEqual } from 'fast-equals'
 
 const initialState = {
   gamepads: {},
@@ -40,47 +41,75 @@ const defaultMidiDevice = { keys: {} }
 const EVENTS = {
   'AxisChanged': onAxisChange,
   'ButtonChanged': onButtonChange,
+  'MidiMessage': onMidiMessage,
+  'KeyboardInput': onKeyboardInput,
 }
 
-listen('rs2js', function receive(event) {
-  console.log("js: rs2js: " + event.payload)
-	const payload = JSON.parse(event.payload) || {}
+// client
+const socket = new WebSocket("ws://"+self.location.host + self.location.pathname)
+listen('rs2js', receive)
+self.onmessage = (event) => receive(event.data)
+socket.onmessage = receive
 
-  if(EVENTS[payload.event]) {
-    EVENTS[payload.event](payload)
-  }
-})
+function receive(event) {
+  if(event.payload) {
+    console.log("received: " + event.payload)
+    const payload = JSON.parse(event.payload) || {}
 
-const data = gun.get('system').get('devices')
-function sync() {
-  gun.get('system').get('devices').put({
-    gamepads: JSON.stringify(gamepads()),
-    midiDevices: JSON.stringify(midiDevices()),
+    if(EVENTS[payload.event]) {
+      EVENTS[payload.event](payload)
+    }
+
+    if(event.stopPropogation) return
+    forward(event)
+    // when a user events, socket the message with the channel pathname
+    console.log(JSON.stringify(event.data))
+    //socket.send(event.data)
+  } else { console.log('nah') }
+}
+
+function forward(event) {
+  const children = [...document.querySelectorAll('iframe')]
+  children.map(iframe => {
+    iframe.contentWindow.postMessage(event, '*')
   })
 }
-sync()
-data.on(latest => {
-  const { gamepads, midiDevices } = latest
-  const devices = {
-    gamepads: JSON.parse(gamepads),
-    midiDevices: JSON.parse(midiDevices)
-  }
-  $.teach(devices)
-})
 
 function onAxisChange({ id, key, value }) {
   $.teach({ key, value }, mergeAxisChange(id))
-  sync()
 }
 
 function onButtonChange({ id, key, value }) {
   $.teach({ key, value }, mergeButtonChange(id))
-  sync()
 }
 
-function onKeyChange({ id, key, on, velocity }) {
+function onMidiMessage({ command, note, velocity }) {
+  if (command === 144) {
+    onMidiChange({
+      id: '1',
+      key: note,
+      velocity,
+      on: true
+    })
+  }
+
+  // some midi keyboards don't send the off signal,
+  // they just set the velocity to 0
+  if (command === 128 || velocity === 0) {
+    onMidiChange({
+      id: '1',
+      key: note,
+      velocity,
+      on: false
+    })
+  }
+}
+function onKeyboardInput({ type, key }) {
+  self.top.dispatchEvent(new KeyboardEvent(type, { key }));
+}
+
+function onMidiChange({ id, key, on, velocity }) {
   $.teach({ key, value: { on, velocity, key }}, mergeKeyChange(id))
-  sync()
 }
 
 function mergeAxisChange(id) {
@@ -198,29 +227,15 @@ invoke('list_midi_connections').then(() => {
     invoke('open_midi_connection', { inputIdx: 1 })
 })
 
-listen('midi_message', (event) => {
-  const payload = event.payload
-  const [command, note, velocity] = payload.message
+function handleMidiMessage(event) {
+  const [command, note, velocity] = event.payload.message
 
-  if (command === 144) {
-    onKeyChange({
-      id: '1',
-      key: note,
-      velocity,
-      on: true
-    })
-  }
+  if(command === 248) return
+  const payload = { event: 'MidiMessage', command, note, velocity }
 
-  // some midi keyboards don't send the off signal,
-  // they just set the velocity to 0
-  if (command === 128 || velocity === 0) {
-    onKeyChange({
-      id: '1',
-      key: note,
-      velocity,
-      on: false
-    })
-  }
-})
+  forward({ payload: JSON.stringify(payload) })
+}
+
+listen('midi_message', handleMidiMessage)
   .then((unlistener) => console.log(unlistener))
   .catch(console.error)

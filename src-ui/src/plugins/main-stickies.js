@@ -122,15 +122,6 @@ $.flair(`
 	}
 `)
 
-window.onmessage = function(event) {
-	const { safeEvent } = event.data
-	const { type } = safeEvent
-
-	if(type === 'keydown') {
-		window.dispatchEvent(new KeyboardEvent(type, { key: safeEvent.key }));
-	}
-}
-
 window.addEventListener('keydown', (event) => {
 	if (event.key === 'Escape') {
 		//if esc key was not pressed in combination with ctrl or alt or shift

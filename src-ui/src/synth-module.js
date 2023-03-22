@@ -8,26 +8,31 @@ let midiOut
 const midiIn = new Midi()
 const track = midiIn.addTrack()
 
-let gamepads = []
-addEventListener("message", (event) => {
-  if (event.data.event == 'tick') {
-    gamepads = [...event.data.gamepads]
-  }
-}, false);
-
-
 addEventListener('keydown', (event) => {
-  window.top.postMessage({
-    safeEvent: {
-      type: event.type,
-      key: event.key
-    }
-  }, '*')
+  const message = {
+    event: 'KeyboardInput',
+    type: event.type,
+    key: event.key
+  }
+
+  self.top.postMessage({
+    payload: JSON.stringify(message),
+    stopPropogation: true
+  })
 });
 
 const LOW_TONE = 24
-
-const synths = {}
+const synths = [
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+ new Tone.Synth().toDestination(),
+]
+const synthMap = {}
 
 const $ = module('synth-module', {
   colors: [],
@@ -90,31 +95,39 @@ const synthDown =() => {
 	$.teach({ synth })
 }
 function attack(event) {
+  Tone.start()
 	event.preventDefault()
   release(event)
   const { tone } = event.target.dataset
-  synths[tone] = {
-    destination: new Tone.Synth().toDestination(),
+  const activeSynths = Object.keys(synthMap).map(key => {
+    return synths.indexOf(synthMap[key].destination)
+  })
+  const destination = synths.find((_x, i) => {
+    return !activeSynths.includes(i)
+  })
+  synthMap[tone] = {
+    destination,
     start: (new Date()),
   }
 
   $.teach(tone, addActiveTone)
-  synths[tone].destination.triggerAttack(tone, "2n");
+  destination.triggerAttack(tone, "2n", Tone.now())
 }
 
 function release (event) {
   const { tone } = event.target.dataset
 	event.preventDefault()
-  if(synths[tone]) {
-    synths[tone].destination.triggerRelease();
+  if(synthMap[tone]) {
+    const { destination } = synthMap[tone];
+    destination.triggerRelease()
 
     track.addNote({
       midi: tone,
-      time: (synths[tone].start - start) / 1000,
-      duration: (new Date() - synths[tone].start) / 1000
+      time: (synthMap[tone].start - start) / 1000,
+      duration: (new Date() - synthMap[tone].start) / 1000
     })
 
-    delete synths[tone]
+    delete synthMap[tone]
     const midiString = JSON.stringify(midiIn.toJSON())
     $.teach({ midiString })
     $.teach(tone, removeActiveTone)
@@ -125,22 +138,22 @@ const chords = [
   [],
 
   [60,64, 61], // c major: c - e - g
-  [0, 9, 1], // c minor: c - eb - g
+  [60, 69, 61], // c minor: c - eb - g
 
-  [1, 5, 2], // g major: g - b - d
-  [1, 10, 2], // g minor: g - bb - d
+  [61, 65, 62], // g major: g - b - d
+  [61, 70, 62], // g minor: g - bb - d
 
-  [2, 6, 3], // d major: d - f# - a
-  [2, 11, 3], // d minor: d - f - a
+  [62, 66, 63], // d major: d - f# - a
+  [62, 11, 63], // d minor: d - f - a
 
-  [4, 8, 5], // e major: e - g# - b
-  [4, 2, 5], // e minor: e - g - b
+  [64, 68, 65], // e major: e - g# - b
+  [64, 62, 65], // e minor: e - g - b
 
-  [3, 9, 4], // a major: a - c# - e
-  [3, 0, 4], // a minor: a - c - e
+  [63, 69, 64], // a major: a - c# - e
+  [63, 60, 64], // a minor: a - c - e
 
-  [11, 3, 0], // f major: f - a - c
-  [11, 8, 0], // f minor: f - ab - c
+  [71, 63, 60], // f major: f - a - c
+  [71, 68, 60], // f minor: f - ab - c
   
   [],// octave picker
   [] // pitch picker
@@ -173,8 +186,7 @@ function loop(time) {
         activeSynths = chords[register]
         activeSynths.map((x, i) => {
           const tone = down ? x : activeSynths[activeSynths.length - 1 - i]
-          const node = document.querySelector(`[data-tone='${tone}']`)
-          node && queueAttack(node, i)
+          queueAttack(tone, i)
         })
       }
     }
@@ -183,12 +195,11 @@ function loop(time) {
   })
 
   devices.midiDevices().map((midi, i) => {
-      console.log(midi)
     Object.keys(midi.keys).map(x => midi.keys[x]).map((key) => {
       const node = document.querySelector(`[data-tone='${key.key}']`)
       if(!node) return
       const caller = key.on ? quickAttack : quickRelease
-      caller(node, key.velocity)
+      caller(node, key)
     })
   })
   requestAnimationFrame(loop)
@@ -214,25 +225,43 @@ function throttle({ key, time, feature }) {
   }
 }
 
-function queueRelease(node) {
+function queueRelease(tone) {
+  const message = {
+    event: 'MidiMessage',
+    command: 128,
+    note: tone,
+    velocity: 64
+  }
   setTimeout(() => {
-    node.dispatchEvent(new Event('touchend'))
+    self.top.postMessage({ payload: JSON.stringify(message) })
   }, sustainedDuration)
 }
 
-function queueAttack(node, i) {
+function queueAttack(tone, i) {
+  const message = {
+    event: 'MidiMessage',
+    command: 144,
+    note: tone,
+    velocity: 128
+  }
   setTimeout(() => {
-    node.dispatchEvent(new Event('touchstart'))
-    queueRelease(node)
+    self.top.postMessage({ payload: JSON.stringify(message) })
+    queueRelease(tone)
   }, i * strumVelocity)
 }
 
-function quickAttack(node) {
-  console.log('wtf')
-  node.dispatchEvent(new Event('touchstart'))
+function quickAttack(node, key) {
+  const { activeTones } = $.learn()
+  if(!activeTones[key.key]) {
+    node.dispatchEvent(new Event('touchstart'))
+  }
 }
 
-function quickRelease() {
+function quickRelease(node, key) {
+  const { activeTones } = $.learn()
+  if(activeTones[key.key]) {
+    node.dispatchEvent(new Event('touchend'))
+  }
 }
 
 $.draw(() => {

@@ -33,7 +33,7 @@ struct AsyncProcInputTx {
 }
 
 fn rs2js<R: tauri::Runtime>(message: String, manager: &impl Manager<R>) {
-	info!(?message, "rs2js");
+	//info!(?message, "rs2js");
 	manager
 		.emit_all("rs2js", format!("{}", message))
 		.unwrap();
