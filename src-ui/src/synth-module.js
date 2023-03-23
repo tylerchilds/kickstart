@@ -344,6 +344,9 @@ $.flair(`
     display: grid;
     place-content: center;
   }
+  & [href*="//lol"] {
+    position: absolute;
+  }
   & .wheel {
     display: grid;
     grid-template-areas: "slot";

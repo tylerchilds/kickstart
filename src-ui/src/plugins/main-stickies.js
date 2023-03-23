@@ -16,9 +16,11 @@ $.draw((target) => {
 
 	const stickies = memories
 		.map(about => `
-			<button data-key="${about.key}">
-				${about.title}
-			</button>
+      <div>
+        <button class="launch" data-key="${about.key}">
+          ${about.title}
+        </button>
+      </div>
 		`)
 		.join('')
 
@@ -29,12 +31,18 @@ $.draw((target) => {
 			<div class="root">
 				${stickies}
 			</div>
+      <button aria-label="Switcher" class="switcher"></button>
 			<div class="leaf">
 				${activeEmbed}
 			</div>
 		</div>
 	`
 })
+
+function switcher() {
+  const { rootActive } = $.learn()
+  $.teach({ rootActive: !rootActive })
+}
 
 function thinking(about) {
 	return about ? true : false
@@ -88,6 +96,8 @@ function firstMemories() {
 	}
 }
 
+$.when('click', 'button.switcher', switcher)
+
 $.when('click', 'button[data-key]', (event) => {
 	const { key } = event.target.dataset
 	const { embed } = $.learn().memory[key]
@@ -101,18 +111,38 @@ $.flair(`
 	& .root {
 		position: fixed;
 		inset: 0;
+    padding: 1rem;
 	}
 
 	& .active .leaf {
 		transform: translateY(-100%);
 	}
 
+  & .switcher {
+    display: block;
+    position: fixed;
+    height: 1rem;
+    background: orange;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    border: 0;
+    bottom: 0;
+    width: 100%;
+  }
+
+  & .active .switcher {
+    bottom: auto;
+    top: 0;
+  }
+
 	& .leaf {
 		background: white;
 		position: fixed;
 		inset: 0;
 		transform: translateY(0);
-		transition: transform 200 ease-in-out;
+		transition: transform 200ms ease-in-out;
+    padding: 1rem;
 	}
 
 	& .leaf iframe {
@@ -120,6 +150,15 @@ $.flair(`
 		width: 100%;
 		height: 100%;
 	}
+
+  & .launch {
+    background: transparent;
+    border: 0;
+    text-decoration: underline;
+    color: blue;
+    padding: .5rem;
+    margin: .5rem;
+  }
 `)
 
 window.addEventListener('keydown', (event) => {
@@ -127,8 +166,8 @@ window.addEventListener('keydown', (event) => {
 		//if esc key was not pressed in combination with ctrl or alt or shift
 		const isNotCombinedKey = !(event.ctrlKey || event.altKey || event.shiftKey);
 		if (isNotCombinedKey) {
-			const { rootActive } = $.learn()
-			$.teach({ rootActive: !rootActive })
+      switcher()
 		}
 	}
 });
+
