@@ -46,10 +46,10 @@ const EVENTS = {
 }
 
 // client
-const socket = new WebSocket("ws://"+self.location.host + self.location.pathname)
+//const socket = new WebSocket("ws://"+self.location.host + self.location.pathname)
 listen('rs2js', receive)
 self.onmessage = (event) => receive(event.data)
-socket.onmessage = receive
+//socket.onmessage = receive
 
 function receive(event) {
   if(event.payload) {
