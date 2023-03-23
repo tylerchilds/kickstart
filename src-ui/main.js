@@ -2,6 +2,7 @@ import * as dependencies from './deps.js'
 
 import './src/system/code-module.js'
 import './src/system/scripttype-editor.js'
+import './src/system/scripttype-viewer.js'
 
 import './src/plugins/main-stickies.js'
 

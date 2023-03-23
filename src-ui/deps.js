@@ -41,11 +41,11 @@ function router(database, path) {
 	}
 
 	function editHandler() {
-		render('edit', {class: 'world'}, "edit")
+		render('scripttype-editor')
 	}
 
 	function viewHandler() {
-		render('view', {class: 'world'}, "view")
+		render('scripttype-viewer')
 	}
 
 	function standardHandler() {

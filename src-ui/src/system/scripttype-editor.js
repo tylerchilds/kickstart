@@ -5,26 +5,22 @@ import {
 } from "https://esm.sh/@codemirror/basic-setup"
 
 import module from '../system/module.js'
+import { gun as database } from '../system/database.js'
+import { compile } from '../system/ScriptType.js'
 
-const $ = module('scripttype-editor')
-const sourceLocation = '/customs/' + window.location.pathname.split('/edit/')[1]
+const $ = module('scripttype-editor', { file: hello() })
+const sourceLocation = '/scripts/' + window.location.pathname.split('/edit/')[1]
 const viewLocation = '/view/' + window.location.pathname.split('/edit/')[1]
+
+database.get(sourceLocation).on(latest => {
+  const { file } = latest
+  $.teach({ file })
+})
 
 $.when('click', '.publish', (event) => {
   const { file } = $.learn()
-
-	fetch(sourceLocation, {
-		method: 'PUT',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			file
-		})
-	}).then(() => {
-    window.location.href = window.location.href
-  })
+  const formatted = compile(file)
+  database.get(sourceLocation).put({ file, formatted })
 })
 
 $.when('click', '.print', (event) => {
@@ -35,24 +31,7 @@ $.when('click', '.print', (event) => {
 })
 
 $.draw(target => {
-  const { file, fetching } = $.learn()
-
-  if(!file && !fetching) {
-    $.teach({ fetching: true })
-    fetch(sourceLocation)
-      .then(res => res.status === 404 ? (() => {throw new Error()})() : res )
-      .then(res => res.text())
-      .then((file) => {
-        $.teach({ file, fetching: false })
-      }).catch(e => {
-        fetch('/view/hello.script')
-          .then(res => res.text())
-          .then((file) => {
-            $.teach({ file, fetching: false })
-          })
-      })
-    return
-  }
+  const { file } = $.learn()
 
   if(file && !target.view) {
     target.innerHTML = `
@@ -122,3 +101,29 @@ $.flair(`
     }
   }
 `)
+
+function hello() {
+  return `{ screenplay
+title: In the Computer
+author: Ty
+
+! This feels like a fuzzy dream sequence with everything over exposed except the colors red, blue, and green.
+
+^ fade in
+# Int. Computer
+In the computer. Like Zoolander. Like Owen Wilson's character's understanding of in the computer. Ty wears three shirts and three hats. Left wears a blue shirt and hat. Right wears a red shirt and hat. Front wears a green shirt and hat.
+
+@ Ty
+" Welcome.
+
+@ Left
+" See. I said it could.
+
+@ Right
+" It wasn't easy.
+
+@ Front
+" Whatever, I can sell it.
+
+<hello-world`
+}
