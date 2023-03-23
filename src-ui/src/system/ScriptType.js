@@ -252,7 +252,9 @@ screenplay-freetext {
   margin: 1rem 0;
 }
       </style>
-      <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js" defer></script>
+			<!--
+      <script src="/vendor/paged.polyfill.js" defer></script>
+			-->
     </head>
     <body>
     `
