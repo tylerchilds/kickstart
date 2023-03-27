@@ -1,0 +1,348 @@
+import module from './system/module.js'
+
+const $ = module('music-verse')
+
+const modes = {
+	welcome: 'welcome',
+	alias: 'alias',
+	context: 'context',
+	store: 'store',
+	download: 'download',
+	settings: 'settings',
+	home: 'home'
+}
+
+const actions = {
+	goto: 'goto',
+	next: 'next',
+	back: 'back'
+}
+
+const emptyLauncher = {
+	applications: [],
+	emoji: '🏠',
+	emojiLabel: 'home',
+	mode: 'welcome',
+	nextMode: null,
+	backMode: null
+}
+
+export function launcherById(id) {
+	return $.learn()[id] || emptyLauncher
+}
+
+const strictModes = [modes.welcome, modes.alias, modes.home]
+const paginationActions = [actions.back, actions.next]
+
+$.when('click', '.next', action(actions.next))
+$.when('click', '.back', action(actions.back))
+
+$.when('click', '.welcome', goTo(modes.welcome))
+$.when('click', '.home', goTo(modes.home))
+$.when('click', '.store', goTo(modes.store))
+$.when('click', '.download', goTo(modes.download))
+$.when('click', '.settings', goTo(modes.settings))
+
+$.draw(target => {
+	const { id } = target
+
+	const launcher = launcherById(id)
+
+	const renderers = {
+		[modes.welcome]: () => `
+				<div class="card">
+					<h2>Welcome</h2>
+					<button data-id="${id}" class="next">
+						Continue
+					</button>
+				</div>
+			`,
+		[modes.alias]: () => `
+				<div class="card">
+					<h2>Alias</h2>
+					<button data-id="${id}" class="next">
+						Continue
+					</button>
+					<button data-id="${id}" class="back">
+						Go Back
+					</button>
+				</div>
+			`,
+		[modes.context]: () => `
+				<div class="card">
+					<h2>Context</h2>
+					<button data-id="${id}" class="next">
+						Continue
+					</button>
+					<button data-id="${id}" class="back">
+						Go Back
+					</button>
+				</div>
+			`,
+		[modes.home]: () => `
+				<div class="icons">
+					<button data-id="${id}" class="store">
+						<span role="img" aria-labelledby="Store">🏬</span>
+					</button>
+					<button data-id="${id}" class="download">
+						<span role="img" aria-labelledby="Download">📥</span>
+					</button>
+					<button data-id="${id}" class="settings">
+						<span role="img" aria-labelledby="Settings">⚙️</span>
+					</button>
+				</div>
+			`,
+		[modes.store]: () => `
+				<first-party-app>
+					Store
+				</first-party-app>
+			`,
+		[modes.download]: () => `
+				<first-party-app>
+					Download
+				</first-party-app>
+			`,
+		[modes.settings]: () => `
+				<first-party-app>
+					Settings<br/>
+					<button data-id="${id}" class="welcome">
+						Log out
+					</button>
+				</first-party-app>
+			`,
+		'default': () => `
+				<div class="card">
+					<h2>Error...</h2>
+					<button data-id="${id}" class="home">
+						Go Home
+					</button>
+				</div>
+			`
+	}
+
+	const { mode, nextMode } = launcher
+	const view = (renderers[mode] || renderers['default'])()
+	const fadeOut = nextMode && mode !== nextMode
+
+	return `
+			<div class="mode-${mode}">
+				<transition class="${fadeOut ? 'out' : ''}" data-id="${id}">
+					${view}
+				</transition>
+			</div>
+		`
+})
+
+function transition({target}) {
+	const { id } = target.dataset
+	const { mode, nextMode, backMode } = launcherById(id)
+
+	const currentMode = nextMode ? nextMode : mode
+	const previousMode = mode !== backMode ? backMode : mode
+	$.teach({ mode: currentMode, backMode: previousMode }, merge(id))
+	target.scrollTop = '0'
+	document.activeElement.blur()
+}
+
+$.when('animationend', 'transition', transition)
+
+$.flair(`
+		& {
+			background: white;
+			display: block;
+			position: relative;
+			overflow: hidden;
+		}
+
+		& *:focus {
+			border-radius: none;
+			outline: 2px dashed orange;
+			outline-offset: .5rem;
+		}
+
+		& [class^="mode-"] {
+			display: grid;
+			height: 100%;
+			place-items: center;
+			width: 100%;
+		}
+
+		& button {
+			display: block;
+			min-height: 3rem;
+			margin: 1rem 0;
+			width: 100%;
+		}
+
+		& first-party-app {
+			background: rgba(0,0,0,.85);
+			color: #fff;
+		}
+
+		& third-party-app {
+			background: white;
+		}
+
+		& first-party-app,
+		& third-party-app {
+			display: block;
+			padding: 1rem;
+			height: 100%;
+			width: 100%;
+		}
+
+		& transition {
+			animation: &-fade-in ease-in-out 250ms;
+			display: grid;
+			height: 100%;
+			place-items: center;
+			width: 100%;
+		}
+
+		& transition.out {
+			animation: &-fade-out ease-in-out 100ms;
+		}
+
+		& .mode-${modes.home},
+		& .mode-${modes.store},
+		& .mode-${modes.download},
+		& .mode-${modes.settings} {
+			background: dodgerblue;
+		}
+
+		& .icons {
+			display: grid;
+			height: 100%;
+			gap: 1rem;
+			grid-template-columns: repeat(auto-fill, 4rem);
+			grid-template-rows: repeat(auto-fill, 4rem);
+			padding: 1rem;
+			width: 100%;
+		}
+
+		& .icons button {
+			margin: 0;
+		}
+
+		& .mode-${modes.home} transition {
+			animation-name: &-zoom-in, &-fade-in;
+		}
+
+		& .mode-${modes.home} transition.out {
+			animation-name: &-zoom-out, &-fade-out;
+		}
+
+		@keyframes &-fade-in {
+			0% {
+				opacity: 0;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
+
+		@keyframes &-fade-out {
+			0% {
+				opacity: 1;
+			}
+			100% {
+				opacity: 0;
+			}
+		}
+
+		@keyframes &-zoom-in {
+			0% {
+				transform: scale(.9);
+			}
+			100% {
+				transform: scale(1);
+			}
+		}
+
+		@keyframes &-zoom-out {
+			0% {
+				transform: scale(1);
+			}
+			100% {
+				transform: scale(.9);
+			}
+		}
+	`)
+
+$.flair(`
+		/* global styles */
+		.card {
+			background: white;
+			border-radius: 20px;
+			padding: 1em;
+			max-width: 100%;
+			min-width: 320px;
+		}
+	`)
+
+/* controller-like logic */
+const welcomePath = [
+	modes.welcome,
+	modes.alias,
+	modes.context,
+	modes.home,
+]
+
+function messageStateMachine(message) {
+	return ({target}) => {
+		const { id } = target.dataset
+		stateMachine(id, message)
+	}
+}
+
+function goTo(mode) {
+	return messageStateMachine({ action: actions.goto, mode })
+}
+
+function action(action) {
+	return messageStateMachine({ action })
+}
+
+function stateMachine(id, message) {
+	const { mode, backMode } = launcherById(id)
+	const { action } = message
+
+	function setMode(nextMode) {
+		$.teach({ nextMode }, merge(id))
+	}
+
+	if(action === actions.goto) {
+		setMode(message.mode)
+		return
+	}
+
+	if(action === actions.back && backMode) {
+		setMode(backMode)
+		return
+	}
+
+	const onTheWelcomePath = welcomePath.includes(mode) && paginationActions.includes(action)
+
+	if(onTheWelcomePath) {
+		const order = action === actions.next
+			? welcomePath
+			: [...welcomePath].reverse()
+
+		const nextIndex = order.indexOf(mode) + 1
+		setMode(order[nextIndex])
+		return
+	}
+}
+
+function merge(id) {
+	return function middleware(state, payload) {
+		return {
+			...state,
+			[id]: {
+				...emptyLauncher,
+				...state[id],
+				...payload
+			}
+		}
+	}
+}

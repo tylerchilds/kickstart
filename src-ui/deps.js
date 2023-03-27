@@ -7,7 +7,7 @@ import './src/system/devices.js'
 
 import * as focusTrap from 'focus-trap';
 
-router(database, window.location.pathname)
+router(database, render, window.location.pathname)
 
 export {
   Color,
@@ -20,15 +20,28 @@ export {
 const randomString = (length) =>
   [ ...Array(length) ].map(() => (~~(Math.random() * 36)).toString(36)).join('');
 
-function router(database, path) {
+function render(element, properties={}, innards='') {
+  const attributes = Object.keys(properties).map(key => {
+    const value = properties[key]
+    return `${key}="${value}"`	
+  }).join(' ')
+  document.body.insertAdjacentHTML("beforeend", `
+    <${element} ${attributes}>
+      ${innards}
+    </${element}>
+  `)
+}
+
+function router(database, render, path) {
 	const file = database.get('files').get(path)
 
 	const router = {
-		'/edit/': editHandler,
-		'/view/': viewHandler,
+		'/edit/': () => render('scripttype-editor'),
+		'/view/': () => render('scripttype-viewer'),
+		'/music-verse/': () => render('music-verse'),
 	}
 
-	const standard = Object.keys(router).filter(x => {
+	const blank = Object.keys(router).filter(x => {
 		if(window.location.pathname.startsWith(x)) {
 			router[x]()
 			return true
@@ -36,34 +49,9 @@ function router(database, path) {
 		return false
 	}).every(x => !x)
 
-	if(standard) {
-		standardHandler(path)
-	}
-
-	function editHandler() {
-		render('scripttype-editor')
-	}
-
-	function viewHandler() {
-		render('scripttype-viewer')
-	}
-
-	function standardHandler() {
+	if(blank) {
     if(window.top == self.self) {
       render('main-stickies')
     }
-	}
-
-	function render(element, properties={}, innards='') {
-		const attributes = Object.keys(properties).map(key => {
-			const value = properties[key]
-			console.log(value)
-			return `${key}="${value}"`	
-		}).join(' ')
-		document.body.insertAdjacentHTML("beforeend", `
-			<${element} ${attributes}>
-				${innards}
-			</${element}>
-		`)
 	}
 }

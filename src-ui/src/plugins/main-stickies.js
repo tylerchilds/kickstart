@@ -1,20 +1,21 @@
 import module from '../system/module.js'
 
-const $ = module('main-stickies', { rootActive: false,
-	memory: firstMemories(),
+const $ = module('main-stickies', {
+  rootActive: false,
+	stickies: getStickies(),
 	activeEmbed: `
-		<iframe src="/stickies/synthia.html"></iframe>
+		<iframe src="/stickies/music-verse.html"></iframe>
 	`,
 })
 
 $.draw((target) => {
-	const { memory, activeEmbed, rootActive } = $.learn()
-	const memories = Object
-		.keys(memory)
-		.map(key => memory[key])
+	const { stickies, activeEmbed, rootActive } = $.learn()
+	const filtered = Object
+		.keys(stickies)
+		.map(key => stickies[key])
 		.filter(thinking)
 
-	const stickies = memories
+	const list = filtered
 		.map(about => `
       <div>
         <button class="launch" data-key="${about.key}">
@@ -29,7 +30,7 @@ $.draw((target) => {
 	return `
 		<div class="${rootClass}">
 			<div class="root">
-				${stickies}
+				${list}
 			</div>
       <button aria-label="Switcher" class="switcher"></button>
 			<div class="leaf">
@@ -48,7 +49,7 @@ function thinking(about) {
 	return about ? true : false
 }
 
-function firstMemories() {
+function getStickies() {
 	return {
 		'0': {
 			key: '0',
@@ -92,6 +93,13 @@ function firstMemories() {
 				<iframe src="/edit/hello.script"></iframe>
 			`,
 		},
+		'6': {
+			key: '6',
+			title: 'MusicVerse',
+			embed: `
+				<iframe src="/stickies/music-verse.html"></iframe>
+			`,
+		},
 
 	}
 }
@@ -100,7 +108,7 @@ $.when('click', 'button.switcher', switcher)
 
 $.when('click', 'button[data-key]', (event) => {
 	const { key } = event.target.dataset
-	const { embed } = $.learn().memory[key]
+	const { embed } = $.learn().stickies[key]
 	$.teach({
 		activeEmbed: embed,
 		rootActive: false
@@ -121,7 +129,7 @@ $.flair(`
   & .switcher {
     display: block;
     position: fixed;
-    height: 1rem;
+    height: 2rem;
     background: orange;
     left: 0;
     right: 0;
@@ -139,10 +147,9 @@ $.flair(`
 	& .leaf {
 		background: white;
 		position: fixed;
-		inset: 0;
+		inset: 0 0 2rem 0;
 		transform: translateY(0);
 		transition: transform 200ms ease-in-out;
-    padding: 1rem;
 	}
 
 	& .leaf iframe {
@@ -170,4 +177,3 @@ window.addEventListener('keydown', (event) => {
 		}
 	}
 });
-
