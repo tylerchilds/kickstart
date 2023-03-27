@@ -119,7 +119,8 @@ $.flair(`
 	& .root {
 		position: fixed;
 		inset: 0;
-    padding: 1rem;
+    padding: 2rem 1rem 1rem;
+		overflow: auto;
 	}
 
 	& .active .leaf {

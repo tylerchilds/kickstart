@@ -20,8 +20,6 @@ const actions = {
 
 const emptyLauncher = {
 	applications: [],
-	emoji: '🏠',
-	emojiLabel: 'home',
 	mode: 'welcome',
 	nextMode: null,
 	backMode: null
@@ -43,6 +41,67 @@ $.when('click', '.store', goTo(modes.store))
 $.when('click', '.download', goTo(modes.download))
 $.when('click', '.settings', goTo(modes.settings))
 
+const actionHandlers = {
+	[modes.welcome]: (id) => [
+		`
+			<button data-id="${id}" class="next">
+				Continue
+			</button>
+		`
+	],
+	[modes.alias]: (id) => [
+		`
+			<button data-id="${id}" class="next">
+					Continue
+			</button>
+		`,
+		`
+			<button data-id="${id}" class="back">
+				Go Back
+			</button>
+
+		`
+	],
+	[modes.context]: (id) => [
+		`
+			<button data-id="${id}" class="next">
+					Continue
+			</button>
+		`,
+		`
+			<button data-id="${id}" class="back">
+				Go Back
+			</button>
+		`
+	],
+	[modes.home]: (id) => [
+		`
+			<button data-id="${id}" class="back">
+				Go Back
+			</button>
+			<button data-id="${id}" class="welcome">
+				Restart
+			</button>
+		`
+	],
+	'default': (id) => [
+		`
+			<button data-id="${id}" class="home">
+				Home
+			</button>
+		`
+	],
+}
+
+function actionItems(id, mode) {
+	const buttons = (actionHandlers[mode] || actionHandlers['default'])(id).join('')
+	return `
+		<actions>
+			${buttons}
+		</actions>	
+	`
+}
+
 $.draw(target => {
 	const { id } = target
 
@@ -52,64 +111,24 @@ $.draw(target => {
 		[modes.welcome]: () => `
 				<div class="card">
 					<h2>Welcome</h2>
-					<button data-id="${id}" class="next">
-						Continue
-					</button>
+					${actionItems(id, modes.welcome)}
 				</div>
 			`,
 		[modes.alias]: () => `
 				<div class="card">
 					<h2>Alias</h2>
-					<button data-id="${id}" class="next">
-						Continue
-					</button>
-					<button data-id="${id}" class="back">
-						Go Back
-					</button>
+					${actionItems(id, modes.alias)}
 				</div>
 			`,
 		[modes.context]: () => `
 				<div class="card">
 					<h2>Context</h2>
-					<button data-id="${id}" class="next">
-						Continue
-					</button>
-					<button data-id="${id}" class="back">
-						Go Back
-					</button>
+					${actionItems(id, modes.context)}
 				</div>
 			`,
 		[modes.home]: () => `
-				<div class="icons">
-					<button data-id="${id}" class="store">
-						<span role="img" aria-labelledby="Store">🏬</span>
-					</button>
-					<button data-id="${id}" class="download">
-						<span role="img" aria-labelledby="Download">📥</span>
-					</button>
-					<button data-id="${id}" class="settings">
-						<span role="img" aria-labelledby="Settings">⚙️</span>
-					</button>
-				</div>
-			`,
-		[modes.store]: () => `
-				<first-party-app>
-					Store
-				</first-party-app>
-			`,
-		[modes.download]: () => `
-				<first-party-app>
-					Download
-				</first-party-app>
-			`,
-		[modes.settings]: () => `
-				<first-party-app>
-					Settings<br/>
-					<button data-id="${id}" class="welcome">
-						Log out
-					</button>
-				</first-party-app>
-			`,
+			${actionItems(id, modes.home)}
+		`,
 		'default': () => `
 				<div class="card">
 					<h2>Error...</h2>
@@ -125,11 +144,12 @@ $.draw(target => {
 	const fadeOut = nextMode && mode !== nextMode
 
 	return `
-			<div class="mode-${mode}">
-				<transition class="${fadeOut ? 'out' : ''}" data-id="${id}">
-					${view}
-				</transition>
-			</div>
+		<companion class="mode-${mode}">
+			<transition class="${fadeOut ? 'out' : ''}" data-id="${id}">
+				${view}
+			</transition>
+		</companion>
+		<music-earth></music-earth>			
 		`
 })
 
@@ -150,8 +170,18 @@ $.flair(`
 		& {
 			background: white;
 			display: block;
-			position: relative;
+			position: absolute;
 			overflow: hidden;
+			height: 100%;
+			width: 100%;
+			inset: 0;
+		}
+
+		& actions {
+			position: absolute;
+			right: 1rem;
+			bottom: 1rem;
+			transform: translateY(100%);
 		}
 
 		& *:focus {
@@ -160,34 +190,17 @@ $.flair(`
 			outline-offset: .5rem;
 		}
 
-		& [class^="mode-"] {
+		& companion {
 			display: grid;
-			height: 100%;
 			place-items: center;
-			width: 100%;
+			position: relative;
+			z-index: 10;
 		}
 
 		& button {
 			display: block;
 			min-height: 3rem;
-			margin: 1rem 0;
-			width: 100%;
-		}
-
-		& first-party-app {
-			background: rgba(0,0,0,.85);
-			color: #fff;
-		}
-
-		& third-party-app {
-			background: white;
-		}
-
-		& first-party-app,
-		& third-party-app {
-			display: block;
-			padding: 1rem;
-			height: 100%;
+			margin: 0;
 			width: 100%;
 		}
 
@@ -232,6 +245,16 @@ $.flair(`
 			animation-name: &-zoom-out, &-fade-out;
 		}
 
+		& .card {
+			background: rgba(255,255,255,.85);
+			color: rgba(0,0,0,.85);
+			width: 100%;
+		}
+
+		& .card h2 {
+			margin: 1rem;
+		}
+
 		@keyframes &-fade-in {
 			0% {
 				opacity: 0;
@@ -268,18 +291,6 @@ $.flair(`
 			}
 		}
 	`)
-
-$.flair(`
-		/* global styles */
-		.card {
-			background: white;
-			border-radius: 20px;
-			padding: 1em;
-			max-width: 100%;
-			min-width: 320px;
-		}
-	`)
-
 /* controller-like logic */
 const welcomePath = [
 	modes.welcome,
@@ -306,7 +317,6 @@ function action(action) {
 function stateMachine(id, message) {
 	const { mode, backMode } = launcherById(id)
 	const { action } = message
-
 	function setMode(nextMode) {
 		$.teach({ nextMode }, merge(id))
 	}
@@ -345,4 +355,84 @@ function merge(id) {
 			}
 		}
 	}
+}
+
+/*
+	MusicEarth
+	*/
+
+const coordinates = [
+	[-70.285605, 41.651761],
+	[-122.290195, 37.528287],
+	[-70.729755, 42.014324],
+	[-122.496417, 37.606648]
+]
+
+const $earth = module('music-earth')
+
+function initialize(target) {
+	const { center } = $earth.learn()
+	const container = document.createElement('div')
+	container.classList.add('map')
+	target.appendChild(container)
+
+	target.map = new maplibregl.Map({
+		container,
+		style: 'https://demotiles.maplibre.org/style.json', // stylesheet location
+		center: [0, 0], // starting position [lng, lat]
+		zoom: 2
+	})
+
+	target.map.on('load', () => start(target.map))
+}
+
+function start(map) {
+	window.dispatchEvent(new Event('resize'));
+	setInterval(() => jump(), 5000)
+}
+
+async function jump() {
+	const center = [
+		getRandomInRange(-90, 90, 3),	
+		getRandomInRange(-90, 90, 3),	
+	]
+
+	$earth.teach({
+		center,
+	})
+}
+
+function getRandomInRange(from, to, fixed) {
+	return (Math.random() * (to - from) + from).toFixed(fixed);
+	// .toFixed() returns string, so ' * 1' is a trick to convert to number
+}
+
+$earth.draw(function drawPlanet(target) {
+	if(!target.map) initialize(target)
+
+	if(!!target.map.getSource) {
+		const { center } = $earth.learn()
+
+		target.map.flyTo({
+			center,
+			speed: .5
+		})
+	}
+})
+
+$earth.flair(`
+	& {
+		display: block;
+	}
+
+	& .map {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+`)
+
+function mod(n, m) {
+	return ((n % m) + m) % m;
 }
