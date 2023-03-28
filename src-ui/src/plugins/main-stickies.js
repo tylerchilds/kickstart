@@ -17,7 +17,7 @@ $.draw((target) => {
 
 	const list = filtered
 		.map(about => `
-      <div>
+      <div class="list-item">
         <button class="launch" data-key="${about.key}">
           ${about.title}
         </button>
@@ -119,8 +119,22 @@ $.flair(`
 	& .root {
 		position: fixed;
 		inset: 0;
-    padding: 2rem 1rem 1rem;
+    padding: 2rem 0 1rem;
 		overflow: auto;
+	}
+
+	& .root::before {
+		content: '';
+		border-left: 1px solid red;
+		position: fixed;
+		left: 1rem;
+		top: 0;
+		bottom: 0;
+	}
+
+	& .list-item {
+		padding-left: 1rem;
+		border-bottom: 1px solid cyan;
 	}
 
 	& .active .leaf {

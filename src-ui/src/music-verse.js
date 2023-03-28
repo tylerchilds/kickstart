@@ -22,7 +22,8 @@ const emptyLauncher = {
 	applications: [],
 	mode: 'welcome',
 	nextMode: null,
-	backMode: null
+	backMode: null,
+  companionActive: true,
 }
 
 export function launcherById(id) {
@@ -127,7 +128,10 @@ $.draw(target => {
 				</div>
 			`,
 		[modes.home]: () => `
-			${actionItems(id, modes.home)}
+			<div class="card">
+				<h2>Home</h2>
+				${actionItems(id, modes.home)}
+			</div>
 		`,
 		'default': () => `
 				<div class="card">
@@ -139,12 +143,15 @@ $.draw(target => {
 			`
 	}
 
-	const { mode, nextMode } = launcher
+	const { mode, nextMode, companionActive } = launcher
 	const view = (renderers[mode] || renderers['default'])()
 	const fadeOut = nextMode && mode !== nextMode
 
+	const companionClass = companionActive ? `mode-${mode} active` : `mode-${mode}`
+
 	return `
-		<companion class="mode-${mode}">
+		<button aria-label="Companion" class="switcher" data-id="${id}"></button>
+		<companion class="${companionClass}">
 			<transition class="${fadeOut ? 'out' : ''}" data-id="${id}">
 				${view}
 			</transition>
@@ -152,6 +159,14 @@ $.draw(target => {
 		<music-earth></music-earth>			
 		`
 })
+
+$.when('click', 'button.switcher', switcher)
+
+function switcher({target}) {
+	const { id } = target.dataset
+	const { companionActive } = launcherById(id)
+  $.teach({ companionActive: !companionActive }, merge(id))
+}
 
 function transition({target}) {
 	const { id } = target.dataset
@@ -177,31 +192,70 @@ $.flair(`
 			inset: 0;
 		}
 
+		& .switcher {
+			display: block;
+			position: fixed;
+			height: 1rem;
+			padding: 0;
+			margin: 0;
+			background: orange;
+			left: 0;
+			right: 0;
+			z-index: 10;
+			border: 0;
+			top: 0;
+			width: 100%;
+		}
+
 		& actions {
 			position: absolute;
 			right: 1rem;
 			bottom: 1rem;
 			transform: translateY(100%);
-		}
-
-		& *:focus {
-			border-radius: none;
-			outline: 2px dashed orange;
-			outline-offset: .5rem;
+			border: 1px solid orange;
+			border-radius: 2px;
 		}
 
 		& companion {
 			display: grid;
 			place-items: center;
 			position: relative;
-			z-index: 10;
+			top: 1rem;
+			min-height: 1rem;
+			z-index: 5;
+			transition: transform 100ms ease-in-out;
+			transform: translateY(-100%);
+			border-bottom: 1px solid orange;
+		}
+
+		& companion.active {
+			transform: translateY(0);
+		}
+
+		& companion:not(.active) button {
+			animation: &-fade-out ease-in-out 0ms;
+			display: none;
+		}
+
+		& companion button {
+			animation: &-fade-in ease-in-out 1000ms;
+			background: white;
+			color: blue;
+			text-decoration: underline;
+			border: none;
+			border-bottom: 1px solid cyan;
+			width: 100%;
+			padding: .5rem;
+			text-align: left;
+		}
+
+		& companion button:last-child {
+			border-bottom: none;	
 		}
 
 		& button {
 			display: block;
-			min-height: 3rem;
 			margin: 0;
-			width: 100%;
 		}
 
 		& transition {
@@ -216,13 +270,6 @@ $.flair(`
 			animation: &-fade-out ease-in-out 100ms;
 		}
 
-		& .mode-${modes.home},
-		& .mode-${modes.store},
-		& .mode-${modes.download},
-		& .mode-${modes.settings} {
-			background: dodgerblue;
-		}
-
 		& .icons {
 			display: grid;
 			height: 100%;
@@ -235,14 +282,6 @@ $.flair(`
 
 		& .icons button {
 			margin: 0;
-		}
-
-		& .mode-${modes.home} transition {
-			animation-name: &-zoom-in, &-fade-in;
-		}
-
-		& .mode-${modes.home} transition.out {
-			animation-name: &-zoom-out, &-fade-out;
 		}
 
 		& .card {
