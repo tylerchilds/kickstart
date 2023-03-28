@@ -4,12 +4,8 @@ const $ = module('music-verse')
 
 const modes = {
 	welcome: 'welcome',
-	alias: 'alias',
-	context: 'context',
-	store: 'store',
-	download: 'download',
-	settings: 'settings',
-	home: 'home'
+	planting: 'planting',
+	jamming: 'jamming',
 }
 
 const actions = {
@@ -19,7 +15,6 @@ const actions = {
 }
 
 const emptyLauncher = {
-	applications: [],
 	mode: 'welcome',
 	nextMode: null,
 	backMode: null,
@@ -30,65 +25,46 @@ export function launcherById(id) {
 	return $.learn()[id] || emptyLauncher
 }
 
-const strictModes = [modes.welcome, modes.alias, modes.home]
 const paginationActions = [actions.back, actions.next]
 
-$.when('click', '.next', action(actions.next))
-$.when('click', '.back', action(actions.back))
-
-$.when('click', '.welcome', goTo(modes.welcome))
-$.when('click', '.home', goTo(modes.home))
-$.when('click', '.store', goTo(modes.store))
-$.when('click', '.download', goTo(modes.download))
-$.when('click', '.settings', goTo(modes.settings))
+$.when('click', '[data-action]', action)
+$.when('click', '[data-goto]', goTo)
 
 const actionHandlers = {
 	[modes.welcome]: (id) => [
 		`
-			<button data-id="${id}" class="next">
-				Continue
+			<button data-id="${id}" data-goto="planting">
+				Plant new tree
+			</button>
+			<button data-id="${id}" data-goto="jamming">
+				Jam in forest
 			</button>
 		`
 	],
-	[modes.alias]: (id) => [
+	[modes.planting]: (id) => [
 		`
-			<button data-id="${id}" class="next">
-					Continue
+			<button data-id="${id}" data-goto="jamming">
+        Plant Seed
 			</button>
 		`,
 		`
-			<button data-id="${id}" class="back">
+			<button data-id="${id}" data-action="back">
 				Go Back
 			</button>
 
 		`
 	],
-	[modes.context]: (id) => [
+	[modes.jamming]: (id) => [
 		`
-			<button data-id="${id}" class="next">
-					Continue
+			<button data-id="${id}" data-goto="welcome">
+        Restart
 			</button>
 		`,
-		`
-			<button data-id="${id}" class="back">
-				Go Back
-			</button>
-		`
-	],
-	[modes.home]: (id) => [
-		`
-			<button data-id="${id}" class="back">
-				Go Back
-			</button>
-			<button data-id="${id}" class="welcome">
-				Restart
-			</button>
-		`
 	],
 	'default': (id) => [
 		`
-			<button data-id="${id}" class="home">
-				Home
+			<button data-id="${id}" data-goto="welcome">
+				Restart
 			</button>
 		`
 	],
@@ -111,20 +87,23 @@ $.draw(target => {
 	const renderers = {
 		[modes.welcome]: () => `
 				<div class="card">
-					<h2>Welcome</h2>
+					<h2>Music Trees are the beat of the MusicVerse</h2>
+          <p>Find a place to plant a Music Tree</p>
 					${actionItems(id, modes.welcome)}
 				</div>
 			`,
-		[modes.alias]: () => `
+		[modes.planting]: () => `
 				<div class="card">
-					<h2>Alias</h2>
-					${actionItems(id, modes.alias)}
+					<h2>Grow a Music Seed into a Music Tree</h2>
+          <p>Select a Music Seed to plant</p>
+					${actionItems(id, modes.planting)}
 				</div>
 			`,
-		[modes.context]: () => `
+		[modes.jamming]: () => `
 				<div class="card">
-					<h2>Context</h2>
-					${actionItems(id, modes.context)}
+					<h2>Music Trees grow with live performance</h2>
+          <p>Jam to perform live with the forest</p>
+					${actionItems(id, modes.jamming)}
 				</div>
 			`,
 		[modes.home]: () => `
@@ -136,9 +115,7 @@ $.draw(target => {
 		'default': () => `
 				<div class="card">
 					<h2>Error...</h2>
-					<button data-id="${id}" class="home">
-						Go Home
-					</button>
+          ${actionItems(id)}
 				</div>
 			`
 	}
@@ -288,11 +265,17 @@ $.flair(`
 			background: rgba(255,255,255,.85);
 			color: rgba(0,0,0,.85);
 			width: 100%;
+			padding: 1rem;
 		}
 
 		& .card h2 {
-			margin: 1rem;
+			color: rgba(0,0,0,.65);
+      margin: 0;
 		}
+
+		& .card p {
+      margin: 0;
+    }
 
 		@keyframes &-fade-in {
 			0% {
@@ -333,27 +316,23 @@ $.flair(`
 /* controller-like logic */
 const welcomePath = [
 	modes.welcome,
-	modes.alias,
-	modes.context,
+	modes.planting,
+	modes.jamming,
 	modes.home,
 ]
 
-function messageStateMachine(message) {
-	return ({target}) => {
-		const { id } = target.dataset
-		stateMachine(id, message)
-	}
+function goTo({ target }) {
+  const mode = target.dataset.goto
+	return messageStateMachine(target, { action: actions.goto, mode })
 }
 
-function goTo(mode) {
-	return messageStateMachine({ action: actions.goto, mode })
+function action({ target }) {
+  const { action } = target.dataset
+	return messageStateMachine(target, { action })
 }
 
-function action(action) {
-	return messageStateMachine({ action })
-}
-
-function stateMachine(id, message) {
+function messageStateMachine(target, message) {
+  const { id } = target.dataset
 	const { mode, backMode } = launcherById(id)
 	const { action } = message
 	function setMode(nextMode) {
@@ -400,14 +379,7 @@ function merge(id) {
 	MusicEarth
 	*/
 
-const coordinates = [
-	[-70.285605, 41.651761],
-	[-122.290195, 37.528287],
-	[-70.729755, 42.014324],
-	[-122.496417, 37.606648]
-]
-
-const $earth = module('music-earth')
+const $earth = module('music-earth', { center: [0,0] })
 
 function initialize(target) {
 	const { center } = $earth.learn()
@@ -418,7 +390,7 @@ function initialize(target) {
 	target.map = new maplibregl.Map({
 		container,
 		style: 'https://demotiles.maplibre.org/style.json', // stylesheet location
-		center: [0, 0], // starting position [lng, lat]
+		center, // starting position [lng, lat]
 		zoom: 2
 	})
 
@@ -430,7 +402,7 @@ function start(map) {
 	setInterval(() => jump(), 5000)
 }
 
-async function jump() {
+function jump() {
 	const center = [
 		getRandomInRange(-90, 90, 3),	
 		getRandomInRange(-90, 90, 3),	
