@@ -117,6 +117,7 @@ $.when('click', 'button[data-key]', (event) => {
 
 $.flair(`
 	& .root {
+    background: white;
 		position: fixed;
 		inset: 0;
     padding: 2rem 0 1rem;

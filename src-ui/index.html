@@ -8,6 +8,11 @@
     <link href="/styles/system.css" rel="stylesheet">
   </head>
   <body>
+    <script>
+      if(window.top === self.self) {
+        document.body.style = 'background: orange'
+      }
+    </script>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
