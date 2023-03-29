@@ -40,9 +40,10 @@ $.draw((target) => {
 	`
 })
 
-function switcher() {
-  const { rootActive } = $.learn()
-  $.teach({ rootActive: !rootActive })
+function switcher({ target }) {
+  const rootActive = !$.learn().rootActive
+  const root = target.closest($.link)
+  $.teach({ rootActive })
 }
 
 function thinking(about) {
@@ -117,6 +118,7 @@ $.when('click', 'button[data-key]', (event) => {
 
 $.flair(`
 	& .root {
+    display: none;
     background: white;
 		position: fixed;
 		inset: 0;
@@ -136,10 +138,6 @@ $.flair(`
 	& .list-item {
 		padding-left: 1rem;
 		border-bottom: 1px solid cyan;
-	}
-
-	& .active .leaf {
-		transform: translateY(-100%);
 	}
 
   & .switcher {
@@ -172,6 +170,15 @@ $.flair(`
 		border: 0;
 		width: 100%;
 		height: 100%;
+	}
+
+	& .active .root {
+    display: block;
+  }
+
+	& .active .leaf {
+    display: none;
+		transform: translateY(-100%);
 	}
 
   & .launch {

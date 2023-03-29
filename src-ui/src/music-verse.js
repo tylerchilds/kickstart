@@ -18,8 +18,10 @@ const emptyLauncher = {
 	mode: 'welcome',
 	nextMode: null,
 	backMode: null,
-  companionActive: true,
+	companionActive: true,
 }
+
+let unregisterRandom = () => null
 
 export function launcherById(id) {
 	return $.learn()[id] || emptyLauncher
@@ -44,20 +46,19 @@ const actionHandlers = {
 	[modes.planting]: (id) => [
 		`
 			<button data-id="${id}" data-goto="jamming">
-        Plant Seed
+				Plant Tree
 			</button>
 		`,
 		`
 			<button data-id="${id}" data-action="back">
 				Go Back
 			</button>
-
 		`
 	],
 	[modes.jamming]: (id) => [
 		`
 			<button data-id="${id}" data-goto="welcome">
-        Restart
+				Restart
 			</button>
 		`,
 	],
@@ -88,34 +89,28 @@ $.draw(target => {
 		[modes.welcome]: () => `
 				<div class="card">
 					<h2>Music Trees are the beat of the MusicVerse</h2>
-          <p>Find a place to plant a Music Tree</p>
+					<p>Find a place to plant a Music Tree</p>
 					${actionItems(id, modes.welcome)}
 				</div>
 			`,
 		[modes.planting]: () => `
 				<div class="card">
-					<h2>Grow a Music Seed into a Music Tree</h2>
-          <p>Select a Music Seed to plant</p>
+					<h2>Grow a Music Tree</h2>
+					<p>Select a Music Seed to plant</p>
 					${actionItems(id, modes.planting)}
 				</div>
 			`,
 		[modes.jamming]: () => `
 				<div class="card">
 					<h2>Music Trees grow with live performance</h2>
-          <p>Jam to perform live with the forest</p>
+					<p>Jam to perform live with the forest</p>
 					${actionItems(id, modes.jamming)}
 				</div>
 			`,
-		[modes.home]: () => `
-			<div class="card">
-				<h2>Home</h2>
-				${actionItems(id, modes.home)}
-			</div>
-		`,
 		'default': () => `
 				<div class="card">
 					<h2>Error...</h2>
-          ${actionItems(id)}
+					${actionItems(id)}
 				</div>
 			`
 	}
@@ -142,7 +137,7 @@ $.when('click', 'button.switcher', switcher)
 function switcher({target}) {
 	const { id } = target.dataset
 	const { companionActive } = launcherById(id)
-  $.teach({ companionActive: !companionActive }, merge(id))
+	$.teach({ companionActive: !companionActive }, merge(id))
 }
 
 function transition({target}) {
@@ -270,12 +265,12 @@ $.flair(`
 
 		& .card h2 {
 			color: rgba(0,0,0,.65);
-      margin: 0;
+			margin: 0;
 		}
 
 		& .card p {
-      margin: 0;
-    }
+			margin: 0;
+		}
 
 		@keyframes &-fade-in {
 			0% {
@@ -318,25 +313,40 @@ const welcomePath = [
 	modes.welcome,
 	modes.planting,
 	modes.jamming,
-	modes.home,
 ]
 
 function goTo({ target }) {
-  const mode = target.dataset.goto
+	const mode = target.dataset.goto
 	return messageStateMachine(target, { action: actions.goto, mode })
 }
 
 function action({ target }) {
-  const { action } = target.dataset
+	const { action } = target.dataset
 	return messageStateMachine(target, { action })
 }
 
+function dispatch(target, type, mode) {
+	const states = {
+		'welcome': {
+			'leaving': unregisterRandom,
+			'entering': registerRandom
+		}
+	}
+
+	if(states[mode]) {
+		const change = states[mode][type] || (() => null)
+		change(target)
+	}
+}
+
 function messageStateMachine(target, message) {
-  const { id } = target.dataset
+	const { id } = target.dataset
 	const { mode, backMode } = launcherById(id)
 	const { action } = message
 	function setMode(nextMode) {
+		dispatch(target, 'leaving', mode)
 		$.teach({ nextMode }, merge(id))
+		dispatch(target, 'entering', nextMode)
 	}
 
 	if(action === actions.goto) {
@@ -391,7 +401,9 @@ function initialize(target) {
 		container,
 		style: 'https://demotiles.maplibre.org/style.json', // stylesheet location
 		center, // starting position [lng, lat]
-		zoom: 2
+		zoom: 4,
+		bearing: 0,
+		pitch: 0,
 	})
 
 	target.map.on('load', () => start(target.map))
@@ -399,7 +411,55 @@ function initialize(target) {
 
 function start(map) {
 	window.dispatchEvent(new Event('resize'));
-	setInterval(() => jump(), 5000)
+	registerRandom()
+	// pixels the map pans when the up or down arrow is clicked
+	var deltaDistance = 100;
+
+	// degrees the map rotates when the left or right arrow is clicked
+	var deltaDegrees = 25;
+
+	function easing(t) {
+		return t * (2 - t);
+	}
+	map.getCanvas().focus();
+	map.getCanvas().addEventListener(
+		'keydown',
+		function (e) {
+			e.preventDefault();
+			if (e.which === 38) {
+				// up
+				map.panBy([0, -deltaDistance], {
+					easing: easing
+				});
+			} else if (e.which === 40) {
+				// down
+				map.panBy([0, deltaDistance], {
+					easing: easing
+				});
+			} else if (e.which === 37) {
+				// left
+				map.easeTo({
+					bearing: map.getBearing() - deltaDegrees,
+					easing: easing
+				});
+			} else if (e.which === 39) {
+				// right
+				map.easeTo({
+					bearing: map.getBearing() + deltaDegrees,
+					easing: easing
+				});
+			}
+		},
+		true
+	);
+}
+
+function registerRandom() {
+	unregisterRandom()
+	const random = setInterval(() => jump(), 5000)
+	unregisterRandom = () => {
+		clearInterval(random)
+	}
 }
 
 function jump() {
