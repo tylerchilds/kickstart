@@ -7,21 +7,8 @@ const start = new Date()
 let midiOut
 const midiIn = new Midi()
 const track = midiIn.addTrack()
-
-addEventListener('keydown', (event) => {
-  const message = {
-    event: 'KeyboardInput',
-    type: event.type,
-    key: event.key
-  }
-
-  self.top.postMessage({
-    payload: JSON.stringify(message),
-    stopPropogation: true
-  })
-});
-
 const LOW_TONE = 24
+
 const synths = [
  new Tone.Synth().toDestination(),
  new Tone.Synth().toDestination(),

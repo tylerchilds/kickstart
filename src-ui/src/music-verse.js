@@ -1,4 +1,5 @@
 import module from './system/module.js'
+import maplibregl from 'maplibre-gl';
 
 const $ = module('music-verse')
 
@@ -343,6 +344,7 @@ function messageStateMachine(target, message) {
 	const { id } = target.dataset
 	const { mode, backMode } = launcherById(id)
 	const { action } = message
+
 	function setMode(nextMode) {
 		dispatch(target, 'leaving', mode)
 		$.teach({ nextMode }, merge(id))
@@ -448,7 +450,8 @@ function start(map) {
 					bearing: map.getBearing() + deltaDegrees,
 					easing: easing
 				});
-			}
+      }
+
 		},
 		true
 	);

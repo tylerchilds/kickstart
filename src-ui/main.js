@@ -1,11 +1,4 @@
 import * as dependencies from './deps.js'
-
-import './src/system/code-module.js'
-import './src/system/scripttype-editor.js'
-import './src/system/scripttype-viewer.js'
-
-import './src/plugins/main-stickies.js'
-
 import safeTauri from './src/system/safe-tauri.js'
 
 console.log.apply(null, [
@@ -16,3 +9,19 @@ console.log.apply(null, [
 if(true) {
   safeTauri.window.appWindow.show()
 }
+
+addEventListener('keydown', (event) => {
+  console.log('yo')
+  const message = {
+    event: 'KeyboardInput',
+    type: event.type,
+    key: event.key
+  }
+
+  if(window.top !== self.self) {
+    self.top.postMessage({
+      payload: JSON.stringify(message),
+      stopPropogation: true
+    })
+  }
+});

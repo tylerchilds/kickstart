@@ -4,7 +4,7 @@ const $ = module('main-stickies', {
   rootActive: false,
 	stickies: getStickies(),
 	activeEmbed: `
-		<iframe src="/stickies/music-verse.html"></iframe>
+		<iframe src="/music-verse/"></iframe>
 	`,
 })
 
@@ -196,7 +196,7 @@ window.addEventListener('keydown', (event) => {
 		//if esc key was not pressed in combination with ctrl or alt or shift
 		const isNotCombinedKey = !(event.ctrlKey || event.altKey || event.shiftKey);
 		if (isNotCombinedKey) {
-      switcher()
+      document.querySelector(`${$.link} .switcher`).click()
 		}
 	}
 });
