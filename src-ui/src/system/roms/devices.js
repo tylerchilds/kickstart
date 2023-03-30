@@ -1,7 +1,6 @@
-import module from './module.js'
-import safeTauri from './safe-tauri.js'
-import { gun } from './database.js'
-import { deepEqual } from 'fast-equals'
+import module from '../module.js'
+import safeTauri from '../safe-tauri.js'
+import { gun } from '../database.js'
 
 const initialState = {
   gamepads: {},

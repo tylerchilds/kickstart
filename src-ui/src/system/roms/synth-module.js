@@ -1,27 +1,14 @@
-import module from './system/module.js'
-import devices from './system/devices.js'
-import { Color, Tone, Midi } from '../deps.js'
+import module from '../module.js'
+import devices from './devices.js'
+import { Color, Tone, Midi } from '../../../deps.js'
 import $guitar from "./guitar.js"
 
 const start = new Date()
 let midiOut
 const midiIn = new Midi()
 const track = midiIn.addTrack()
-
-addEventListener('keydown', (event) => {
-  const message = {
-    event: 'KeyboardInput',
-    type: event.type,
-    key: event.key
-  }
-
-  self.top.postMessage({
-    payload: JSON.stringify(message),
-    stopPropogation: true
-  })
-});
-
 const LOW_TONE = 24
+
 const synths = [
  new Tone.Synth().toDestination(),
  new Tone.Synth().toDestination(),

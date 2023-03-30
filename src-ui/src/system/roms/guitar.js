@@ -1,5 +1,5 @@
-import module from './system/module.js'
-import devices from './system/devices.js'
+import module from '../module.js'
+import devices from './devices.js'
 
 const initialState = {
   activeFrets: [],

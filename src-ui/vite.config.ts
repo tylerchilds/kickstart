@@ -23,10 +23,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
-				authentication: 'stickies/authentication.html',
-				synthia: 'stickies/synthia.html',
-				devices: 'stickies/devices.html',
-				['music-verse']: 'stickies/music-verse.html',
       },
 			output: {
 				assetFileNames: "[name].[ext]",
