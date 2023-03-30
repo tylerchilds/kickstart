@@ -3,8 +3,6 @@ import Color from "colorjs.io";
 import { Midi } from '@tonejs/midi'
 import * as Tone from 'tone'
 
-import './src/system/devices.js'
-
 import * as focusTrap from 'focus-trap';
 
 export {

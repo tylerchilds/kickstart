@@ -1,6 +1,6 @@
 import module from '../system/module.js'
 
-const $ = module('main-stickies', {
+const $ = module('system-emulator', {
   rootActive: false,
 	stickies: getStickies(),
 	activeEmbed: `

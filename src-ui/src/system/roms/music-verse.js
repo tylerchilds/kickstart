@@ -1,4 +1,4 @@
-import module from './system/module.js'
+import module from '../module.js'
 import maplibregl from 'maplibre-gl';
 
 const $ = module('music-verse')

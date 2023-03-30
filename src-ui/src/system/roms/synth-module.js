@@ -1,6 +1,6 @@
-import module from './system/module.js'
-import devices from './system/devices.js'
-import { Color, Tone, Midi } from '../deps.js'
+import module from '../module.js'
+import devices from './devices.js'
+import { Color, Tone, Midi } from '../../../deps.js'
 import $guitar from "./guitar.js"
 
 const start = new Date()

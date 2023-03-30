@@ -4,9 +4,9 @@ import {
   basicSetup
 } from "https://esm.sh/@codemirror/basic-setup"
 
-import module from '../system/module.js'
-import { gun as database } from '../system/database.js'
-import { compile } from '../system/ScriptType.js'
+import module from '../module.js'
+import { gun as database } from '../database.js'
+import { compile } from '../ScriptType.js'
 
 const $ = module('scripttype-editor', { file: hello() })
 const sourceLocation = '/scripts/' + window.location.pathname.split('/edit/')[1]

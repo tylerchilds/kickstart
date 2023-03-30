@@ -14,7 +14,7 @@ import {
   javascript
 } from "https://esm.sh/@codemirror/lang-javascript"
 
-import module from '../system/module.js'
+import module from '../module.js'
 
 const $ = module('code-module')
 

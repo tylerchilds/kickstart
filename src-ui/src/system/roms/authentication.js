@@ -1,5 +1,5 @@
-import module from './system/module.js'
-import $controlBox from './control-box.js'
+import module from '../module.js'
+import $controlBox from '../../control-box.js'
 
 const $ = module('authentication', {
   filter: '',

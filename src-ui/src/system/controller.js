@@ -1,11 +1,12 @@
-import '../authentication.js'
-import './devices.js'
-import './code-module.js'
-import '../music-verse.js'
-import '../plugins/main-stickies.js'
-import './scripttype-editor.js'
-import './scripttype-viewer.js'
-import '../synth-module.js'
+import './emulator.js'
+
+import './roms/authentication.js'
+import './roms/devices.js'
+import './roms/code-module.js'
+import './roms/scripttype-editor.js'
+import './roms/scripttype-viewer.js'
+import './roms/synth-module.js'
+import './roms/music-verse.js'
 
 export default function router(database, path) {
 	const file = database.get('files').get(path)
@@ -32,7 +33,7 @@ export default function router(database, path) {
 
 	if(blank) {
     if(window.top == self.self) {
-      render('main-stickies')
+      render('system-emulator')
     }
 	}
 }
