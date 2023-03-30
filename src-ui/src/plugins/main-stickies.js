@@ -56,21 +56,21 @@ function getStickies() {
 			key: '0',
 			title: 'Authentication',
 			embed: `
-				<iframe src="/stickies/authentication.html"></iframe>
+				<iframe src="/authentication/"></iframe>
 			`,
 		},
 		'1': {
 			key: '1',
 			title: 'Devices',
 			embed: `
-				<iframe src="/stickies/devices.html"></iframe>
+				<iframe src="/devices/"></iframe>
 			`,
 		},
 		'2': {
 			key: '2',
 			title: 'Synthia',
 			embed: `
-				<iframe src="/stickies/synthia.html"></iframe>
+				<iframe src="/synthia/"></iframe>
 			`,
 		},
 		'3': {
@@ -98,7 +98,7 @@ function getStickies() {
 			key: '6',
 			title: 'MusicVerse',
 			embed: `
-				<iframe src="/stickies/music-verse.html"></iframe>
+				<iframe src="/music-verse/"></iframe>
 			`,
 		},
 
