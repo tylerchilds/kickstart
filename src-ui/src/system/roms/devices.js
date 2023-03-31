@@ -58,6 +58,11 @@ socket.onmessage = event => {
   receive({ payload, originator })
 }
 
+window.onbeforeunload = function() {
+	socket.onclose = function () {}; // disable onclose handler first
+	socket.close();
+};
+
 function receive(event) {
   if(event.payload) {
     const payload = JSON.parse(event.payload) || {}
