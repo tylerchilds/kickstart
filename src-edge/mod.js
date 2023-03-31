@@ -38,7 +38,7 @@ function websocket(request) {
     socket.onopen = handleSocketOpen.bind(socket, pathname);
     socket.onmessage = handleSocketMessage.bind(socket, pathname);
     socket.onclose = handleSocketClose.bind(socket, pathname);
-    socket.onerror = console.error;
+    socket.onerror = handleSocketError.bind(socket, pathname);
 
     return response;
   } catch(e) {
@@ -59,6 +59,12 @@ function handleSocketOpen(pathname) {
 
 function handleSocketClose(pathname) {
   socketsByChannel[pathname].delete(this)
+}
+
+function handleSocketError(pathname, error) {
+  handleSocketClose.call(this, pathname)
+  handleSocketOpen.call(this, pathname)
+  console.log('handledSocketError:', error)
 }
 
 function handleSocketMessage(pathname, event) {
