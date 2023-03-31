@@ -1,6 +1,9 @@
 import module from '../module.js'
 import safeTauri from '../safe-tauri.js'
 import { gun } from '../database.js'
+import { randomString } from '../../../deps.js'
+
+const originator = randomString()
 
 const initialState = {
   gamepads: {},
@@ -45,14 +48,17 @@ const EVENTS = {
 }
 
 // client
-//const socket = new WebSocket("ws://"+self.location.host + self.location.pathname)
+const socketProtocol = self.location.protocol === 'https:' ? 'wss:' : 'ws:'
+const socket = new WebSocket(socketProtocol+"//"+self.location.host + self.location.pathname)
 listen('rs2js', receive)
 self.onmessage = (event) => receive(event.data)
-//socket.onmessage = receive
+socket.onmessage = event => {
+  const { payload, originator } = JSON.parse(event.data)
+  receive({ payload, originator })
+}
 
 function receive(event) {
   if(event.payload) {
-    console.log("received: " + event.payload)
     const payload = JSON.parse(event.payload) || {}
 
     if(EVENTS[payload.event]) {
@@ -61,17 +67,19 @@ function receive(event) {
 
     if(event.stopPropogation) return
     forward(event)
-    // when a user events, socket the message with the channel pathname
-    console.log(JSON.stringify(event.data))
-    //socket.send(event.data)
-  } else { console.log('nah') }
+  } else { console.log(event) }
 }
 
 function forward(event) {
+  if(originator === event.originator) {
+    return
+  }
   const children = [...document.querySelectorAll('iframe')]
   children.map(iframe => {
     iframe.contentWindow.postMessage(event, '*')
   })
+  const data = JSON.stringify({ payload: event.payload, originator })
+  socket.send(data)
 }
 
 function onAxisChange({ id, key, value }) {

@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
 import { Status } from "https://deno.land/std/http/http_status.ts";
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
 
-const channels = new Map();
+const channels = {};
 const socketsByChannel = {}
 
 async function router(request, context) {
@@ -47,11 +47,12 @@ function websocket(request) {
 }
 
 function handleSocketOpen(pathname) {
-  if(!channels.has(pathname)) {
+  if(!channels[pathname]) {
     const channel = new BroadcastChannel(pathname)
     socketsByChannel[pathname] = new Set();
-    channel.onmessage = handleChannelMessage.bind(channel, pathname)
-    channels.set(pathname, channel)
+    this.onmessage = handleChannelMessage.bind(channel, pathname)
+    channel.messageerror = console.error
+    channels[pathname] = channel
   }
   socketsByChannel[pathname].add(this)
 }
@@ -61,15 +62,13 @@ function handleSocketClose(pathname) {
 }
 
 function handleSocketMessage(pathname, event) {
-  console.log('socket ' + pathname + ': ' + JSON.stringify(event))
-  const channel = channels.get(pathname)
-  channel.postMessage(event)
+  const channel = channels[pathname]
+  channel.postMessage(event.data)
 }
 
 function handleChannelMessage(pathname, event) {
-  console.log('channel ' + pathname + ': ' + event)
-  (event.target !== this) && this.postMessage(e.data)
-  socketsByChannel[pathname].forEach(s => s.send(e.data))
+  (event.target !== this) && this.postMessage(event.data)
+  socketsByChannel[pathname].forEach(s => s.send(event.data))
 }
 
 serve(router);
