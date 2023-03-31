@@ -69,11 +69,13 @@ function handleSocketError(pathname, error) {
 
 function handleSocketMessage(pathname, event) {
   const channel = channels[pathname]
+  console.log('socket: ', event.data)
   channel.postMessage(event.data)
 }
 
 function handleChannelMessage(pathname, event) {
   (event.target !== this) && this.postMessage(event.data)
+  console.log('channel: ', event.data)
   socketsByChannel[pathname].forEach(s => s.send(event.data))
 }
 
