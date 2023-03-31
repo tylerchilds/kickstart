@@ -2,6 +2,7 @@
   "tasks": {
     "start": "deno run --allow-read=dist --allow-net --unstable mod.js"
   },
+  "importMap": "./import_map.json",
   "compilerOptions": {
   }
 }
