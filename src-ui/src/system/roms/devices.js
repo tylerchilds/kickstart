@@ -49,7 +49,7 @@ const EVENTS = {
 
 // client
 const socketProtocol = self.location.protocol === 'https:' ? 'wss:' : 'ws:'
-const socket = new WebSocket(socketProtocol+"//"+self.location.host + self.location.pathname)
+const socket = new WebSocket(socketProtocol+"//"+'sillyz-beta.deno.dev' + self.location.pathname)
 listen('rs2js', receive)
 self.onmessage = (event) => receive(event.data)
 socket.onmessage = event => {
