@@ -51,7 +51,7 @@ function handleSocketOpen(pathname) {
     const channel = new BroadcastChannel(pathname)
     socketsByChannel[pathname] = new Set();
     this.onmessage = handleChannelMessage.bind(channel, pathname)
-    channel.messageerror = console.error
+    channel.onmessageerror = console.error
     channels[pathname] = channel
   }
   socketsByChannel[pathname].add(this)
@@ -69,13 +69,11 @@ function handleSocketError(pathname, error) {
 
 function handleSocketMessage(pathname, event) {
   const channel = channels[pathname]
-  console.log('socket: ', event.data)
   channel.postMessage(event.data)
 }
 
 function handleChannelMessage(pathname, event) {
   (event.target !== this) && this.postMessage(event.data)
-  console.log('channel: ', event.data)
   socketsByChannel[pathname].forEach(s => s.send(event.data))
 }
 
