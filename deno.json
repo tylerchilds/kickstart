@@ -2,8 +2,8 @@
   "tasks": {
     "start": "cargo tauri dev",
     "build": "cargo tauri build",
-    "start-ui": "cd src-ui && npm i && npm run dev",
-    "build-ui": "cd src-ui && npm i && npm run build",
+    "start-ui": "cd src-ui && deno task develop-client",
+    "build-ui": "cd src-ui && deno task build-client",
     "start-edge": "deno task build-ui && cd src-edge && deno task start"
   },
   "compilerOptions": {
