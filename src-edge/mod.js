@@ -1,20 +1,6 @@
 import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
 import { Status } from "https://deno.land/std/http/http_status.ts";
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
-import GUN from "@gun"
-
-const gun = GUN();
-
-gun.get('mark').put({
-  name: "Mark",
-  email: "mark@gun.eco",
-});
-
-gun.get('mark').on((data, key) => {
-  console.log("realtime updates:", data);
-});
-
-setInterval(() => { gun.get('mark').get('live').put(Math.random()) }, 9);
 
 const channels = {};
 const socketsByChannel = {}

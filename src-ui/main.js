@@ -7,7 +7,7 @@ console.log.apply(null, [
   ...Object.keys(dependencies)
 ])
 
-router(dependencies.database, window.location.pathname)
+router(window.location.pathname)
 
 if(true) {
   safeTauri.window.appWindow.show()

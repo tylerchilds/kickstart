@@ -1,4 +1,3 @@
-import { gun as database } from './src/system/database.js'
 import Color from "colorjs.io";
 import { Midi } from '@tonejs/midi'
 import * as Tone from 'tone'
@@ -11,7 +10,6 @@ export {
   Tone,
   focusTrap,
   randomString,
-  database
 }
 
 const randomString = (length) =>

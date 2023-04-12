@@ -7,16 +7,20 @@ import './roms/scripttype-editor.js'
 import './roms/scripttype-viewer.js'
 import './roms/synth-module.js'
 import './roms/music-verse.js'
+import './roms/video-reddit.js'
 
-export default function router(database, path) {
-	const file = database.get('files').get(path)
-
+export default function router(path) {
 	const router = {
 		'/authentication/': () => render('authentication'),
 		'/devices/': () => render('debug-devices'),
 		'/edit/': () => render('scripttype-editor'),
 		'/view/': () => render('scripttype-viewer'),
 		'/synthia/': () => render('synth-module'),
+		'/video-reddit/': () => render('div', {}, `
+      <control-box label="subs" options="videos"></control-box>
+      <video-reddit title="Hello Reddit" r="videos" sort="hot"></video-reddit>
+
+    `),
 		'/music-verse/': () => render('div', {}, `
         <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
         <music-verse></music-verse>

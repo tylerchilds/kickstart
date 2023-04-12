@@ -101,6 +101,13 @@ function getStickies() {
 				<iframe src="/music-verse/"></iframe>
 			`,
 		},
+    '6': {
+			key: '6',
+			title: 'Video Reddit',
+			embed: `
+				<iframe src="/video-reddit/"></iframe>
+			`,
+		},
 
 	}
 }

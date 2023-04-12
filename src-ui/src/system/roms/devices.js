@@ -1,6 +1,5 @@
 import module from '../module.js'
 import safeTauri from '../safe-tauri.js'
-import { gun } from '../database.js'
 import { randomString } from '../../../deps.js'
 
 const originator = randomString()

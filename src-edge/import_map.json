@@ -1,5 +1,4 @@
 {
   "imports": {
-    "@gun": "https://esm.sh/gun@0.2020.1237"
   }
 }

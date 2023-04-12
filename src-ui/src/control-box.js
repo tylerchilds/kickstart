@@ -36,14 +36,6 @@ $.when('click', '.item', function update(event) {
 $.when('click', '.bar', toggleActive);
 $.when('keyup', '[name="filter"]', setFilter);
 
-function load(target, args) {
-  target.ready = true
-  fetch(args.resource)
-    .then(res => res.json())
-    .then(body => body[args.path])
-    .then(options => $.teach({ options }))
-}
-
 $.draw(target => {
   const { featureActive } = $.learn()
 
@@ -52,8 +44,6 @@ $.draw(target => {
   }
 
   const args = attributes(target, $)
-
-  if(!target.ready) load(target, args)
 
 	if(!target.trap) {
 		target.trap = focusTrap.createFocusTrap(target, {
@@ -80,10 +70,10 @@ function bar(label, choices) {
 }
 
 function setList(node, $) {
-  const { filter, choices = [], options = [] } = $.learn()
+  const { filter, choices = [] } = $.learn()
   const args = attributes(node, $)
 
-  const list = options
+  const list = args.options
     .map(x => `
       <button class="item" data-id="${x}">
         ${x}
@@ -112,7 +102,7 @@ function setList(node, $) {
     </div>
   `
 
-  node.lastOptions = options
+  node.lastOptions = args.options
 }
 function filterList(node, $) {
   const { filter} = $.learn();
@@ -134,18 +124,13 @@ function filterList(node, $) {
 function attributes(node, $) {
   const target = node.closest($.link)
 
-  const list = target.getAttribute('list');
-  const [resource, path] = list.split('#');
-
   return {
 		root: target,
-    options: target.getAttribute('options'),
+    options: target.getAttribute('options').split('+'),
     label: target.getAttribute('label'),
     limit: target.getAttribute('limit'),
     placement: target.getAttribute('placement') || '',
     strict: target.getAttribute('strict') === 'true',
-    resource,
-    path
   }
 }
 
