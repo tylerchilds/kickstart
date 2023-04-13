@@ -23,9 +23,12 @@ $.when('click', '.next', step(+1))
 $.draw(target => {
   const { children = [], loading, position } = query(target)
 
-  if(children.length === 0)
+  if(children.length === 0) return `
+    <control-box label="subs" options="videos"></control-box>
+  `
 
   return `
+      <control-box label="subs" options="videos"></control-box>
       <div class="controls">
         <button class="reset" data-id="${target.id}">Reset</button>
         <button class="more" data-id="${target.id}">Go Deeper</button>
@@ -105,7 +108,7 @@ $.flair(`
     & .controls {
       position: fixed;
       z-index: 1;
-      top: 0;
+      bottom: 0;
       right: 0;
     }
 
@@ -146,7 +149,8 @@ $.flair(`
 function query(target) {
   const state = redditById(target.id)
 
-  const { choices=[] } = $.learn()
+  const r = target.getAttribute('r') || ''
+  const { choices=[r] } = $.learn()
   const sort = target.getAttribute('sort') || ''
   const { paginate } = state
 
