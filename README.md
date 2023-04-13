@@ -26,3 +26,9 @@ Packaging
 ```
 deno task build
 ```
+
+Edging
+
+```
+deno task start-edge
+```
