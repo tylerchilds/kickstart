@@ -13,6 +13,23 @@ Publish to the web.
 
 - Gandhi
 
+## Materials
+
+Install rust:
+```
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Install deno:
+```
+cargo install deno --locked
+```
+
+Install tauri:
+```
+cargo install tauri-cli
+```
+
 ## Building
 
 Development requires tauri.app, deno.land, and nodejs.org. Install those dependencies before proceeding.

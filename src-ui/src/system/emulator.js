@@ -101,8 +101,8 @@ function getStickies() {
 				<iframe src="/music-verse/"></iframe>
 			`,
 		},
-    '6': {
-			key: '6',
+    '7': {
+			key: '7',
 			title: 'Video Reddit',
 			embed: `
 				<iframe src="/video-reddit/"></iframe>
