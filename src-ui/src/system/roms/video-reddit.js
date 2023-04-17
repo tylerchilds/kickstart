@@ -21,6 +21,7 @@ $.when('click', '.back', step(-1))
 $.when('click', '.next', step(+1))
 
 $.draw(target => {
+  console.log('reddit')
   const { children = [], loading, position } = query(target)
 
   if(children.length === 0) return `

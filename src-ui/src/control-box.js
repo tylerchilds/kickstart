@@ -54,9 +54,10 @@ $.draw(target => {
 	}
   const { filter, choices = [], options = [] } = $.learn()
 
-  if(options !== target.lastOptions) setList(target, $)
   if(filter !== target.lastFilter) filterList(target, $)
-  if(choices !== target.lastChoices) updateChoices(target, $)
+  if(options !== target.lastOptions || choices !== target.lastChoices) {
+    return setList(target, $)
+  }
 })
 
 function updateChoices(node, $) {
@@ -86,7 +87,9 @@ function setList(node, $) {
     </button>
   `
 
-  node.innerHTML = `
+  node.lastOptions = args.options
+
+  return `
     <button class="bar">
       ${bar(args.label, choices)}
     </button>
@@ -101,8 +104,6 @@ function setList(node, $) {
       </div>
     </div>
   `
-
-  node.lastOptions = args.options
 }
 function filterList(node, $) {
   const { filter} = $.learn();

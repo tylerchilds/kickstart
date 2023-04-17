@@ -17,7 +17,6 @@ export default function router(path) {
 		'/view/': () => render('scripttype-viewer'),
 		'/synthia/': () => render('synth-module'),
 		'/video-reddit/': () => render('div', {}, `
-      <control-box label="subs" options="videos"></control-box>
       <video-reddit title="Hello Reddit" r="videos" sort="hot"></video-reddit>
 
     `),
