@@ -23,6 +23,7 @@
     "https://deno.land/std@0.140.0/path/win32.ts": "31811536855e19ba37a999cd8d1b62078235548d67902ece4aa6b814596dd757",
     "https://deno.land/std@0.165.0/http/http_status.ts": "897575a7d6bc2b9123f6a38ecbc0f03d95a532c5d92029315dc9f508e12526b8",
     "https://deno.land/std@0.183.0/http/http_status.ts": "8a7bcfe3ac025199ad804075385e57f63d055b2aed539d943ccc277616d6f932",
+    "https://deno.land/std@0.185.0/http/http_status.ts": "8a7bcfe3ac025199ad804075385e57f63d055b2aed539d943ccc277616d6f932",
     "https://deno.land/x/media_types@deprecated/mod.ts": "ef1423031579cc0cc125f099572dd3c245d1f7d71aed1da077515d29ba5636d6",
     "https://esm.sh/gun@0.2020.1237": "af2e61c9e7ad1bf53818cf179de9215fc60aacd449835bd027146b1e9ec3f2a1",
     "https://esm.sh/v113/gun@0.2020.1237/deno/gun.mjs": "7d8b459229d5dcee61eab3f87add6ff8eccf8dfc4c706e97d025c8d4df3f1e75",

@@ -1,0 +1,23 @@
+import { TAddAudioWorkletModuleFunction } from './add-audio-worklet-module-function.d.ts';
+import { TAnalyserNodeConstructor } from './analyser-node-constructor.d.ts';
+import { TAudioBufferConstructor } from './audio-buffer-constructor.d.ts';
+import { TAudioBufferSourceNodeConstructor } from './audio-buffer-source-node-constructor.d.ts';
+import { TBaseAudioContextConstructor } from './base-audio-context-constructor.d.ts';
+import { TBiquadFilterNodeConstructor } from './biquad-filter-node-constructor.d.ts';
+import { TChannelMergerNodeConstructor } from './channel-merger-node-constructor.d.ts';
+import { TChannelSplitterNodeConstructor } from './channel-splitter-node-constructor.d.ts';
+import { TConstantSourceNodeConstructor } from './constant-source-node-constructor.d.ts';
+import { TConvolverNodeConstructor } from './convolver-node-constructor.d.ts';
+import { TDecodeAudioDataFunction } from './decode-audio-data-function.d.ts';
+import { TDelayNodeConstructor } from './delay-node-constructor.d.ts';
+import { TDynamicsCompressorNodeConstructor } from './dynamics-compressor-node-constructor.d.ts';
+import { TGainNodeConstructor } from './gain-node-constructor.d.ts';
+import { TIIRFilterNodeConstructor } from './iir-filter-node-constructor.d.ts';
+import { TMinimalBaseAudioContextConstructor } from './minimal-base-audio-context-constructor.d.ts';
+import { TOscillatorNodeConstructor } from './oscillator-node-constructor.d.ts';
+import { TPannerNodeConstructor } from './panner-node-constructor.d.ts';
+import { TPeriodicWaveConstructor } from './periodic-wave-constructor.d.ts';
+import { TStereoPannerNodeConstructor } from './stereo-panner-node-constructor.d.ts';
+import { TWaveShaperNodeConstructor } from './wave-shaper-node-constructor.d.ts';
+export type TBaseAudioContextConstructorFactory = (addAudioWorkletModule: undefined | TAddAudioWorkletModuleFunction, analyserNodeConstructor: TAnalyserNodeConstructor, audioBufferConstructor: TAudioBufferConstructor, audioBufferSourceNodeConstructor: TAudioBufferSourceNodeConstructor, biquadFilterNodeConstructor: TBiquadFilterNodeConstructor, channelMergerNodeConstructor: TChannelMergerNodeConstructor, channelSplitterNodeConstructor: TChannelSplitterNodeConstructor, constantSourceNodeConstructor: TConstantSourceNodeConstructor, convolverNodeConstructor: TConvolverNodeConstructor, decodeAudioData: TDecodeAudioDataFunction, delayNodeConstructor: TDelayNodeConstructor, dynamicsCompressorNodeConstructor: TDynamicsCompressorNodeConstructor, gainNodeConstructor: TGainNodeConstructor, iIRFilterNodeConstructor: TIIRFilterNodeConstructor, minimalBaseAudioContextConstructor: TMinimalBaseAudioContextConstructor, oscillatorNodeConstructor: TOscillatorNodeConstructor, pannerNodeConstructor: TPannerNodeConstructor, periodicWaveConstructor: TPeriodicWaveConstructor, stereoPannerNodeConstructor: TStereoPannerNodeConstructor, waveShaperNodeConstructor: TWaveShaperNodeConstructor) => TBaseAudioContextConstructor;
+//# sourceMappingURL=base-audio-context-constructor-factory.d.ts.map

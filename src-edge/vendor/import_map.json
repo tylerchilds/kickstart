@@ -1,0 +1,54 @@
+{
+  "imports": {
+    "diffhtml": "./esm.archive.org/diffhtml@1.0.0-beta.29.js",
+    "https://esm.sh/@codemirror/basic-setup": "./esm.sh/@codemirror/basic-setup@0.20.0.js",
+    "https://esm.sh/@codemirror/lang-css": "./esm.sh/@codemirror/lang-css@6.2.0.js",
+    "https://esm.sh/@codemirror/lang-html": "./esm.sh/@codemirror/lang-html@6.4.3.js",
+    "https://esm.sh/@codemirror/lang-javascript": "./esm.sh/@codemirror/lang-javascript@6.1.7.js",
+    "maplibre-gl": "./esm.sh/maplibre-gl@2.4.0.js",
+    "@tonejs/midi": "./esm.archive.org/@tonejs/midi@2.0.28.js",
+    "tone": "./esm.archive.org/tone@14.8.49.js",
+    "focus-trap": "./esm.archive.org/focus-trap@7.3.1.js",
+    "https://deno.land/": "./deno.land/",
+    "https://esm.archive.org/": "./esm.archive.org/",
+    "https://esm.sh/": "./esm.sh/"
+  },
+  "scopes": {
+    "./esm.archive.org/": {
+      "/v99/array-flatten@3.0.0/deno/array-flatten.js": "./esm.archive.org/v99/array-flatten@3.0.0/deno/array-flatten.js",
+      "/v99/midi-file@1.2.4/deno/midi-file.js": "./esm.archive.org/v99/midi-file@1.2.4/deno/midi-file.js",
+      "/v99/tabbable@6.1.1/deno/tabbable.js": "./esm.archive.org/v99/tabbable@6.1.1/deno/tabbable.js",
+      "/v99/automation-events@6.0.0/deno/automation-events.js": "./esm.archive.org/v99/automation-events@6.0.0/deno/automation-events.js",
+      "/v99/standardized-audio-context@25.3.45/deno/standardized-audio-context.js": "./esm.archive.org/v99/standardized-audio-context@25.3.45/deno/standardized-audio-context.js",
+      "/v99/tslib@2.5.0/deno/tslib.js": "./esm.archive.org/v99/tslib@2.5.0/deno/tslib.js"
+    },
+    "./esm.sh/": {
+      "/v117/@codemirror/state@0.20.1/deno/state.mjs": "./esm.sh/v117/@codemirror/state@0.20.1/deno/state.mjs",
+      "/v117/@codemirror/view@0.20.7/deno/view.mjs": "./esm.sh/v117/@codemirror/view@0.20.7/deno/view.mjs",
+      "/v117/@codemirror/language@0.20.2/deno/language.mjs": "./esm.sh/v117/@codemirror/language@0.20.2/deno/language.mjs",
+      "/v117/@codemirror/state@6.2.0/deno/state.mjs": "./esm.sh/v117/@codemirror/state@6.2.0/deno/state.mjs",
+      "/v117/@codemirror/view@6.10.0/deno/view.mjs": "./esm.sh/v117/@codemirror/view@6.10.0/deno/view.mjs",
+      "/v117/@codemirror/language@6.6.0/deno/language.mjs": "./esm.sh/v117/@codemirror/language@6.6.0/deno/language.mjs",
+      "/v117/@codemirror/commands@0.20.0/deno/commands.mjs": "./esm.sh/v117/@codemirror/commands@0.20.0/deno/commands.mjs",
+      "/v117/@codemirror/search@0.20.1/deno/search.mjs": "./esm.sh/v117/@codemirror/search@0.20.1/deno/search.mjs",
+      "/v117/@codemirror/autocomplete@0.20.3/deno/autocomplete.mjs": "./esm.sh/v117/@codemirror/autocomplete@0.20.3/deno/autocomplete.mjs",
+      "/v117/@codemirror/lint@0.20.3/deno/lint.mjs": "./esm.sh/v117/@codemirror/lint@0.20.3/deno/lint.mjs",
+      "/v117/@lezer/common@0.16.1/deno/common.mjs": "./esm.sh/v117/@lezer/common@0.16.1/deno/common.mjs",
+      "/v117/@lezer/css@1.1.1/deno/css.mjs": "./esm.sh/v117/@lezer/css@1.1.1/deno/css.mjs",
+      "/v117/@lezer/common@1.0.2/deno/common.mjs": "./esm.sh/v117/@lezer/common@1.0.2/deno/common.mjs",
+      "/v117/@lezer/html@1.3.4/deno/html.mjs": "./esm.sh/v117/@lezer/html@1.3.4/deno/html.mjs",
+      "/v117/@codemirror/lang-css@6.2.0/deno/lang-css.mjs": "./esm.sh/v117/@codemirror/lang-css@6.2.0/deno/lang-css.mjs",
+      "/v117/@codemirror/lang-javascript@6.1.7/deno/lang-javascript.mjs": "./esm.sh/v117/@codemirror/lang-javascript@6.1.7/deno/lang-javascript.mjs",
+      "/v117/@lezer/javascript@1.4.3/deno/javascript.mjs": "./esm.sh/v117/@lezer/javascript@1.4.3/deno/javascript.mjs",
+      "/v117/@codemirror/autocomplete@6.6.0/deno/autocomplete.mjs": "./esm.sh/v117/@codemirror/autocomplete@6.6.0/deno/autocomplete.mjs",
+      "/v117/@lezer/highlight@0.16.0/deno/highlight.mjs": "./esm.sh/v117/@lezer/highlight@0.16.0/deno/highlight.mjs",
+      "/v117/style-mod@4.0.3/deno/style-mod.mjs": "./esm.sh/v117/style-mod@4.0.3/deno/style-mod.mjs",
+      "/v117/@codemirror/view@6.9.3/deno/view.mjs": "./esm.sh/v117/@codemirror/view@6.9.3/deno/view.mjs",
+      "/v117/@lezer/highlight@1.1.4/deno/highlight.mjs": "./esm.sh/v117/@lezer/highlight@1.1.4/deno/highlight.mjs",
+      "/v117/style-mod@4.0.2/deno/style-mod.mjs": "./esm.sh/v117/style-mod@4.0.2/deno/style-mod.mjs",
+      "/v117/crelt@1.0.5/deno/crelt.mjs": "./esm.sh/v117/crelt@1.0.5/deno/crelt.mjs",
+      "/v117/w3c-keyname@2.2.6/deno/w3c-keyname.mjs": "./esm.sh/v117/w3c-keyname@2.2.6/deno/w3c-keyname.mjs",
+      "/v117/@lezer/lr@1.3.4/deno/lr.mjs": "./esm.sh/v117/@lezer/lr@1.3.4/deno/lr.mjs"
+    }
+  }
+}

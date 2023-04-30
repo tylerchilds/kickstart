@@ -1,0 +1,42 @@
+import { TContext, TDecodeErrorCallback, TDecodeSuccessCallback } from '../types/index.d.ts';
+import { IAnalyserNode } from './analyser-node.d.ts';
+import { IAudioBuffer } from './audio-buffer.d.ts';
+import { IAudioBufferSourceNode } from './audio-buffer-source-node.d.ts';
+import { IAudioNode } from './audio-node.d.ts';
+import { IAudioWorklet } from './audio-worklet.d.ts';
+import { IBiquadFilterNode } from './biquad-filter-node.d.ts';
+import { IConstantSourceNode } from './constant-source-node.d.ts';
+import { IConvolverNode } from './convolver-node.d.ts';
+import { IDelayNode } from './delay-node.d.ts';
+import { IDynamicsCompressorNode } from './dynamics-compressor-node.d.ts';
+import { IGainNode } from './gain-node.d.ts';
+import { IIIRFilterNode } from './iir-filter-node.d.ts';
+import { IMinimalBaseAudioContext } from './minimal-base-audio-context.d.ts';
+import { IOscillatorNode } from './oscillator-node.d.ts';
+import { IPannerNode } from './panner-node.d.ts';
+import { IPeriodicWave } from './periodic-wave.d.ts';
+import { IPeriodicWaveConstraints } from './periodic-wave-constraints.d.ts';
+import { IStereoPannerNode } from './stereo-panner-node.d.ts';
+import { IWaveShaperNode } from './wave-shaper-node.d.ts';
+export interface IBaseAudioContext<T extends TContext> extends IMinimalBaseAudioContext<T> {
+    readonly audioWorklet?: IAudioWorklet;
+    createAnalyser(): IAnalyserNode<T>;
+    createBiquadFilter(): IBiquadFilterNode<T>;
+    createBuffer(numberOfChannels: number, length: number, sampleRate: number): IAudioBuffer;
+    createBufferSource(): IAudioBufferSourceNode<T>;
+    createChannelMerger(numberOfInputs?: number): IAudioNode<T>;
+    createChannelSplitter(numberOfOutputs?: number): IAudioNode<T>;
+    createConstantSource(): IConstantSourceNode<T>;
+    createConvolver(): IConvolverNode<T>;
+    createDelay(maxDelayTime?: number): IDelayNode<T>;
+    createDynamicsCompressor(): IDynamicsCompressorNode<T>;
+    createGain(): IGainNode<T>;
+    createIIRFilter(feedforward: Iterable<number>, feedback: Iterable<number>): IIIRFilterNode<T>;
+    createOscillator(): IOscillatorNode<T>;
+    createPanner(): IPannerNode<T>;
+    createPeriodicWave(real: Iterable<number>, imag: Iterable<number>, constraints?: Partial<IPeriodicWaveConstraints>): IPeriodicWave;
+    createStereoPanner(): IStereoPannerNode<T>;
+    createWaveShaper(): IWaveShaperNode<T>;
+    decodeAudioData(audioData: ArrayBuffer, successCallback?: TDecodeSuccessCallback, errorCallback?: TDecodeErrorCallback): Promise<AudioBuffer>;
+}
+//# sourceMappingURL=base-audio-context.d.ts.map
