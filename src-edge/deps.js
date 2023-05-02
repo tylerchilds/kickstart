@@ -1,4 +1,4 @@
-//import Color from "colorjs.io";
+import Color from "colorjs.io";
 import { Midi } from '@tonejs/midi'
 import * as Tone from 'tone'
 

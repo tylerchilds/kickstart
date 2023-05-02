@@ -2,7 +2,7 @@ import {
   EditorState,
   EditorView,
   basicSetup
-} from "https://esm.sh/@codemirror/basic-setup"
+} from "@codemirror/basic-setup"
 
 import module from '../module.js'
 import { compile } from '../ScriptType.js'

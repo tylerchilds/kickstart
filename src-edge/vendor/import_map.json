@@ -6,12 +6,15 @@
     "https://esm.sh/@codemirror/lang-html": "./esm.sh/@codemirror/lang-html@6.4.3.js",
     "https://esm.sh/@codemirror/lang-javascript": "./esm.sh/@codemirror/lang-javascript@6.1.7.js",
     "maplibre-gl": "./esm.sh/maplibre-gl@2.4.0.js",
+    "@codemirror/basic-setup": "./esm.sh/@codemirror/basic-setup@0.20.0.js",
     "@tonejs/midi": "./esm.archive.org/@tonejs/midi@2.0.28.js",
     "tone": "./esm.archive.org/tone@14.8.49.js",
     "focus-trap": "./esm.archive.org/focus-trap@7.3.1.js",
+    "https://deno.land/x/media_types/mod.ts": "./deno.land/x/media_types@deprecated/mod.ts",
     "https://deno.land/": "./deno.land/",
     "https://esm.archive.org/": "./esm.archive.org/",
-    "https://esm.sh/": "./esm.sh/"
+    "https://esm.sh/": "./esm.sh/",
+    "https://raw.githubusercontent.com/": "./raw.githubusercontent.com/"
   },
   "scopes": {
     "./esm.archive.org/": {

@@ -1,81 +1,95 @@
-import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
-import { Status } from "https://deno.land/std/http/http_status.ts";
 import { lookup } from "https://deno.land/x/media_types/mod.ts";
 
-const channels = {};
-const socketsByChannel = {}
+// Start listening on port 8080 of localhost.
+const server = Deno.listen({ port: 8080 });
+console.log("File server running on http://localhost:8080/");
 
-async function router(request, context) {
-  let { pathname } = new URL(request.url);
-
-  if (request.headers.get("upgrade") === "websocket") {
-    return websocket(request);
-  }
-
-  let file
-  let statusCode = Status.Success
-  try {
-    file = await Deno.readTextFile(`./dist${pathname}`)
-  } catch (e) {
-    pathname = './dist/index.html'
-    file = await Deno.readTextFile(pathname)
-    statusCode = Status.NotFound
-    console.error(pathname + '\n' + e)
-  }
-  return new Response(file, {
-    headers: {
-      'content-type': lookup(pathname),
-    },
-    status: statusCode
-  })
+for await (const conn of server) {
+  handleHttp(conn).catch(console.error);
 }
 
-function websocket(request) {
-  try {
-    const { pathname } = new URL(request.url);
-    const { socket, response } = Deno.upgradeWebSocket(request);
+async function handleHttp(conn) {
+  const httpConn = Deno.serveHttp(conn);
+  for await (const requestEvent of httpConn) {
+    // Use the request pathname as filepath
+    const url = new URL(requestEvent.request.url);
+    const filepath = decodeURIComponent(url.pathname);
 
-    socket.onopen = handleSocketOpen.bind(socket, pathname);
-    socket.onmessage = handleSocketMessage.bind(socket, pathname);
-    socket.onclose = handleSocketClose.bind(socket, pathname);
-    socket.onerror = handleSocketError.bind(socket, pathname);
+    // Try opening the file
+    let file;
+    try {
+			console.log('the fuck')
+      file = await Deno.open("." + filepath, { read: true });
+    } catch (e) {
 
-    return response;
-  } catch(e) {
-    console.error(e)
+			const res = await sillyz()
+			console.log(res)
+      await requestEvent.respondWith(res);
+    }
+    const readableStream = file.readable;
+
+    // Build and send the response
+    const response = new Response(readableStream, {
+			headers: {
+				'content-type': lookup(filepath),
+			},
+			status: 200
+		});
+    await requestEvent.respondWith(response);
   }
 }
 
-function handleSocketOpen(pathname) {
-  if(!channels[pathname]) {
-    const channel = new BroadcastChannel(pathname)
-    socketsByChannel[pathname] = new Set();
-    this.onmessage = handleChannelMessage.bind(channel, pathname)
-    channel.onmessageerror = console.error
-    channels[pathname] = channel
-  }
-  socketsByChannel[pathname].add(this)
-}
+async function sillyz() {
+	const importMap = await Deno.readTextFile(Deno.cwd() + '/vendor/import_map.json')
 
-function handleSocketClose(pathname) {
-  socketsByChannel[pathname].delete(this)
-}
+	const MissingNO = `
+		<!DOCTYPE html>
+		<html lang="en">
+			<head>
+				<meta charset="UTF-8" />
+				<link rel="icon" type="image/svg+xml" href="/artifacts/favicon.svg" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+				<title>Sillyz.Computer</title>
+				<link href="/artifacts/styles/system.css" rel="stylesheet">
+			 </head>
+			<body>
+			 <script type="importmap"">
+				${importMap}
+			 </script>
+			 <script type="text/javascript">
+					(function preferences() {
+						if(window.top === self.self) {
+							document.body.style = 'background: orange';
+						}
+					})();
 
-function handleSocketError(pathname, error) {
-  handleSocketClose.call(this, pathname)
-  handleSocketOpen.call(this, pathname)
-  console.log('handledSocketError:', error)
-}
+					var now = HTMLScriptElement.supports && HTMLScriptElement.supports('importmap');
 
-function handleSocketMessage(pathname, event) {
-  const channel = channels[pathname]
-  channel.postMessage(event.data)
-}
+					now ? future() : past();
 
-function handleChannelMessage(pathname, event) {
-  (event.target !== this) && this.postMessage(event.data)
-  socketsByChannel[pathname].forEach(s => s.send(event.data))
-}
+					function future() {
+						var script = document.createElement('script');
+						script.type = "module";
+						script.src = "/main.js";
+						document.body.appendChild(script);
+					}
 
-serve(router);
-console.log("Listening on http://localhost:8000");
+					function past() {
+						var script = document.createElement('script');
+						script.type = "text/javascript";
+						// todo, build the past using the -> 2015 -> 1998 bundler
+						script.src = "/generated/main.bundle.js";
+						document.body.appendChild(script);
+					}
+				</script>
+			</body>
+		</html>
+	`
+
+	return new Response(MissingNO, {
+		headers: {
+			'content-type': 'text/html; charset=utf-8'
+		},
+		status: 404
+	})
+}

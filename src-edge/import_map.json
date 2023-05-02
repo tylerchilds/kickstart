@@ -1,7 +1,8 @@
 {
   "imports": {
     "@tonejs/midi": "https://esm.archive.org/@tonejs/midi@2.0.28",
-    "colorjs.io": "https://esm.archive.org/colorjs.io@0.4.3",
+    "@codemirror/basic-setup": "https://esm.sh/@codemirror/basic-setup",
+    "colorjs.io": "npm:colorjs.io@0.4.3",
     "diffhtml": "https://esm.archive.org/diffhtml@1.0.0-beta.29",
     "fast-equals": "https://esm.archive.org/fast-equals@4.0.3",
     "focus-trap": "https://esm.archive.org/focus-trap@7.3.1",

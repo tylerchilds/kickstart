@@ -2,30 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/artifacts/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hyper Craft</title>
-    <link href="/styles/system.css" rel="stylesheet">
-    <script type="importmap">
-      {
-        "imports": {
-          "@tonejs/midi": "esm.archive.org/@tonejs/midi@2.0.28",
-          "colorjs.io": "esm.archive.org/colorjs.io@0.4.3",
-          "diffhtml": "esm.archive.org/diffhtml@1.0.0-beta.29",
-          "fast-equals": "esm.archive.org/fast-equals@4.0.3",
-          "focus-trap": "esm.archive.org/focus-trap@7.3.1",
-          "maplibre-gl": "esm.archive.org/maplibre-gl@2.4.0",
-          "tone": "esm.archive.org/tone@14.8.49"
+    <title>Sillyz.Computer</title>
+    <link href="/artifacts/styles/system.css" rel="stylesheet">
+   </head>
+  <body>
+   <script type="importmap" src="./vendor/import_map.json"></script>
+   <script type="text/javascript">
+      (function preferences() {
+        if(window.top === self.self) {
+          document.body.style = 'background: orange';
+        }
+      })();
+
+      var now = HTMLScriptElement.supports && HTMLScriptElement.supports('importmap');
+
+      now ? future() : past();
+
+      function future() {
+        function execute() {
+          var script = document.createElement('script');
+          script.type = "module";
+          script.src = "/main.js";
+          document.body.appendChild(script);
         }
       }
-    </script>
-  </head>
-  <body>
-    <script>
-      if(window.top === self.self) {
-        document.body.style = 'background: orange'
+
+      function past() {
+        var script = document.createElement('script');
+        script.type = "text/javascript";
+        // todo, build the past using the -> 2015 -> 1998 bundler
+        script.src = "/generated/main.bundle.js";
+        document.body.appendChild(script);
       }
     </script>
-    <script type="module" src="/main.js"></script>
   </body>
 </html>
