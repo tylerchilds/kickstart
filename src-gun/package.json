@@ -1,0 +1,15 @@
+{
+  "name": "src-gun",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd node_modules/gun && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "gun": "^0.2020.1239"
+  }
+}

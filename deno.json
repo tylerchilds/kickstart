@@ -4,7 +4,11 @@
     "build": "cargo tauri build",
     "start-ui": "cd src-ui && deno task develop-client",
     "build-ui": "cd src-ui && deno task build-client",
-    "start-edge": "deno task build-ui && cd src-edge && deno task start"
+    "start-edge": "deno task build-ui && cd src-edge && deno task start",
+    "start-gun": "cd src-gun && deno task start",
+    "start-braid": "cd src-braid && deno task start",
+    "start-solid": "cd src-solid && deno task start",
+    "monolith": "sh monolith.sh"
   },
   "compilerOptions": {
   }
