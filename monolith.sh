@@ -7,6 +7,8 @@ killgroup(){
   kill 0
 }
 
+cd $SILLONIUS_INSTALL
+
 deno task start-edge &
 deno task start-solid &
 deno task start-gun &
