@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "start": "npm start"
+    "start": "npm i && npm start"
   },
   "compilerOptions": {
   }
