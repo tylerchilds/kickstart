@@ -1,7 +1,8 @@
 {
   "tasks": {
-    "start": "cargo tauri dev",
-    "build": "cargo tauri build",
+    "start": "deno run -A https://deno.land/x/pup/pup.ts run -c ./pup.json",
+    "start-native": "cargo tauri dev",
+    "build-native": "cargo tauri build",
     "start-ui": "cd src-ui && deno task develop-client",
     "build-ui": "cd src-ui && deno task build-client",
     "start-edge": "deno task build-ui && cd src-edge && deno task start",
