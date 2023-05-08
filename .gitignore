@@ -1,3 +1,4 @@
 src-tauri/binaries/
 .pup.json-tmp
 logs/
+tmp/
