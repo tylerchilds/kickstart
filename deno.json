@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "start": "deno run -A https://deno.land/x/pup/pup.ts run -c ./pup.json",
+    "start": "deno run -A mod.js",
     "start-native": "cargo tauri dev",
     "build-native": "cargo tauri build",
     "start-ui": "cd src-ui && deno task develop-client",
