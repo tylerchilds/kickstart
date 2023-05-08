@@ -1,0 +1,81 @@
+<!-- hello-map.html -->
+<head>
+  <script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" rel="stylesheet" />
+</head>
+
+<hello-map></hello-map>
+
+<script type="module">
+  import tag from '../../mod.js'
+
+  const coordinates = [
+    [-70.285605, 41.651761],
+    [-122.290195, 37.528287],
+    [-70.729755, 42.014324],
+    [-122.496417, 37.606648]
+  ]
+
+  const $ = tag('hello-map', { center: coordinates[1], count: 0 })
+
+  $.draw(draw)
+
+  function initialize(target) {
+    const { center } = $.learn()
+    const container = document.createElement('div')
+    container.classList.add('map')
+    target.appendChild(container)
+
+    target.map = new maplibregl.Map({
+      container,
+      style:
+      'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
+      center,
+      zoom: 8
+    })
+
+    target.map.on('load', () => start(target.map))
+  }
+
+  function start(map) {
+    setInterval(() => jump(), 5000)
+  }
+
+  async function jump() {
+    const count = $.learn().count + 1
+
+    $.teach({
+      center: coordinates[mod(count, coordinates.length)],
+      count
+    })
+  }
+
+  function draw(target) {
+    if(!target.map) initialize(target)
+
+    if(!!target.map.getSource) {
+      const { center } = $.learn()
+
+      target.map.flyTo({
+        center,
+        speed: .5
+      })
+    }
+  }
+
+  $.flair(`
+    body { margin: 0; padding: 0; }
+
+    & {
+      display: block;
+    }
+
+    & .map {
+     position: absolute; top: 0; bottom: 0; width: 100%;
+    }
+  `)
+
+  function mod(n, m) {
+    return ((n % m) + m) % m;
+  }
+</script>

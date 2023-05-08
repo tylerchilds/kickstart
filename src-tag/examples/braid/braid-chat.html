@@ -1,0 +1,69 @@
+<!-- hello-chat.html -->
+<braid-chat room="http://invisible.college:3007/messages"></braid-chat>
+
+<script type="module">
+  import "../../src/vendor/statebus/statebus.js"
+  import "../../src/vendor/statebus/client-library.js"
+  import "../../src/vendor/statebus/braidify-client.js"
+  import tag from '../../mod.js'
+
+  // optimally, we'll import just bus from statebus and everything else will be implemented under the hood. stubbing for now to unblock development using tag
+  const bus = window.bus
+  window.braid_fetch = window.fetch
+
+  const $ = tag('braid-chat', { name: "Braid User" })
+  const hotDraw = bus.reactive(function draw(target) {
+    initialize(target)
+    const { name, room } = $.learn()
+
+    const messages = bus.state[room] || []
+
+    const log = messages.map(({ from, body }) => `
+      <div>${from}: ${body}</div>
+    `).join('')
+
+    return `
+      ${log}
+      <form>
+        <input name="name" value="${name}" />
+        <input name="message" />
+        <button type="submit">Send</button>
+      </form>
+    `
+  })
+  $.draw(hotDraw)
+
+  function once(setup) {
+    const noop = () => null
+    return function(target) {
+      return target.dataset.initialized ? noop() : setup(target)
+    }
+  }
+
+  function initialize(target) {
+    if(target.dataset.initialized) return
+    target.dataset.initialized = true
+    setTimeout(() => {
+      $.teach({ room: target.getAttribute('room') })
+    }, 1)
+  }
+
+  $.when('change', '[name="name"]', (event) => {
+    $.teach({
+      name: event.target.value
+    })
+  })
+
+  $.when('submit', 'form', (event) => {
+    event.preventDefault()
+    const { name, room } = $.learn()
+    const { value } = event.target.message
+
+    const messages = bus.state[room] || []
+
+    messages.push({
+      from: name,
+      body: value
+    })
+  })
+</script>

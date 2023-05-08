@@ -1,6 +1,7 @@
 import Color from "colorjs.io";
 import { Midi } from '@tonejs/midi'
 import * as Tone from 'tone'
+import tag from '@sillonious/tag'
 
 import * as focusTrap from 'focus-trap';
 

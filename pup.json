@@ -1,24 +1,29 @@
 {
-	"processes": [
-		{
-			"id": "sillonious-solid",
-			"cmd": ["deno", "task", "start-solid"],
-			"autostart": true
-		},
-		{
-			"id": "sillonious-braid",
-			"cmd": ["deno", "task", "start-braid"],
-			"autostart": true
-		},
-		{
-			"id": "sillonious-gun",
-			"cmd": ["deno", "task", "start-gun"],
-			"autostart": true
-		},
-		{
-			"id": "sillonious-edge",
-			"cmd": ["deno", "task", "start-edge"],
-			"autostart": true
-		}
-	]
+  "processes": [
+    {
+      "id": "sillonious-tag",
+      "cmd": ["deno", "task", "start-tag"],
+      "autostart": true
+    },
+    {
+      "id": "sillonious-solid",
+      "cmd": ["deno", "task", "start-solid"],
+      "autostart": true
+    },
+    {
+      "id": "sillonious-braid",
+      "cmd": ["deno", "task", "start-braid"],
+      "autostart": true
+    },
+    {
+      "id": "sillonious-gun",
+      "cmd": ["deno", "task", "start-gun"],
+      "autostart": true
+    },
+    {
+      "id": "sillonious-edge",
+      "cmd": ["deno", "task", "start-edge"],
+      "autostart": true
+    }
+  ]
 }

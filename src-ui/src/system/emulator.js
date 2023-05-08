@@ -43,6 +43,7 @@ $.draw((target) => {
 function switcher({ target }) {
   const rootActive = !$.learn().rootActive
   const root = target.closest($.link)
+  toggleFullScreen(!rootActive, target)
   $.teach({ rootActive })
 }
 
@@ -117,6 +118,8 @@ $.when('click', 'button.switcher', switcher)
 $.when('click', 'button[data-key]', (event) => {
 	const { key } = event.target.dataset
 	const { embed } = $.learn().stickies[key]
+  const root = event.target.closest($.link)
+	openFullScreen(root)
 	$.teach({
 		activeEmbed: embed,
 		rootActive: false
@@ -207,3 +210,28 @@ window.addEventListener('keydown', (event) => {
 		}
 	}
 });
+
+function toggleFullScreen(yes, what) {
+	yes ? openFullScreen(what) : closeFullScreen()
+}
+
+function openFullScreen(element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    element.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    element.msRequestFullscreen();
+  }
+}
+
+/* Close fullscreen */
+function closeFullScreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) { /* Safari */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) { /* IE11 */
+    document.msExitFullscreen();
+  }
+}

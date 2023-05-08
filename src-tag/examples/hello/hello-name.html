@@ -1,0 +1,21 @@
+<!-- hello-name.html -->
+<hello-name></hello-name>
+
+<script type="module">
+  // import the tag library
+  import tag from '../../mod.js'
+
+  // create a new tag called hello-name
+  // and set the initial state
+  const $ = tag('hello-name', {
+    'name': 'Earth'
+  })
+
+  $.draw(() => {
+    // get the name from current state
+    const { name } = $.learn()
+
+    // interpolate the name variable into tag content
+    return `Hello ${name}`
+  })
+</script>

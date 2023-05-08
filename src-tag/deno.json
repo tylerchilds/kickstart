@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "start": "deno run --allow-read --allow-write --allow-env --allow-net --unstable .deno/server.js",
+    "package": "deno run -A .deno/to-npm.js",
+    "publish": "cd npm && npm publish"
+  },
+  "compilerOptions": {
+  }
+}

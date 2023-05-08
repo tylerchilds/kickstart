@@ -5,11 +5,13 @@
     "build-native": "cargo tauri build",
     "start-ui": "cd src-ui && deno task develop-client",
     "build-ui": "cd src-ui && deno task build-client",
+    "start-tag": "cd src-tag && deno task start",
     "start-edge": "deno task build-ui && cd src-edge && deno task start",
     "start-gun": "cd src-gun && deno task start",
     "start-braid": "cd src-braid && deno task start",
     "start-solid": "cd src-solid && deno task start",
-    "monolith": "sh monolith.sh"
+    "package-tag": "cd src-tag && deno task package",
+    "publish-tag": "cd src-tag && deno task publish"
   },
   "compilerOptions": {
   }
