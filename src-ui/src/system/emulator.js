@@ -4,7 +4,7 @@ const $ = module('system-emulator', {
   rootActive: false,
 	stickies: getStickies(),
 	activeEmbed: `
-		<iframe src="/music-verse/"></iframe>
+		<iframe src="/tutorial/"></iframe>
 	`,
 })
 
@@ -42,7 +42,6 @@ $.draw((target) => {
 
 function switcher({ target }) {
   const rootActive = !$.learn().rootActive
-  const root = target.closest($.link)
   toggleFullScreen(!rootActive, target)
   $.teach({ rootActive })
 }
@@ -55,61 +54,69 @@ function getStickies() {
 	return {
 		'0': {
 			key: '0',
-			title: 'Authentication',
-			embed: `
-				<iframe src="/authentication/"></iframe>
-			`,
+			title: 'Tutorial',
+      href: '/tutorial/',
 		},
 		'1': {
 			key: '1',
 			title: 'Devices',
-			embed: `
-				<iframe src="/devices/"></iframe>
-			`,
+      href: '/devices/',
 		},
 		'2': {
 			key: '2',
 			title: 'Synthia',
-			embed: `
-				<iframe src="/synthia/"></iframe>
-			`,
+      href: '/synthia/',
 		},
 		'3': {
 			key: '3',
 			title: 'Slides',
-			embed: `
-				<iframe src="https://sillyz.computer/pages/slides/2022-js"></iframe>
-			`,
+      href: 'https://sillyz.computer/pages/slides/2022-js',
 		},
 		'4': {
 			key: '4',
 			title: 'view script',
-			embed: `
-				<iframe src="/view/hello.script"></iframe>
-			`,
+      href: '/view/hello.script',
 		},
     '5': {
 			key: '5',
 			title: 'edit script',
-			embed: `
-				<iframe src="/edit/hello.script"></iframe>
-			`,
+      href: '/edit/hello.script',
 		},
 		'6': {
 			key: '6',
 			title: 'MusicVerse',
-			embed: `
-				<iframe src="/music-verse/"></iframe>
-			`,
+      href: '/music-verse/',
 		},
     '7': {
 			key: '7',
 			title: 'Video Reddit',
-			embed: `
-				<iframe src="/video-reddit/"></iframe>
-			`,
+      href: '/video-reddit/',
 		},
-
+		'8': {
+			key: '8',
+			title: 'Gun',
+      href: 'http://sillonious:8765',
+		},
+		'9': {
+			key: '9',
+			title: 'Braid',
+      href: 'http://sillonious:1989/messages',
+		},
+		'11': {
+			key: '11',
+			title: 'Tag',
+      href: 'http://sillonious:8226/examples',
+		},
+		'12': {
+			key: '12',
+			title: 'Solid',
+      href: 'http://sillonious:3000',
+		},
+    '99': {
+      key: '99',
+      title: 'Live Help',
+      href: '/live-help/',
+    },
 	}
 }
 
@@ -117,13 +124,25 @@ $.when('click', 'button.switcher', switcher)
 
 $.when('click', 'button[data-key]', (event) => {
 	const { key } = event.target.dataset
-	const { embed } = $.learn().stickies[key]
+	const { title, href, external } = $.learn().stickies[key]
   const root = event.target.closest($.link)
-	openFullScreen(root)
+
+  if(external) {
+    window.open(href, '_blank')
+    console.log(href)
+    return
+  }
+
+  const embed = `
+    <iframe src="${href}" title="${title}"></iframe>
+  `
+
 	$.teach({
 		activeEmbed: embed,
 		rootActive: false
 	})
+
+	openFullScreen(root)
 })
 
 $.flair(`
