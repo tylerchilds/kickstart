@@ -218,9 +218,9 @@ function toggleFullScreen(yes, what) {
 function openFullScreen(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) { /* Safari */
+  } else if (element.webkitRequestFullscreen) { /* Safari */
     element.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE11 */
+  } else if (element.msRequestFullscreen) { /* IE11 */
     element.msRequestFullscreen();
   }
 }
