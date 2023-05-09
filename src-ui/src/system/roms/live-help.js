@@ -9,7 +9,7 @@ script.onload = function () {
 		const room = target.getAttribute('room')
 
 		target.api = new JitsiMeetExternalAPI("8x8.vc", {
-			roomName: room || "vpaas-magic-cookie-601556760e2e4612a620aad1abd2b1d1/SampleAppOutdoorWeeksWantSubsequently",
+			roomName: room || "live-help",
 			parentNode: target
 		});
 	})
@@ -25,5 +25,5 @@ script.onload = function () {
   `)
 };
 
-script.src = "https://8x8.vc/vpaas-magic-cookie-601556760e2e4612a620aad1abd2b1d1/external_api.js";
+script.src = "https://8x8.vc/external_api.js";
 document.head.appendChild(script); 
