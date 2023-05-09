@@ -129,7 +129,6 @@ $.when('click', 'button[data-key]', (event) => {
 
   if(external) {
     window.open(href, '_blank')
-    console.log(href)
     return
   }
 
@@ -137,12 +136,13 @@ $.when('click', 'button[data-key]', (event) => {
     <iframe src="${href}" title="${title}"></iframe>
   `
 
+	openFullScreen(root)
+
 	$.teach({
 		activeEmbed: embed,
 		rootActive: false
 	})
 
-	openFullScreen(root)
 })
 
 $.flair(`
@@ -235,12 +235,16 @@ function toggleFullScreen(yes, what) {
 }
 
 function openFullScreen(element) {
-  if (element.requestFullscreen) {
-    element.requestFullscreen();
-  } else if (element.webkitRequestFullscreen) { /* Safari */
-    element.webkitRequestFullscreen();
-  } else if (element.msRequestFullscreen) { /* IE11 */
-    element.msRequestFullscreen();
+  try {
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) { /* Safari */
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) { /* IE11 */
+      element.msRequestFullscreen();
+    }
+  } catch(e) {
+    alert(e)
   }
 }
 
