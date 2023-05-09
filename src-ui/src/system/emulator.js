@@ -2,42 +2,42 @@ import module from '../system/module.js'
 
 const $ = module('system-emulator', {
   rootActive: false,
-	stickies: getStickies(),
-	activeEmbed: `
-		<iframe src="/tutorial/"></iframe>
-	`,
+  bookmarks: getBookmarks(),
+  activeBookmark: `
+    <iframe src="/tutorial/"></iframe>
+  `,
 })
 
 $.draw((target) => {
-	const { stickies, activeEmbed, rootActive } = $.learn()
-	const filtered = Object
-		.keys(stickies)
-		.map(key => stickies[key])
-		.filter(thinking)
+  const { bookmarks, activeBookmark, rootActive } = $.learn()
+  const filtered = Object
+    .keys(bookmarks)
+    .map(href => bookmarks[href])
+    .filter(thinking)
 
-	const list = filtered
-		.map(about => `
+  const list = filtered
+    .map(bookmark => `
       <div class="list-item">
-        <button class="launch" data-key="${about.key}">
-          ${about.title}
+        <button class="launch" data-href="${bookmark.href}">
+          ${bookmark.title}
         </button>
       </div>
-		`)
-		.join('')
+    `)
+    .join('')
 
-	const rootClass = rootActive ? 'active' : ''
+  const rootClass = rootActive ? 'active' : ''
 
-	return `
-		<div class="${rootClass}">
-			<div class="root">
-				${list}
-			</div>
+  return `
+    <div class="${rootClass}">
+      <div class="root">
+        ${list}
+      </div>
       <button aria-label="Switcher" class="switcher"></button>
-			<div class="leaf">
-				${activeEmbed}
-			</div>
-		</div>
-	`
+      <div class="leaf">
+        ${activeBookmark}
+      </div>
+    </div>
+  `
 })
 
 function switcher({ target }) {
@@ -47,84 +47,71 @@ function switcher({ target }) {
 }
 
 function thinking(about) {
-	return about ? true : false
+  return about ? true : false
 }
 
-function getStickies() {
-	return {
-		'0': {
-			key: '0',
-			title: 'Tutorial',
+function getBookmarks() {
+  return {
+    '/tutorial/': {
+      title: 'Tutorial',
       href: '/tutorial/',
-		},
-		'1': {
-			key: '1',
-			title: 'Devices',
+    },
+    '/devices/': {
+      title: 'Devices',
       href: '/devices/',
-		},
-		'2': {
-			key: '2',
-			title: 'Synthia',
+    },
+    '/synthia/': {
+      title: 'Synthia',
       href: '/synthia/',
-		},
-		'3': {
-			key: '3',
-			title: 'Slides',
+    },
+    'https://sillyz.computer/pages/slides/2022-js': {
+      title: 'Slides',
       href: 'https://sillyz.computer/pages/slides/2022-js',
-		},
-		'4': {
-			key: '4',
-			title: 'view script',
+    },
+    '/view/hello.script': {
+      title: 'view script',
       href: '/view/hello.script',
-		},
-    '5': {
-			key: '5',
-			title: 'edit script',
+    },
+    '/edit/hello.script': {
+      title: 'edit script',
       href: '/edit/hello.script',
-		},
-		'6': {
-			key: '6',
-			title: 'MusicVerse',
+    },
+    '/music-verse/': {
+      title: 'MusicVerse',
       href: '/music-verse/',
-		},
-    '7': {
-			key: '7',
-			title: 'Video Reddit',
+    },
+    '/video-reddit/': {
+      title: 'Video Reddit',
       href: '/video-reddit/',
-		},
-		'8': {
-			key: '8',
-			title: 'Gun',
+    },
+    'http://sillonious:8765': {
+      title: 'Gun',
       href: 'http://sillonious:8765',
-		},
-		'9': {
-			key: '9',
-			title: 'Braid',
+    },
+    'http://sillonious:1989/messages': {
+      title: 'Braid',
       href: 'http://sillonious:1989/messages',
-		},
-		'11': {
-			key: '11',
-			title: 'Tag',
+    },
+    'http://sillonious:8226/examples': {
+      title: 'Tag',
       href: 'http://sillonious:8226/examples',
-		},
-		'12': {
-			key: '12',
-			title: 'Solid',
+    },
+    'http://sillonious:3000': {
+      title: 'Solid',
       href: 'http://sillonious:3000',
-		},
-    '99': {
-      key: '99',
+    },
+    '/live-help/': {
       title: 'Live Help',
       href: '/live-help/',
     },
-	}
+  }
 }
 
 $.when('click', 'button.switcher', switcher)
 
-$.when('click', 'button[data-key]', (event) => {
-	const { key } = event.target.dataset
-	const { title, href, external } = $.learn().stickies[key]
+$.when('click', 'button[data-href]', (event) => {
+  const data = event.target.dataset
+  const { title, href, external } = $.learn().bookmarks[data.href]
   const root = event.target.closest($.link)
 
   if(external) {
@@ -136,38 +123,38 @@ $.when('click', 'button[data-key]', (event) => {
     <iframe src="${href}" title="${title}"></iframe>
   `
 
-	openFullScreen(root)
+  openFullScreen(root)
 
-	$.teach({
-		activeEmbed: embed,
-		rootActive: false
-	})
+  $.teach({
+    activeBookmark: embed,
+    rootActive: false
+  })
 
 })
 
 $.flair(`
-	& .root {
+  & .root {
     display: none;
     background: white;
-		position: fixed;
-		inset: 0;
+    position: fixed;
+    inset: 0;
     padding: 2rem 0 1rem;
-		overflow: auto;
-	}
+    overflow: auto;
+  }
 
-	& .root::before {
-		content: '';
-		border-left: 1px solid red;
-		position: fixed;
-		left: 1rem;
-		top: 0;
-		bottom: 0;
-	}
+  & .root::before {
+    content: '';
+    border-left: 1px solid red;
+    position: fixed;
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+  }
 
-	& .list-item {
-		padding-left: 1rem;
-		border-bottom: 1px solid cyan;
-	}
+  & .list-item {
+    padding-left: 1rem;
+    border-bottom: 1px solid cyan;
+  }
 
   & .switcher {
     display: block;
@@ -187,28 +174,28 @@ $.flair(`
     top: 0;
   }
 
-	& .leaf {
-		background: white;
-		position: fixed;
-		inset: 0 0 2rem 0;
-		transform: translateY(0);
-		transition: transform 200ms ease-in-out;
-	}
+  & .leaf {
+    background: white;
+    position: fixed;
+    inset: 0 0 2rem 0;
+    transform: translateY(0);
+    transition: transform 200ms ease-in-out;
+  }
 
-	& .leaf iframe {
-		border: 0;
-		width: 100%;
-		height: 100%;
-	}
+  & .leaf iframe {
+    border: 0;
+    width: 100%;
+    height: 100%;
+  }
 
-	& .active .root {
+  & .active .root {
     display: block;
   }
 
-	& .active .leaf {
+  & .active .leaf {
     display: none;
-		transform: translateY(-100%);
-	}
+    transform: translateY(-100%);
+  }
 
   & .launch {
     background: transparent;
@@ -221,17 +208,17 @@ $.flair(`
 `)
 
 window.addEventListener('keydown', (event) => {
-	if (event.key === 'Escape') {
-		//if esc key was not pressed in combination with ctrl or alt or shift
-		const isNotCombinedKey = !(event.ctrlKey || event.altKey || event.shiftKey);
-		if (isNotCombinedKey) {
+  if (event.key === 'Escape') {
+    //if esc key was not pressed in combination with ctrl or alt or shift
+    const isNotCombinedKey = !(event.ctrlKey || event.altKey || event.shiftKey);
+    if (isNotCombinedKey) {
       document.querySelector(`${$.link} .switcher`).click()
-		}
-	}
+    }
+  }
 });
 
 function toggleFullScreen(yes, what) {
-	yes ? openFullScreen(what) : closeFullScreen()
+  yes ? openFullScreen(what) : closeFullScreen()
 }
 
 function openFullScreen(element) {
