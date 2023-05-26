@@ -1,5 +1,19 @@
 @import url('./normalize.css');
 
+@font-face {
+	font-family: 'Sono';
+	src: url('/fonts/sono.ttf') format("truetype-variations");
+	font-weight: 200 800;
+}
+
+@font-face {
+  font-family: 'Recursive';
+  font-style: oblique 0deg 15deg;
+  font-weight: 300 1000;
+  font-display: swap;
+  src: url('/fonts/Recursive_VF_1.085--subset-GF_latin_basic.woff2') format('woff2');
+}
+
 :root {
 	--bg: var(--white);
 	--fg: var(--black);
