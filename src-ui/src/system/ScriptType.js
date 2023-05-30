@@ -2,9 +2,10 @@ const bus = {
   state: {}
 }
 
-const NORMAL_MODE = 'normal'
-const SCOPE_MODE = 'scope'
-const PLUGIN_MODE = 'plugin'
+const BIOS_MODE = Symbol('bios')
+const NORMAL_MODE = Symbol('normal')
+const KEY_VALUE_MODE = Symbol('key-value')
+const DYNAMIC_MODE = Symbol('dynamic')
 
 export const compile = (script) => {
   const ScriptType = {
@@ -21,27 +22,28 @@ export const compile = (script) => {
   function scope(type) {
     setScope(type)
     resetAttributes(type)
-    setMode(SCOPE_MODE)
+    setMode(KEY_VALUE_MODE)
   }
 
   function plugin(x) {
     setPlugin(x)
     resetAttributes(x)
-    setMode(PLUGIN_MODE)
+    setMode(DYNAMIC_MODE)
   }
 
   const symbols = Object.keys(ScriptType)
 
   const modes = {
+    [BIOS_MODE]: biosMode,
     [NORMAL_MODE]: normalMode,
-    [SCOPE_MODE]: scopeMode,
-    [PLUGIN_MODE]: pluginMode,
+    [KEY_VALUE_MODE]: kvMode,
+    [DYNAMIC_MODE]: dynamicMode,
   }
 
   const isolate = {
     scope: 'global',
     plugin: '',
-    mode: NORMAL_MODE,
+    mode: BIOS_MODE,
     result: ``
   }
 
@@ -52,6 +54,12 @@ export const compile = (script) => {
   }
 
   return isolate.result
+
+  function biosMode(line) {
+    console.log('todo: implement')
+    console.log(line)
+    return setMode(NORMAL_MODE)
+  }
 
   function normalMode(line) {
     if(!line) return blank()
@@ -66,7 +74,7 @@ export const compile = (script) => {
     return freetext(line)
   }
 
-  function scopeMode(line) {
+  function kvMode(line) {
     const [key, value] = line.split(':')
 
     if(!value) {
@@ -78,7 +86,7 @@ export const compile = (script) => {
     bus.state[isolate.scope][key.trim()] = value.trim()
   }
 
-  function pluginMode(line) {
+  function dynamicMode(line) {
     const [key, value] = line.split(':')
 
     if(!value) {
@@ -157,7 +165,7 @@ body {
   }
 }
 
-screenplay-title {
+typewriter-title {
   display: block;
   height: 100%;
   width: 100%;
@@ -197,58 +205,58 @@ title-agent {
   grid-area: agent;
 }
 
-screenplay-address,
-screenplay-character,
-screenplay-quote,
-screenplay-parenthetical,
-screenplay-information,
-screenplay-effect,
-screenplay-freetext,
-screenplay-blank {
+typewriter-address,
+typewriter-character,
+typewriter-quote,
+typewriter-parenthetical,
+typewriter-information,
+typewriter-effect,
+typewriter-freetext,
+typewriter-blank {
   display: block;
 }
 
-screenplay-address,
-screenplay-information {
+typewriter-address,
+typewriter-information {
   text-transform: uppercase;
   margin: 1rem 0;
 }
 
-screenplay-character,
-screenplay-parenthetical {
+typewriter-character,
+typewriter-parenthetical {
   text-align: center;
 }
 
-screenplay-character {
+typewriter-character {
   text-align: center;
   text-transform: uppercase;
   margin: 1rem 0 0;
 }
 
-screenplay-effect {
+typewriter-effect {
   margin: 1rem 0;
   text-align: right;
 }
 
-screenplay-quote {
+typewriter-quote {
   margin: 0 1in;
 }
 
-screenplay-quote:first-child::before {
+typewriter-quote:first-child::before {
   content: "(CONT'D)" !important;
   display: block;
   text-align: center;
 }
 
-screenplay-parenthetical::before {
+typewriter-parenthetical::before {
   content: '(';
 }
 
-screenplay-parenthetical::after {
+typewriter-parenthetical::after {
   content: ')';
 }
 
-screenplay-freetext {
+typewriter-freetext {
   margin: 1rem 0;
 }
       </style>

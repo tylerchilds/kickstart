@@ -5,15 +5,22 @@ import {
 } from "https://esm.sh/@codemirror/basic-setup"
 
 import module from '../module.js'
+import database from '../database.js'
 import { compile } from '../ScriptType.js'
 
 const $ = module('scripttype-editor', { file: hello() })
 const sourceLocation = '/scripts/' + window.location.pathname.split('/edit/')[1]
 const viewLocation = '/view/' + window.location.pathname.split('/edit/')[1]
 
+database.get(sourceLocation).on(latest => {
+    const { file } = latest
+    $.teach({ file })
+})
+
 $.when('click', '.publish', (event) => {
   const { file } = $.learn()
   const formatted = compile(file)
+  database.get(sourceLocation).put({ file, formatted })
 })
 
 $.when('click', '.print', (event) => {
