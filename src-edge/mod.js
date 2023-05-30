@@ -1,12 +1,14 @@
 import { serve } from "https://deno.land/std@0.114.0/http/server.ts";
 import { Status } from "https://deno.land/std/http/http_status.ts";
-import { lookup } from "https://deno.land/x/media_types/mod.ts";
+import * as path from "https://deno.land/std@0.184.0/path/mod.ts";
+import { typeByExtension } from "https://deno.land/std@0.186.0/media_types/type_by_extension.ts";
 
 const channels = {};
 const socketsByChannel = {}
 
 async function router(request, context) {
   let { pathname } = new URL(request.url);
+  let extension = path.extname(pathname);
 
   if (request.headers.get("upgrade") === "websocket") {
     return websocket(request);
@@ -15,16 +17,19 @@ async function router(request, context) {
   let file
   let statusCode = Status.Success
   try {
-    file = await Deno.readTextFile(`./dist${pathname}`)
+    file = await Deno.readFile(`./dist${pathname}`)
   } catch (e) {
     pathname = './dist/index.html'
-    file = await Deno.readTextFile(pathname)
+    extension = path.extname(pathname);
+    file = await Deno.readFile(pathname)
     statusCode = Status.NotFound
     console.error(pathname + '\n' + e)
   }
+
+
   return new Response(file, {
     headers: {
-      'content-type': lookup(pathname),
+      'content-type': typeByExtension(extension),
     },
     status: statusCode
   })

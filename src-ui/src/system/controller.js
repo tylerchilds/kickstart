@@ -29,6 +29,7 @@ export default function router(path) {
         <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
         <music-verse></music-verse>
     `),
+		'/gamepad-test/': () => render('iframe', {src: '/gamepad.html', title: 'gamepad test' }),
 	}
 
 	const blank = Object.keys(router).filter(x => {

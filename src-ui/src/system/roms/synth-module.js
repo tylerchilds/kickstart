@@ -10,15 +10,16 @@ const track = midiIn.addTrack()
 const LOW_TONE = 24
 
 const synths = [
- new Tone.Synth().toDestination(),
- new Tone.Synth().toDestination(),
- new Tone.Synth().toDestination(),
- new Tone.Synth().toDestination(),
- new Tone.Synth().toDestination(),
- new Tone.Synth().toDestination(),
- new Tone.Synth().toDestination(),
- new Tone.Synth().toDestination(),
+   new Tone.Synth().toDestination(),
+   new Tone.Synth().toDestination(),
+   new Tone.Synth().toDestination(),
+   new Tone.Synth().toDestination(),
+   new Tone.Synth().toDestination(),
+   new Tone.Synth().toDestination(),
+   new Tone.Synth().toDestination(),
+   new Tone.Synth().toDestination(),
 ]
+
 const synthMap = {}
 
 const $ = module('synth-module', {

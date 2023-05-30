@@ -13,9 +13,9 @@ use tokio::sync::mpsc;
 use tokio::sync::Mutex;
 use tracing::info;
 use tracing_subscriber;
-use serde_json::json;
+//use serde_json::json;
 use serde::Serialize;
-use gilrs::{Gilrs, Event, EventType};
+//use gilrs::{Gilrs, Event, EventType};
 use midir::{Ignore, MidiInput, MidiInputConnection};
 
 #[derive(Default)]
@@ -179,6 +179,7 @@ fn main() {
 			});
 
 			/* pipe system level gamepad data from rust to javasccript */
+            /*
 			let app_handle = app.handle();
 			tauri::async_runtime::spawn(async move {
 				let mut gilrs = Gilrs::new().unwrap();
@@ -223,6 +224,7 @@ fn main() {
 					}
 				}
 			});
+            */
 
             /*
 			let app_handle = app.handle();

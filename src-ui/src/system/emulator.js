@@ -64,9 +64,9 @@ function getBookmarks() {
       title: 'Synthia',
       href: '/synthia/',
     },
-    'https://sillyz.computer/pages/slides/2022-js': {
-      title: 'Slides',
-      href: 'https://sillyz.computer/pages/slides/2022-js',
+    '/gamepad-test/': {
+      title: 'Gamepad Test',
+      href: '/gamepad-test/',
     },
     '/view/hello.script': {
       title: 'view script',
