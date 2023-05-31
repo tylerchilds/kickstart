@@ -10,27 +10,27 @@ const processConfiguration = {
   features: {
     tag: {
       "id": "sillonious-tag",
-      "cmd": ["deno", "task", "start-tag"],
+      "cmd": "deno task start-tag",
       "autostart": true
     },
     solid: {
       "id": "sillonious-solid",
-      "cmd": ["deno", "task", "start-solid"],
+      "cmd": "deno task start-solid",
       "autostart": true
     },
     braid: {
       "id": "sillonious-braid",
-      "cmd": ["deno", "task", "start-braid"],
+      "cmd": "deno task start-braid",
       "autostart": true
     },
     gun: {
       "id": "sillonious-gun",
-      "cmd": ["deno", "task", "start-gun"],
+      "cmd": "deno task start-gun",
       "autostart": true
     },
     edge: {
       "id": "sillonious-edge",
-      "cmd": ["deno", "task", "start-edge"],
+      "cmd": "deno task start-edge",
       "autostart": true
     }
   }
