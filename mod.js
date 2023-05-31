@@ -2,9 +2,9 @@ import { Pup } from "https://deno.land/x/pup/mod.ts"
 
 const processConfiguration = {
   notorious: 'sillonious',
-  tag: true,
-  solid: true,
-  braid: true,
+  tag: false,
+  solid: false,
+  braid: false,
   gun: true,
   edge: true,
   features: {
