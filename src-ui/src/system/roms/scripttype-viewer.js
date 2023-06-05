@@ -6,6 +6,8 @@ const sourceLocation = '/scripts/' + window.location.pathname.split('/view/')[1]
 
 database.get(sourceLocation).on(latest => {
   const { formatted } = latest
+
+  console.log(formatted)
   $.teach({ script: formatted })
 })
 

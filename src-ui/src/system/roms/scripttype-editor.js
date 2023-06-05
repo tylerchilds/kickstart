@@ -14,6 +14,8 @@ const viewLocation = '/view/' + window.location.pathname.split('/edit/')[1]
 
 database.get(sourceLocation).on(latest => {
     const { file } = latest
+
+    console.log(file)
     $.teach({ file })
 })
 
