@@ -214,19 +214,12 @@ $.flair(`
 
  & .horizon {
    grid-area: 1 / 1 / -1 / -1;
-   background: 
-   linear-gradient(
-     transparent 0%,
-     var(--wheel-0-1) 75%
-   ),
-   radial-gradient(
-     var(--wheel-7-3) 0%,
-     var(--wheel-7-0) 70%
-   );
+   background: url('/experiences/sss-game/boxart.svg');
+   background-size: cover;
  }
 
  & .land {
-   grid-area: 32 / 1 / -1 / -1;
+   grid-area: 30 / 1 / -1 / -1;
    background: 
      radial-gradient(
        var(--wheel-7-1) 0%,
@@ -243,7 +236,6 @@ $.flair(`
  }
 
  & .grid-3d {
-   grid-area: 32 / 1 / -1 / -1;
    background:
      linear-gradient(
      transparent 0%,
@@ -256,7 +248,7 @@ $.flair(`
      transparent 6%
      );
    background-size: 100px 100px;
-   transform: rotateX(70deg);
+   transform: rotateX(60deg);
    transform-origin: top;
    width: 100vw;
    height: 100vh;
