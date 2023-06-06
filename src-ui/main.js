@@ -2,10 +2,12 @@ import * as dependencies from './deps.js'
 import safeTauri from './src/system/safe-tauri.js'
 import router from './src/system/controller.js'
 
-console.log.apply(null, [
+const { helper } = dependencies
+
+helper.log(
   'cached dependencies:',
   ...Object.keys(dependencies)
-])
+)
 
 router(window.location.pathname)
 

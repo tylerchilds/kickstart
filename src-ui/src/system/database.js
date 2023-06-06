@@ -1,10 +1,7 @@
 import gun from 'gun'
 
 const database = gun([
-  'https://sillyz.computer/gun',
-  'https://1998.social/gun',
-  'https://y2k38.info/gun',
-  'https://yourlovedones.online/gun',
+  'http://164.92.88.188:8765',
 ]);
 
 export default database
