@@ -1,26 +1,35 @@
 import module from '../module.js'
-import devices from './devices.js'
-import { Color, Tone, Midi } from '../../../deps.js'
+import Color from "colorjs.io"
 import $guitar from "./guitar.js"
 
-const start = new Date()
-let midiOut
-const midiIn = new Midi()
-const track = midiIn.addTrack()
-const LOW_TONE = 24
+const context = new AudioContext();
 
-const synths = [
-   new Tone.Synth().toDestination(),
-   new Tone.Synth().toDestination(),
-   new Tone.Synth().toDestination(),
-   new Tone.Synth().toDestination(),
-   new Tone.Synth().toDestination(),
-   new Tone.Synth().toDestination(),
-   new Tone.Synth().toDestination(),
-   new Tone.Synth().toDestination(),
-]
+async function loadSample(url) {
+  const sample = await fetch(url)
+    .then(response => response.arrayBuffer())
+    .then(buffer => context.decodeAudioData(buffer));
+  return sample
+}
 
-const synthMap = {}
+function playSample(sample, sampleNote, noteToPlay) {
+  const source = context.createBufferSource();
+  source.buffer = sample;
+  source.playbackRate.value = 2 ** ((noteToPlay - sampleNote) / 12);
+  source.connect(context.destination);
+  source.start(0);
+}
+
+let synths = []
+Promise.all([
+  loadSample('/samples/1.mp3'),
+  loadSample('/samples/2.mp3'),
+  loadSample('/samples/3.mp3'),
+  loadSample('/samples/4.mp3'),
+  loadSample('/samples/5.mp3'),
+  loadSample('/samples/6.mp3'),
+  loadSample('/samples/7.mp3'),
+  loadSample('/samples/8.mp3'),
+]).then(s => synths = s)
 
 const $ = module('synth-module', {
   colors: [],
@@ -29,16 +38,19 @@ const $ = module('synth-module', {
   octave: 4,
   reverse: false,
 	pitch: 0,
-	synth: 0,
-  activeTones: {},
+	synth: 0
 })
 
 const strumVelocity = 75
 const sustainedDuration = 100
 const actionableFPS = 4 
 
-const chromaticScale = [
-  'C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'A#/Bb', 'B'
+const majorScale = [
+  'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F'
+]
+
+const minorScale = [
+  'a', 'e', 'b', 'f#', 'c#', 'g#', 'd#', 'bb', 'f', 'c', 'g', 'd'
 ]
 
 const lightnessStops = [
@@ -83,79 +95,66 @@ const synthDown =() => {
 	$.teach({ synth })
 }
 function attack(event) {
-  Tone.start()
 	event.preventDefault()
-  release(event)
-  const { tone } = event.target.dataset
-  const activeSynths = Object.keys(synthMap).map(key => {
-    return synths.indexOf(synthMap[key].destination)
-  })
-  const destination = synths.find((_x, i) => {
-    return !activeSynths.includes(i)
-  })
-  synthMap[tone] = {
-    destination,
-    start: (new Date()),
-  }
+	const { colors, synth } = $.learn()
+  const { octave, note, hue } = event.target.dataset
 
-  $.teach(tone, addActiveTone)
-  destination.triggerAttack(tone, "2n", Tone.now())
+  playSample(synths[synth], 60, parseInt(octave) * 12 + (12 + parseInt(note)));
+  //synths[synth].triggerAttack(`${note}${octave}`, "2n");
+	event.target.classList.add('active')
+
+  const body = new Color(colors[parseInt(hue)][parseInt(octave)].value).to('srgb')
+  /*
+  fetch('/last-color', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body
+  })
+  */
+
+  document.querySelector('body').style.setProperty("background", body)
 }
 
 function release (event) {
-  const { tone } = event.target.dataset
 	event.preventDefault()
-  if(synthMap[tone]) {
-    const { destination } = synthMap[tone];
-    destination.triggerRelease()
-
-    track.addNote({
-      midi: tone,
-      time: (synthMap[tone].start - start) / 1000,
-      duration: (new Date() - synthMap[tone].start) / 1000
-    })
-
-    delete synthMap[tone]
-    const midiString = JSON.stringify(midiIn.toJSON())
-    $.teach({ midiString })
-    $.teach(tone, removeActiveTone)
-  }
+	event.target.classList.remove('active')
 }
 
 const chords = [
   [],
 
-  [60,64, 61], // c major: c - e - g
-  [60, 69, 61], // c minor: c - eb - g
+  [0, 4, 1], // c major: c - e - g
+  [0, 9, 1], // c minor: c - eb - g
 
-  [61, 65, 62], // g major: g - b - d
-  [61, 70, 62], // g minor: g - bb - d
+  [1, 5, 2], // g major: g - b - d
+  [1, 10, 2], // g minor: g - bb - d
 
-  [62, 66, 63], // d major: d - f# - a
-  [62, 11, 63], // d minor: d - f - a
+  [2, 6, 3], // d major: d - f# - a
+  [2, 11, 3], // d minor: d - f - a
 
-  [64, 68, 65], // e major: e - g# - b
-  [64, 62, 65], // e minor: e - g - b
+  [4, 8, 5], // e major: e - g# - b
+  [4, 2, 5], // e minor: e - g - b
 
-  [63, 69, 64], // a major: a - c# - e
-  [63, 60, 64], // a minor: a - c - e
+  [3, 9, 4], // a major: a - c# - e
+  [3, 0, 4], // a minor: a - c - e
 
-  [71, 63, 60], // f major: f - a - c
-  [71, 68, 60], // f minor: f - ab - c
+  [11, 3, 0], // f major: f - a - c
+  [11, 8, 0], // f minor: f - ab - c
   
   [],// octave picker
   [] // pitch picker
 ]
 
 let activeSynths = []
+let activeRegister = 0
 
 requestAnimationFrame(loop)
 function loop(time) {
-  const { activeRegisters, activeFrets } = $guitar.learn()
-  devices.gamepads().map((gamepad, i) => {
-    const register = activeRegisters[i]
-    const up = gamepad.buttons['DPadUp'] === 1
-    const down = gamepad.buttons['DPadDown'] === 1
+  const { activeRegisters, activeFrets, activeMotions } = $guitar.learn()
+  activeRegisters.map((register, i) => {
+    const { up, down } = activeMotions[i]
     if(activeFrets[i] === 'x x x') {
       [[up, octaveUp], [down, octaveDown]].map(([flag, feature]) => {
         flag && throttle({ key: 'octave-shift', time, feature })
@@ -173,8 +172,9 @@ function loop(time) {
       if(up || down && register > 0) {
         activeSynths = chords[register]
         activeSynths.map((x, i) => {
-          const tone = down ? x : activeSynths[activeSynths.length - 1 - i]
-          queueAttack(tone, i)
+          const index = down ? x : activeSynths[activeSynths.length - 1 - i]
+          const node = document.querySelector(`[data-index='${index}']`)
+          node && queueAttack(node, i)
         })
       }
     }
@@ -182,14 +182,6 @@ function loop(time) {
     feature()
   })
 
-  devices.midiDevices().map((midi, i) => {
-    Object.keys(midi.keys).map(x => midi.keys[x]).map((key) => {
-      const node = document.querySelector(`[data-tone='${key.key}']`)
-      if(!node) return
-      const caller = key.on ? quickAttack : quickRelease
-      caller(node, key)
-    })
-  })
   requestAnimationFrame(loop)
 }
 
@@ -213,101 +205,82 @@ function throttle({ key, time, feature }) {
   }
 }
 
-function queueRelease(tone) {
-  const message = {
-    event: 'MidiMessage',
-    command: 128,
-    note: tone,
-    velocity: 64
-  }
+function queueRelease(node) {
   setTimeout(() => {
-    self.top.postMessage({ payload: JSON.stringify(message) })
+    node.dispatchEvent(new Event('touchend'))
   }, sustainedDuration)
 }
 
-function queueAttack(tone, i) {
-  const message = {
-    event: 'MidiMessage',
-    command: 144,
-    note: tone,
-    velocity: 128
-  }
+function queueAttack(node, i) {
   setTimeout(() => {
-    self.top.postMessage({ payload: JSON.stringify(message) })
-    queueRelease(tone)
+    node.dispatchEvent(new Event('touchstart'))
+    queueRelease(node)
   }, i * strumVelocity)
 }
 
-function quickAttack(node, key) {
-  const { activeTones } = $.learn()
-  if(!activeTones[key.key]) {
-    node.dispatchEvent(new Event('touchstart'))
-  }
-}
-
-function quickRelease(node, key) {
-  const { activeTones } = $.learn()
-  if(activeTones[key.key]) {
-    node.dispatchEvent(new Event('touchend'))
-  }
-}
-
+$.teach({ colors: recalculate() })
 $.draw(() => {
-  const { colors, activeTones } = $.learn()
-  const wheel = chromaticScale.map((label, index) => {
-    const steps = colors[mod(index*7, colors.length)] || []
-    const buttons = steps.map((x, octave) => {
-      const tone = index + LOW_TONE + (octave * 12)
-      const active = activeTones[tone]
-      const className = active ? `step active` : `step`
-      return `
-        <button
-          class="${className}"
-          data-tone="${tone}"
-          data-block="${x.block}"
-          data-inline="${x.inline}"
-          style="background: var(${x.name})">
-          ${label}
-        </button>
-      `
-    }).join('')
+  const { start, length, reverse, colors, octave, pitch, debug } = $.learn()
+  const wheel = majorScale.map((majorNote, index) => {
+		const majorScaleIndex = mod((index - pitch * 7), majorScale.length)
+    const minorNote = minorScale[
+			mod(majorScaleIndex + pitch * 7, minorScale.length)
+		]
+    const minorScaleIndex = mod(majorScaleIndex + 3, minorScale.length)
+
+    const majorColorIndex = mod(
+			mod(majorScaleIndex * 7, colors.length) + pitch,
+			colors.length
+		)
+    const minorColorIndex = mod(
+			mod(minorScaleIndex * 7, colors.length) + pitch,
+			colors.length
+		)
+
+    const majorColorScales = colors[majorColorIndex].map(x => x.value)
+    const minorColorScales = colors[minorColorIndex].map(x => x.value)
+
+    const majorStepClass = majorNote.length === 2 ? 'step half' : 'step'
+    const minorStepClass = minorNote.length === 2 ? 'step half' : 'step'
+
+		const majorSynth = majorScaleIndex
+		const minorSynth = minorScaleIndex + majorScale.length
+
+    const note = mod((index * 7), majorScale.length)
+
     return `
-      <div class="group" style="transform: rotate(${index * 210}deg)">
-        ${buttons}
+      <div class="group" style="
+				transform: rotate(${majorScaleIndex * 30}deg)
+				
+			">
+        <button
+          class="${majorStepClass}"
+					data-index="${majorSynth}"
+          data-octave="${octave}"
+          data-note="${note}"
+					data-hue="${majorColorIndex}"
+          style="${gradient(majorColorScales, [4,3,2])}"
+        >
+        </button>
+        <button
+          class="${minorStepClass}"
+					data-index="${minorSynth}"
+          data-octave="${octave}"
+          data-note="${minorScaleIndex}"
+					data-hue="${minorColorIndex}"
+          style="${gradient(minorColorScales, [4,3,2])}"
+        >
+        </button>
       </div>
     `
   }).join('')
 
   return `
-    <a href="javascript://lol;">Export</a>
     <div class="wheel">
       ${wheel}
 			${controls()}
     </div>
   `
-})
-
-$.when('click', '[href="javascript://lol;"]', (event) => {
-  event.preventDefault()
-  const { midiString } = $.learn()
-  const data = JSON.parse(midiString)
-  midiOut = new Midi()
-  midiOut.fromJSON(data)
-
-  const blob = new Blob([
-	  midiOut.toArray()	
-  ], {type: 'audio/midi'} )
-
-	const exportUrl = URL.createObjectURL(blob)
-  const href = document.createElement('a');
-
-  href.href = exportUrl
-  href.download = `${new Date().toISOString()}.mid`
-  href.target = '_blank'
-  href.click()
-
-  URL.revokeObjectURL(exportUrl)
-
 })
 
 function controls() {
@@ -332,9 +305,6 @@ $.flair(`
     display: grid;
     place-content: center;
   }
-  & [href*="//lol"] {
-    position: absolute;
-  }
   & .wheel {
     display: grid;
     grid-template-areas: "slot";
@@ -355,6 +325,7 @@ $.flair(`
     transform-origin: bottom;
     display: grid;
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     clip-path: polygon(20% 0%, 50% 100%, 80% 0%);
     gap: 1px;
   }
@@ -363,10 +334,9 @@ $.flair(`
     width: 100%;
     height: auto;
     display: grid;
-    place-items: center;
+    place-items: start;
     color: black;
 		position: relative;
-    text-align: center;
   }
 
   & .step.half {
@@ -427,13 +397,26 @@ function invertedLabels() {
   return rulesets.join('')
 }
 
+function upload(colors) {
+  const palette = colors.flatMap(x => x).map(({ name, value }) => `
+    ${name}: ${value};
+  `).join('')
+
+  fetch('/design-system', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ palette })
+  })
+}
+
 function gradient(scale, stops) {
 	return `
     background: linear-gradient(${stops.map(x => scale[x]).join(', ')})
   `
 }
 
-$.teach({ colors: recalculate() })
 function recalculate() {
   const { start, length, reverse } = $.learn()
 
@@ -457,9 +440,9 @@ function recalculate() {
       }
     })
   })
-/*
+
   upload(colors)
-*/
+
   return colors
 }
 
@@ -471,16 +454,4 @@ $.when('touchend', '.step', release)
 
 function mod(x, n) {
   return ((x % n) + n) % n;
-}
-
-function addActiveTone(state, payload) {
-  const newState = {...state}
-  newState.activeTones[payload] = true
-  return newState
-}
-
-function removeActiveTone(state, payload) {
-  const newState = {...state}
-  if(newState.activeTones[payload]) delete newState.activeTones[payload]
-  return newState
 }
