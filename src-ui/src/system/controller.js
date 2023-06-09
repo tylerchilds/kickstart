@@ -4,7 +4,7 @@ import './roms/tutorial.js'
 import './roms/avatar.js'
 import './roms/live-help.js'
 import './roms/authentication.js'
-import './roms/devices.js'
+//import './roms/devices.js'
 import './roms/code-module.js'
 import './roms/scripttype-editor.js'
 import './roms/scripttype-viewer.js'
@@ -15,6 +15,7 @@ import './roms/video-reddit.js'
 export default function router(path) {
 	const router = {
 		'/tutorial/': () => render('tutorial'),
+		'/sos-debugger/': () => render('sos-debugger'),
 		'/avatar/': () => render('avatar'),
 		'/live-help/': () => render('live-help'),
 		'/devices/': () => render('debug-devices'),

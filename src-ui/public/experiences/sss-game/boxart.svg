@@ -94,6 +94,7 @@
     <mask id="mask-1">
       <ellipse style="mix-blend-mode: exclusion; fill: url(#gradient-2-2);" cx="4466.806" cy="533.204" rx="427.204" ry="427.203" transform="matrix(0, -1, 1, 0, 3933.604004, 4999.999869)"/>
     </mask>
+    <linearGradient id="gradient-2-4" gradientUnits="userSpaceOnUse" x1="2497.477" y1="599.923" x2="2497.477" y2="3200.098" gradientTransform="matrix(0.059467, -0.998229, 1.820008, 0.112898, -1078.72131, 4527.955738)" xlink:href="#gradient-2"/>
   </defs>
   <rect width="5000" height="5000" style="fill: rgb(40, 40, 40);" id="sss-backdrop"/>
   <rect width="5000" height="178" style="fill: rgb(40, 40, 40);" bx:origin="0.5 0.5"/>
@@ -124,4 +125,5 @@
   <ellipse style="fill: rgb(235, 219, 178);" cx="3979.628" cy="1099.069" rx="53" ry="53" id="sss-moon"/>
   <rect x="106" y="3200" width="4788" height="1690" style="stroke: rgb(0, 0, 0); fill: url(#gradient-0);"/>
   <rect x="106" y="3200" width="4788" height="1690" style="stroke: rgb(0, 0, 0); fill: url(#gradient-3);" id="sss-noise"/>
+  <path style="stroke: url(#gradient-2-4); stroke-width: 50px; fill: none;" d="M 106 600 C 757.021 600 787.896 2057.708 787.896 2057.708 C 787.896 2057.708 849.001 3192.559 1130.004 3200 C 1411.007 3207.441 1474.952 2127.284 1474.952 2127.284 C 1474.952 2127.284 1497.91 850.623 2154.662 850.623 C 2812.245 850.623 2837.974 2270.851 2837.974 2270.851 C 2837.974 2270.851 2898.69 3197.769 3175.716 3200 C 3452.742 3202.231 3525.64 2344.436 3525.64 2344.436 C 3525.64 2344.436 3638.46 1473.798 3883.848 1466.544 C 4129.236 1459.29 4206.941 2422.796 4206.941 2422.796 C 4206.941 2422.796 4215.07 3200 4894 3200"/>
 </svg>

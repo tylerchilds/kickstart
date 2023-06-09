@@ -56,6 +56,10 @@ function getBookmarks() {
       title: 'Tutorial',
       href: '/tutorial/',
     },
+    '/sos-debugger/': {
+      title: 'Debugger',
+      href: '/sos-debugger/',
+    },
     '/devices/': {
       title: 'Devices',
       href: '/devices/',

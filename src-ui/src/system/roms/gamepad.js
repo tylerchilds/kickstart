@@ -1,121 +1,109 @@
 import module from '../module.js'
-const controllers = {};
+import database from '../database.js'
+import { originator } from '../../../deps.js'
+
+const $ = module('sos-gamepad')
+
+/*
+ * Gamepad API Test
+ * Written in 2013 by Ted Mielczarek <ted@mielczarek.org>
+ *
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+ *
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ * modified by <email@tychi.me> june 2023
+ */
+var haveEvents = 'GamepadEvent' in window;
+var haveWebkitEvents = 'WebKitGamepadEvent' in window;
+var controllers = {};
+var rAF = window.mozRequestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.requestAnimationFrame;
+
 
 export default function gamepads() {
-  const ids = Object.keys(controllers) || []
-
-	return ids
-    .map(x => controllers[x])
-    .map(gatherInputs)
+  const data = $.learn()
+  const indexes = Object.keys(controllers) || []
+  return indexes
+    .filter(index => data[index])
+    .map(gameKeyByIndex)
+    .map(key => data[key])
 }
 
-const initialState = {}
-
-const $ = module('gamepad-debug', initialState)
-
-$.draw((target) => renderGamepads(target, $))
+function gameKeyByIndex(index) {
+  // osc or http idgaf
+  return `/devices/gamepad-${index}`
+}
 
 function connecthandler(e) {
-  const { index } = e.gamepad
-  controllers[index] = e.gamepad;
+  addgamepad(e.gamepad);
+}
+
+function addgamepad(gamepad) {
+  controllers[gamepad.index] = gamepad;
+
+  const key = gameKeyByIndex(gamepad.index)
+  const node = database.get(originator).get(key)
+  node.on(latest => {
+    const state = JSON.parse(latest)
+    console.log(state)
+    $.teach({
+      [state.key]: state
+    })
+  })
+  rAF(updateStatus);
 }
 
 function disconnecthandler(e) {
-  const { index } = e.gamepad
-  delete controllers[index];
+  removegamepad(e.gamepad);
 }
 
-function renderValue(value, index) {
-  const offset = parseFloat(value) - 2 + 'rem'
-  return `
-    <li
-      class="input"
-      style="--value: ${offset};"
-    >${index}</li>
-  `
+function removegamepad(gamepad) {
+  const key = gameKeyByIndex(gamepad.index)
+  const node = database.get(originator).get(key)
+  node.off()
+  delete controllers[gamepad.index];
 }
 
-function renderInputs(_$, flags) {
-  const { gamepad } = flags
-
-  return `
-    <ul class="buttons">
-      ${gamepad.buttons.map(renderValue).join('')}
-    </ul>
-    <ul class="axes">
-      ${gamepad.axes.map(renderValue).join('')}
-    </ul>
-  `
-}
-
-function renderGamepads(_target, $) {
-
-  const list = gamepads()
-    .map((gamepad, index) => `
-      <li class="gamepad" id="${gamepad.id}">
-        <label>${index+1}: ${gamepad.id}</label>
-        ${renderInputs($, { gamepad })}
-      </li>
-    `).join('')
-
-  return `<ul class="gamepads">${list}</ul>`
-}
-
-function gatherInputs(gamepad, _index) {
-  const buttons = [...gamepad.buttons].map((button, _i) => {
-    let value = button
-
-    if (typeof(value) == "object") {
-      value = value.value;
+function updateStatus() {
+  scangamepads();
+  for (const index in controllers) {
+    const key = gameKeyByIndex(index)
+    const node = database.get(originator).get(key)
+    const controller = controllers[index];
+    const buttons = {}
+    const axes = {}
+    for (let i=0; i<controller.buttons.length; i++) {
+      let val = controller.buttons[i];
+      if (typeof(val) == "object") {
+        val = val.value;
+      }
+      buttons[i] = val
     }
-
-    return value
-  })
-
-  const axes = [...gamepad.axes].map((axis, _i) => {
-    const value = axis
-
-    return value
-  })
-
-  return { buttons, axes, id: gamepad.id, index: gamepad.index }
+    for (let i=0; i<controller.axes.length; i++) {
+      const val = controller.axes[i].toFixed(4);
+      axes[i] = val
+    }
+    const state = { type: 'gamepad', buttons, axes, key, id: controller.id, index: controller.index }
+    node.put(JSON.stringify(state))
+  }
+  rAF(updateStatus);
 }
 
-globalThis.addEventListener("gamepadconnected", connecthandler);
-globalThis.addEventListener("gamepaddisconnected", disconnecthandler);
+function scangamepads() {
+  const gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+  for (let i = 0; i < gamepads.length; i++) {
+    if (gamepads[i] && (gamepads[i].index in controllers)) {
+      controllers[gamepads[i].index] = gamepads[i];
+    }
+  }
+}
 
-$.flair(`
-  & .gamepads {
-    background: rgba(0,0,0,.04);
-    border: 1px solid rgba(0,0,0,.1);
-    border-radius: 1rem;
-    list-style-type: none;
-    padding: 0 1rem;
-  }
-  & .gamepad {
-    border-bottom: 1px solid rgba(0,0,0,.1);
-    padding: 1rem 0;
-  }
-  & .gamepad:last-child {
-    border-bottom: none;
-
-  }
-  & .buttons,
-  & .axes {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(2rem, 1fr));
-    list-style-type: none;
-    padding: .5rem 0 0;
-  }
-  & .input {
-    background: linear-gradient(lime 0%, orange 50%, rebeccapurple 100%);
-    background-size: 1px 6rem;
-    background-repeat: repeat-x;
-    background-position-y: var(--value);
-    border-radius: 2rem;
-    width: 2rem;
-    height: 2rem;
-    display: grid;
-    place-content: center;
-  }
-`)
+if (haveEvents) {
+  window.addEventListener("gamepadconnected", connecthandler);
+  window.addEventListener("gamepaddisconnected", disconnecthandler);
+} else if (haveWebkitEvents) {
+  window.addEventListener("webkitgamepadconnected", connecthandler);
+  window.addEventListener("webkitgamepaddisconnected", disconnecthandler);
+} else {
+}
