@@ -9,158 +9,180 @@ import * as focusTrap from 'focus-trap';
 let traceCount = 0
 
 const randomString = (length) =>
-  [ ...Array(length) ].map(() => (~~(Math.random() * 36)).toString(36)).join('');
+	[ ...Array(length) ].map(() => (~~(Math.random() * 36)).toString(36)).join('');
 
 let originator = symbol("originator")
 
 const $ = module('sos-debugger', {
-  observedOriginator: originator,
-  metadata: {}
+	observedOriginator: originator,
+	metadata: {}
 })
 
 const helper = {
-  log: logger('log', console.log),
-  info: logger('info', console.info),
-  error: logger('error', console.error),
-  warn: logger('warn', console.warn),
+	log: logger('log', console.log),
+	info: logger('info', console.info),
+	error: logger('error', console.error),
+	warn: logger('warn', console.warn),
+	database
 }
+
+addEventListener("error", (event) => {
+	const error = `${event.lineno},${event.colno},${event.message},${event.filename}`
+	helper.error(error)
+});
+
+function replaceErrors(key, value) {
+	if (value instanceof Error) {
+		var error = {};
+
+		Object.getOwnPropertyNames(value).forEach(function (propName) {
+			error[propName] = value[propName];
+		});
+
+		return error;
+	}
+
+	return value;
+}
+
 
 const metadata = database.get('originators')
 metadata.get(originator).put({ online: true })
 onbeforeunload = () => {
-  metadata.get(originator).put({ online: false })
+	metadata.get(originator).put({ online: false })
 }
 
 metadata.map().on((data, id) => {
-  $.teach({ [id]: { ...data, id }}, merge('metadata'))
+	$.teach({ [id]: { ...data, id }}, merge('metadata'))
 })
 
 export {
-  Color,
-  Midi,
-  Tone,
-  focusTrap,
-  randomString,
-  helper,
-  logger,
-  originator,
-  metadata
+	Color,
+	Midi,
+	Tone,
+	focusTrap,
+	randomString,
+	helper,
+	logger,
+	originator,
+	metadata
 }
 
+window.helper = helper
+
 function symbol(key) {
-  let value = localStorage.getItem(key)
+	let value = localStorage.getItem(key)
 
-  if (value === null) {
-    value = `dev-${randomString(6)}`
-    localStorage.setItem(key, value)
-  }
+	if (value === null) {
+		value = `dev-${randomString(6)}`
+		localStorage.setItem(key, value)
+	}
 
-  return value
+	return value
 }
 
 function logger(channel, output) {
-  const key = channelKeyByName(channel)
-  const { __channels } = $.learn()[originator] || { __channels: [] }
+	const key = channelKeyByName(channel)
+	const { __channels } = $.learn()[originator] || { __channels: [] }
 
-  $.teach({
-    __channels: [...__channels, key],
-    [key]: { __order: [] }
-  }, merge(originator))
+	$.teach({
+		__channels: [...__channels, key],
+		[key]: { __order: [] }
+	}, merge(originator))
 
-  database.get(originator).get(key).map().on((argument, id) => {
-    const data = $.learn()[originator][key]
-    $.teach({
-      [key]: {
-        ...data,
-        [id]: argument,
-        __order: [...data.__order, id]
-      }
-    }, merge(originator))
-  })
+	database.get(originator).get(key).map().on((argument, id) => {
+		const data = $.learn()[originator][key]
+		$.teach({
+			[key]: {
+				...data,
+				[id]: argument,
+				__order: [...data.__order, id]
+			}
+		}, merge(originator))
+	})
 
-  return (...args) => {
-    output.apply(null, args)
-    args.map(x => trace(channel, x))
-  }
+	return (...args) => {
+		output.apply(null, args)
+		args.map(x => trace(channel, x))
+	}
 }
 
 
 function channelKeyByName(name) {
-  // osc or http idgaf
-  return `/channels/channel-${name}`
+	// osc or http idgaf
+	return `/channels/channel-${name}`
 }
 
 function merge(key) {
-  return (state, payload) => {
-    return {
-      ...state,
-      [key]: {
-        ...state[key],
-        ...payload
-      }
-    }
-  }
+	return (state, payload) => {
+		return {
+			...state,
+			[key]: {
+				...state[key],
+				...payload
+			}
+		}
+	}
 }
 
 
 function trace(channel, argument) {
-  const key = channelKeyByName(channel)
-  const { __order } = $.learn()[originator][key]
-  database.get(originator).get(key).get(traceCount++).put(`${argument}`)
+	const key = channelKeyByName(channel)
+	const { __order } = $.learn()[originator][key]
+	database.get(originator).get(key).get(traceCount++).put(`${argument}`)
 }
 
 $.draw(() => {
-  const data = $.learn()
-  const og = data.observedOriginator
+	const data = $.learn()
+	const og = data.observedOriginator
 
-  const logs = data[og].__channels.map(key => data[og][key])
-  const breakdowns = logs.map((log, i) => `
-    <details>
-      <summary>
-        ${ data[og].__channels[i] }
-      </summary>
-      ${orderList(log)}
-    </details>
-  `).join('')
+	const logs = data[og].__channels.map(key => data[og][key])
+	const breakdowns = logs.map((log, i) => `
+		<details>
+			<summary>
+				${ data[og].__channels[i] }
+			</summary>
+			${orderList(log)}
+		</details>
+	`).join('')
 
-  return `
-    ${originatorSelector()}
-    <br>
-    ${breakdowns}
-  `
+	return `
+		${originatorSelector()}
+		<br>
+		${breakdowns}
+	`
 })
 
 function originatorSelector() {
-  const { metadata, observedOriginator } = $.learn()
+	const { metadata, observedOriginator } = $.learn()
 
-  const peers = Object.keys(metadata).map(x => metadata[x])
-  console.log('peers', peers.map(x => x.id))
-  const options = peers.map(peer => `
-    <option
-      value="${peer.id}"
-      ${peer.id === observedOriginator ? 'selected' : ''}
-    >
-      ${peer.online ? '1' : '0'},${peer.id}
-    </option>
-  `).join('')
+	const peers = Object.keys(metadata).map(x => metadata[x])
+	const options = peers.map(peer => `
+		<option
+			value="${peer.id}"
+			${peer.id === observedOriginator ? 'selected' : ''}
+		>
+			${peer.online ? '1' : '0'},${peer.id}
+		</option>
+	`).join('')
 
-  return `
-    Debug log for:<br>
-    <select target="observedOriginator">
-      ${options}
-    </select>
-  `
+	return `
+		Debug log for:<br>
+		<select target="observedOriginator">
+			${options}
+		</select>
+	`
 }
 
 $.when('change', '[target="observedOriginator"]', function(event) {
-  const { value } = event.target
-  $.teach({ observedOriginator: value })
+	const { value } = event.target
+	$.teach({ observedOriginator: value })
 })
 
 function orderList(log) {
-  return log.__order.map((key) => `
-    ${key}: ${log[key]}
-  `).join('<br>')
+	return log.__order.map((key) => `
+		${key}: ${log[key]}
+	`).join('<br>')
 }
 
 helper.log('log0')
