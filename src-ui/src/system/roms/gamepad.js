@@ -1,6 +1,6 @@
 import module from '../module.js'
 import database from '../database.js'
-import { originator } from '../../../deps.js'
+import { device, helper } from '../../../deps.js'
 
 const $ = module('sos-gamepad')
 
@@ -32,7 +32,7 @@ export default function gamepads() {
 
 function gameKeyByIndex(index) {
   // osc or http idgaf
-  return `/devices/gamepad-${index}`
+  return `gamepad-${index}`
 }
 
 function connecthandler(e) {
@@ -43,9 +43,9 @@ function addgamepad(gamepad) {
   controllers[gamepad.index] = gamepad;
 
   const key = gameKeyByIndex(gamepad.index)
-  const node = database.get(originator).get(key)
+  const node = DEVICE_TABLE.get(device).get(key)
   node.on(latest => {
-    const state = JSON.parse(latest)
+    const state = JSON.parse(latest.state)
     console.log(state)
     $.teach({
       [state.key]: state
@@ -60,7 +60,7 @@ function disconnecthandler(e) {
 
 function removegamepad(gamepad) {
   const key = gameKeyByIndex(gamepad.index)
-  const node = database.get(originator).get(key)
+  const node = DEVICE_TABLE.get(device).get(key)
   node.off()
   delete controllers[gamepad.index];
 }
@@ -69,7 +69,7 @@ function updateStatus() {
   scangamepads();
   for (const index in controllers) {
     const key = gameKeyByIndex(index)
-    const node = database.get(originator).get(key)
+    const node = DEVICE_TABLE.get(device).get(key)
     const controller = controllers[index];
     const buttons = {}
     const axes = {}
@@ -85,7 +85,7 @@ function updateStatus() {
       axes[i] = val
     }
     const state = { type: 'gamepad', buttons, axes, key, id: controller.id, index: controller.index }
-    node.put(JSON.stringify(state))
+    node.put({ state: JSON.stringify(state)})
   }
   rAF(updateStatus);
 }

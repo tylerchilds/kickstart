@@ -6,16 +6,17 @@ import module from './src/system/module.js'
 
 import * as focusTrap from 'focus-trap';
 
-let traceCount = 0
+const DEVICE_TABLE = database.get('/devices')
+const CHANNEL_TABLE = database.get('/channels')
+const MESSAGE_TABLE = database.get('/messages')
 
 const randomString = (length) =>
 	[ ...Array(length) ].map(() => (~~(Math.random() * 36)).toString(36)).join('');
 
-let originator = symbol("originator")
+const device = symbol("/device/")
 
 const $ = module('sos-debugger', {
-	observedOriginator: originator,
-	metadata: {}
+	observedDevice: device,
 })
 
 const helper = {
@@ -23,6 +24,9 @@ const helper = {
 	info: logger('info', console.info),
 	error: logger('error', console.error),
 	warn: logger('warn', console.warn),
+  DEVICE_TABLE,
+  CHANNEL_TABLE,
+  MESSAGE_TABLE,
 	database
 }
 
@@ -31,30 +35,12 @@ addEventListener("error", (event) => {
 	helper.error(error)
 });
 
-function replaceErrors(key, value) {
-	if (value instanceof Error) {
-		var error = {};
-
-		Object.getOwnPropertyNames(value).forEach(function (propName) {
-			error[propName] = value[propName];
-		});
-
-		return error;
-	}
-
-	return value;
-}
-
-
-const metadata = database.get('originators')
-metadata.get(originator).put({ online: true })
+DEVICE_TABLE.get(device).put({ id: device, online: true })
 onbeforeunload = () => {
-	metadata.get(originator).put({ online: false })
+	DEVICE_TABLE.get(device).put({ online: false })
 }
 
-metadata.map().on((data, id) => {
-	$.teach({ [id]: { ...data, id }}, merge('metadata'))
-})
+observe($, DEVICE_TABLE, device)
 
 export {
 	Color,
@@ -64,8 +50,7 @@ export {
 	randomString,
 	helper,
 	logger,
-	originator,
-	metadata
+	device,
 }
 
 window.helper = helper
@@ -74,32 +59,44 @@ function symbol(key) {
 	let value = localStorage.getItem(key)
 
 	if (value === null) {
-		value = `dev-${randomString(6)}`
+		value = `${key}${randomString(36)}`
 		localStorage.setItem(key, value)
 	}
 
 	return value
 }
 
-function logger(channel, output) {
-	const key = channelKeyByName(channel)
-	const { __channels } = $.learn()[originator] || { __channels: [] }
+function observe($, table, row) {
+  table.get(row).map().on((data, column) => {
+    const local = $.learn()[row] || {}
+    $.teach({ 
+      ...local.data,
+      [column]: format(data, column)
+    }, merge(row))
+  })
+}
 
-	$.teach({
-		__channels: [...__channels, key],
-		[key]: { __order: [] }
-	}, merge(originator))
+function format(data, key) {
+  if(key === 'channels') {
+    console.log('ahhh', data, key)
+  }
 
-	database.get(originator).get(key).map().on((argument, id) => {
-		const data = $.learn()[originator][key]
-		$.teach({
-			[key]: {
-				...data,
-				[id]: argument,
-				__order: [...data.__order, id]
-			}
-		}, merge(originator))
-	})
+  if(key === 'messages') {
+    console.log('messages', data, key)
+  }
+  return data
+}
+
+DEVICE_TABLE.get(device).get('channels').map().on((data, channel) => {
+  debugger
+  observe($, CHANNEL_TABLE, channel)
+})
+
+
+function logger(name, output) {
+	const channel = channelByName(device, name)
+  const node = CHANNEL_TABLE.get(channel).put({ id: channel })
+  DEVICE_TABLE.get(device).get('channels').get(channel).put(node)
 
 	return (...args) => {
 		output.apply(null, args)
@@ -107,10 +104,9 @@ function logger(channel, output) {
 	}
 }
 
-
-function channelKeyByName(name) {
+function channelByName(device, name) {
 	// osc or http idgaf
-	return `/channels/channel-${name}`
+	return symbol(`${device}/channel/${name}/`)
 }
 
 function merge(key) {
@@ -127,40 +123,39 @@ function merge(key) {
 
 
 function trace(channel, argument) {
-	const key = channelKeyByName(channel)
-	const { __order } = $.learn()[originator][key]
-	database.get(originator).get(key).get(traceCount++).put(`${argument}`)
+	CHANNEL_TABLE.get(channel).get('messages').set(`${argument}`)
 }
 
 $.draw(() => {
 	const data = $.learn()
-	const og = data.observedOriginator
+	const og = data.observedDevice
+  debugger
 
-	const logs = data[og].__channels.map(key => data[og][key])
+	const logs = data[og].channels.map(key => data[og][key])
 	const breakdowns = logs.map((log, i) => `
 		<details>
 			<summary>
-				${ data[og].__channels[i] }
+				${ data[og].channels[i] }
 			</summary>
 			${orderList(log)}
 		</details>
 	`).join('')
 
 	return `
-		${originatorSelector()}
+		${deviceSelector()}
 		<br>
 		${breakdowns}
 	`
 })
 
-function originatorSelector() {
-	const { metadata, observedOriginator } = $.learn()
+function deviceSelector() {
+	const { metadata, observedDevice } = $.learn()
 
 	const peers = Object.keys(metadata).map(x => metadata[x])
 	const options = peers.map(peer => `
 		<option
 			value="${peer.id}"
-			${peer.id === observedOriginator ? 'selected' : ''}
+			${peer.id === observedDevice ? 'selected' : ''}
 		>
 			${peer.online ? '1' : '0'},${peer.id}
 		</option>
@@ -168,18 +163,26 @@ function originatorSelector() {
 
 	return `
 		Debug log for:<br>
-		<select target="observedOriginator">
+		<select target="observedDevice">
 			${options}
 		</select>
 	`
 }
 
-$.when('change', '[target="observedOriginator"]', function(event) {
-	const { value } = event.target
-	$.teach({ observedOriginator: value })
+$.when('change', '[target="observedDevice"]', function(event) {
+	const next = event.target.value
+  observe($, DEVICE_TABLE, next)
+  DEVICE_TABLE.get(next).get('channels').map().on((data) => {
+    observe($, CHANNEL_TABLE, data.channel)
+  })
+
+	$.teach({ observedDevice: next })
 })
 
 function orderList(log) {
+	if(!log) {
+		return 'no logs...'
+	}
 	return log.__order.map((key) => `
 		${key}: ${log[key]}
 	`).join('<br>')
