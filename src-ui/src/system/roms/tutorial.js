@@ -4,19 +4,19 @@ import { showModal } from '../modal-module.js'
 import '../highlighter.js'
 import '../rainbow-button.js'
 import "../variable-text.js"
+import './hyper-piano.js'
 import './synth-module.js'
 
 const $ = tag('tutorial')
 
 $.when('click', '.start', () => {
   $.teach({ html: `
-    <rainbow-button class="fbl">
-      <button class="remix">
-        Remix
-      </button>
-    </rainbow-button>
-    <synth-module></synth-module>
+    <section class="layout">
+      <div class="horizon"></div>
+      <synth-module></synth-module>
+    </section>
   ` })
+  document.body.insertAdjacentHTML("beforeend", '<hyper-piano></hyper-piano>')
 })
 
 $.when('click', '.remix', async () => {
@@ -72,7 +72,7 @@ $.draw(() => {
       </div>
     </section>
 
-    <div class="skybox">
+    <div class="skybox ${html ? '' : 'active'}">
       <div class="a"></div>
       <div class="b"></div>
       <div class="c"></div>
@@ -82,18 +82,19 @@ $.draw(() => {
         <iframe title="Avatar of a Surfer" src="/avatar/" id="surfer-avatar"></iframe>
         <div id="foreground">
           <div id="logo">
-            <variable-text id="vt1" monospace="0" slant="-15" casual="1" cursive="1" weight="800">
-              Sillyz.
-            </variable-text>
-            <variable-text id="vt2" monospace="1" slant="0" casual="0" cursive="0">
-              COMPUTER
-            </variable-text>
+              <variable-text id="vt1" monospace="0" slant="-15" casual="1" cursive="1" weight="800">
+                Sillyz.
+              </variable-text>
+              <variable-text id="vt2" monospace="1" slant="0" casual="0" cursive="0">
+                COMPUTER
+              </variable-text>
+            </div>
+            <rainbow-button>
+              <button class="start">
+                Start
+              </button>
+            </rainbow-button>
           </div>
-          <rainbow-button>
-            <button class="start">
-              Start
-            </button>
-          </rainbow-button>
         </div>
       </div>
     </div>
@@ -109,6 +110,18 @@ $.flair(`
     inset: 0;
     transform-style: preserve-3d;
     width: 100vmin;
+  }
+
+  & .remix {
+    display: none;
+  }
+
+  & .skybox.active .a,
+  & .skybox.active .b,
+  & .skybox.active .c,
+  & .skybox.active .d,
+  & .skybox.active .e {
+   opacity: 1;
   }
  & .skybox {
    display: grid;
@@ -127,18 +140,19 @@ $.flair(`
 
  & .a, & .b, & .c, & .d, & .e, & .f {
    grid-area: skybox;
-   opacity: 1;
+   opacity: 0;
    transform: translate(0, 0) rotateX(0) rotateY(0) scale(1);
+   transition: opacity 200ms;
  }
 
- & .a {
+ & .skybox.active .a {
    animation: pulse ease-in-out 5000ms alternate infinite;
    background: var(--wheel-5-5);
    transform-origin: top;
    transform: rotateX(-90deg) translate(0, 0);
  }
 
- & .b {
+ & .skybox.active .b {
    animation: pulse ease-in-out 5000ms alternate infinite;
    background: var(--wheel-5-4);
    box-shadow: 0 0 10px 1px rgba(0,0,0,.25) inset;
@@ -146,14 +160,14 @@ $.flair(`
    transform: rotateY(-90deg) translate(0, 0);
  }
 
- & .c {
+ & .skybox.active .c {
    animation: pulse ease-in-out 5000ms alternate infinite;
    background: var(--wheel-5-3);
    transform-origin: bottom;
    transform: rotateX(90deg) translate(0, 0);
  }
 
- & .d {
+ & .skybox.active .d {
    animation: pulse ease-in-out 5000ms alternate infinite;
    background: var(--wheel-5-4);
    box-shadow: 0 0 10px 1px rgba(0,0,0,.25) inset;
@@ -161,7 +175,7 @@ $.flair(`
    transform: rotateY(90deg) translate(0, 0);
  }
 
- & .e {
+ & .skybox.active .e {
    animation: e-scale-out-in ease-in-out 5000ms alternate 1, pulse ease-in-out 5000ms alternate infinite;
    background: var(--wheel-5-4);
    box-shadow: 0 0 10px 1px rgba(0,0,0,.25) inset;
@@ -170,6 +184,7 @@ $.flair(`
  }
 
  & .f {
+   opacity: 1;
    display: grid;
    grid-template-areas: "stack";
  }
@@ -210,6 +225,11 @@ $.flair(`
    position: absolute;
    top: 0;
    left: 0;
+ }
+
+ & synth-module,
+ & hyper-piano {
+   grid-area: 1 / 1 / -1 / -1;
  }
 
  & .horizon {

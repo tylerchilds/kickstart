@@ -74,10 +74,7 @@
       <stop offset="0.857" style="stop-color: rgb(0, 123, 229);"/>
       <stop offset="1" style="stop-color: rgb(172, 137, 255);"/>
     </linearGradient>
-    <linearGradient id="gradient-2-0" gradientUnits="userSpaceOnUse" x1="150.292" y1="599.984" x2="150.292" y2="18279.785" gradientTransform="matrix(-1.266756, 0.016238, 0, -0.270818, -7564.78485, 9644.21582)" xlink:href="#gradient-2"/>
-    <mask id="mask-0">
-      <ellipse style="stroke: rgb(0, 0, 0); fill: url(#gradient-2-0);" cx="150.292" cy="9439.885" rx="11199.475" ry="8839.9" transform="matrix(0, 1, -1, 0, 9593.925781, 12649.168144)"/>
-    </mask>
+    <linearGradient id="gradient-2-0" gradientUnits="userSpaceOnUse" x1="150.292" y1="599.984" x2="150.292" y2="18279.785" gradientTransform="matrix(-1.266756, 0.016238, 0, -0.270818, -7564.784231, 9644.21582)" xlink:href="#gradient-2"/>
     <linearGradient id="gradient-2-1" gradientUnits="userSpaceOnUse" x1="2584.165" y1="-156.568" x2="2584.165" y2="1920.54" gradientTransform="matrix(0.348133, -0.937445, 2.472449, 0.918177, -564.960582, 2589.374079)" xlink:href="#gradient-2"/>
     <linearGradient id="gradient-2-2" gradientUnits="userSpaceOnUse" x1="4466.806" y1="106.001" x2="4466.806" y2="960.407" gradientTransform="matrix(1.000003, 0, 0, 1.000001, -0.010253, -0.000244)" xlink:href="#gradient-2"/>
     <linearGradient id="gradient-2-3" gradientUnits="userSpaceOnUse" x1="4466.806" y1="106.001" x2="4466.806" y2="960.407" gradientTransform="matrix(1, 0, 0, 1, -0.001381, 0)" xlink:href="#gradient-2"/>
@@ -151,12 +148,20 @@
     <linearGradient id="gradient-9-7" gradientUnits="userSpaceOnUse" x1="3298.003" y1="-1591.901" x2="3298.003" y2="-1212.343" xlink:href="#gradient-9"/>
     <linearGradient id="gradient-2-13" gradientUnits="userSpaceOnUse" x1="2497.477" y1="599.923" x2="2497.477" y2="3200.098" gradientTransform="matrix(0.059467, 0.998229, 1.820008, -0.112898, -1061.457764, -726.803101)" xlink:href="#gradient-2"/>
     <linearGradient id="gradient-2-14" gradientUnits="userSpaceOnUse" x1="2497.477" y1="599.923" x2="2497.477" y2="3200.098" gradientTransform="matrix(0.059467, -0.998229, 1.820008, 0.112898, -1106.442261, 4616.374023)" xlink:href="#gradient-2"/>
+    <bx:guide x="0" y="1140.82" angle="0"/>
+    <bx:guide x="5000" y="4019.803" angle="0"/>
+    <bx:guide x="1973.88" y="4999.666" angle="90"/>
+    <clipPath id="clip-0">
+      <ellipse style="stroke: rgb(0, 0, 0); fill: url(#gradient-2-0);" cx="150.292" cy="9439.885" rx="11199.474" ry="8839.9" transform="matrix(0, 1, -1, 0, 9593.925781, 12649.168144)"/>
+    </clipPath>
   </defs>
-  <rect width="5000" height="5000" style="fill: rgb(40, 40, 40);" id="sss-backdrop"/>
-  <rect width="5000" height="178" style="fill: rgb(40, 40, 40);" bx:origin="0.5 0.5"/>
-  <rect width="5000" height="1800" style="fill: rgb(40, 40, 40);" y="3200" bx:origin="0.5 0.5"/>
+  <rect width="5000" height="5000" style="fill: rgb(40, 40, 40); visibility: hidden;" id="sss-backdrop"/>
+  <rect width="5000.002" height="108" style="fill: rgb(40, 40, 40);" x="2.273" y="2922.479" transform="matrix(0, -1, 1, 0, -2922.479004, 5002.274902)" bx:origin="0.5 0.5"/>
+  <rect width="5000" height="108" style="fill: rgb(40, 40, 40);" bx:origin="0.5 0.5"/>
+  <rect width="5000.002" height="108" style="fill: rgb(40, 40, 40);" x="2.273" y="2922.479" transform="matrix(0, -1, 1, 0, 1969.520996, 5002.274902)" bx:origin="0.5 0.5"/>
+  <rect width="5000" height="1800" style="fill: rgb(40, 40, 40); visibility: hidden;" y="3200" bx:origin="0.5 0.5"/>
   <rect x="106" y="2500" width="4788" height="2390" style="stroke: rgb(0, 0, 0); fill: url(#gradient-3);" id="sss-noise"/>
-  <g transform="matrix(1, 0, 0, 0.789314, -3.755859, -662.902344)" style="mask: url(#mask-0);" id="sss-tracks">
+  <g transform="matrix(1, 0, 0, 0.789314, -3.755859, -662.902344)" style="clip-path: url(#clip-0); mix-blend-mode: hard-light;" id="sss-tracks">
     <rect y="1600" width="684" height="3294" style="fill: url(#gradient-9-0);" x="106" id="sss-red" class="sss-track"/>
     <rect y="1600" width="684" height="3294" style="fill: url(#gradient-10-0);" x="790" id="sss-orange" class="sss-track"/>
     <rect y="1600" width="684" height="3294" style="fill: url(#gradient-11-0);" x="1479.946" id="sss-yellow" class="sss-track"/>
@@ -300,4 +305,5 @@
       <ellipse style="mix-blend-mode: screen; fill: rgb(99, 7, 18);" cx="4466.806" cy="533.204" rx="197.912" ry="342.153" transform="matrix(0, -1, 1, 0, 177.004578, 5308.328613)"/>
     </g>
   </g>
+  <rect width="5000" height="108" style="fill: rgb(40, 40, 40);" y="4892" bx:origin="0.5 0.5"/>
 </svg>

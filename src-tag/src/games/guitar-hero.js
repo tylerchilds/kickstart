@@ -1,6 +1,9 @@
 import * as Tone from 'https://esm.sh/tone@next'
+import SampleLibrary from '../vendor/tonejs-instruments-master/Tonejs-Instruments.js'
 import tag from '../../mod.js'
 import gamepad from "./gamepad.js"
+
+console.log('sample library', SampleLibrary)
 
 const synth = new Tone.Synth().toDestination()
 

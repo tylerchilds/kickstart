@@ -88,7 +88,6 @@ function format(data, key) {
 }
 
 DEVICE_TABLE.get(device).get('channels').map().on((data, channel) => {
-  debugger
   observe($, CHANNEL_TABLE, channel)
 })
 
