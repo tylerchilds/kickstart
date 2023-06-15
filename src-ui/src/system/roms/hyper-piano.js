@@ -99,15 +99,20 @@ async function loadSample(url) {
 
 function playSample(note, frequency) {
   var oscillator = context.createOscillator();
-  oscillator.type = 'square';
+  oscillator.type = 'sine';
   oscillator.frequency.value = parseFloat(frequency); // value in hertz
   oscillator.connect(context.destination);
   oscillator.start()
 
-    setTimeout(
-      function() {
-        oscillator.stop();
-      }, 200);
+  setInterval(
+    function() {
+      oscillator.frequency.value = parseFloat(getFrequency((Math.random() * 127) << 0)); // value in hertz
+    }, 20);
+
+  setTimeout(
+    function() {
+      oscillator.stop();
+    }, 200);
 }
 
 let synths = []
@@ -397,6 +402,8 @@ $.flair(`
 		position: relative;
     border-left: 1px solid white;
     border-right: 1px solid white;
+    height: 216px;
+    max-height: 50vh;
   }
 
   & .step.accidental-true {
