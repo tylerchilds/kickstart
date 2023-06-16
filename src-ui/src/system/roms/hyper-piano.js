@@ -300,6 +300,7 @@ $.draw(() => {
     ${controls()}
     <div class="window">
       <div class="wheel">
+        ${biomes.map(x=>`<div class="backdrop-${biome}">`).join('')}
         ${wheel}
       </div>
     </div>
@@ -334,7 +335,7 @@ $.flair(`
     position: relative;
     transform-style: preserve-3d;
     width: 100%;
-    overflow: hidden;
+    overflow: auto;
   }
   & .wheel {
     display: grid;
