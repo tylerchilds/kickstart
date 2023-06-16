@@ -338,7 +338,7 @@ $.flair(`
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    pointer-events: none;
+    pointer-events: auto;
   }
   & .wheel {
     display: grid;
