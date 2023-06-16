@@ -6,14 +6,14 @@ import module from './src/system/module.js'
 
 import * as focusTrap from 'focus-trap';
 
-const DEVICE_TABLE = database.get('/devices')
-const CHANNEL_TABLE = database.get('/channels')
-const MESSAGE_TABLE = database.get('/messages')
-
 const randomString = (length) =>
 	[ ...Array(length) ].map(() => (~~(Math.random() * 36)).toString(36)).join('');
 
 const device = symbol("/device/")
+
+const DEVICE_TABLE = database.get('/devices')
+const CHANNEL_TABLE = database.get('/channels')
+const MESSAGE_TABLE = database.get('/messages')
 
 const $ = module('sos-debugger', {
 	observedDevice: device,
@@ -35,12 +35,14 @@ addEventListener("error", (event) => {
 	helper.error(error)
 });
 
+/*
 DEVICE_TABLE.get(device).put({ id: device, online: true })
 onbeforeunload = () => {
 	DEVICE_TABLE.get(device).put({ online: false })
 }
 
 observe($, DEVICE_TABLE, device)
+*/
 
 export {
 	Color,
@@ -87,19 +89,21 @@ function format(data, key) {
   return data
 }
 
+
+/*
 DEVICE_TABLE.get(device).get('channels').map().on((data, channel) => {
   observe($, CHANNEL_TABLE, channel)
 })
-
+*/
 
 function logger(name, output) {
-	const channel = channelByName(device, name)
-  const node = CHANNEL_TABLE.get(channel).put({ id: channel })
-  DEVICE_TABLE.get(device).get('channels').get(channel).put(node)
+//	const channel = channelByName(device, name)
+ // const node = CHANNEL_TABLE.get(channel).put({ id: channel })
+ // DEVICE_TABLE.get(device).get('channels').get(channel).put(node)
 
 	return (...args) => {
 		output.apply(null, args)
-		args.map(x => trace(channel, x))
+	//	args.map(x => trace(channel, x))
 	}
 }
 
@@ -122,7 +126,7 @@ function merge(key) {
 
 
 function trace(channel, argument) {
-	CHANNEL_TABLE.get(channel).get('messages').set(`${argument}`)
+	//CHANNEL_TABLE.get(channel).get('messages').set(`${argument}`)
 }
 
 $.draw(() => {
@@ -168,6 +172,7 @@ function deviceSelector() {
 	`
 }
 
+/*
 $.when('change', '[target="observedDevice"]', function(event) {
 	const next = event.target.value
   observe($, DEVICE_TABLE, next)
@@ -177,6 +182,7 @@ $.when('change', '[target="observedDevice"]', function(event) {
 
 	$.teach({ observedDevice: next })
 })
+*/
 
 function orderList(log) {
 	if(!log) {

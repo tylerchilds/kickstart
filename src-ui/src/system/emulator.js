@@ -195,8 +195,8 @@ $.flair(`
 
   & #command-line input {
     display: block;
-    height: 2rem;
-    font-size: 2rem;
+    line-height: 2rem;
+    font-size: 1rem;
     border: 0;
     box-shadow: -72px -16px 72px 16px rgba(0,0,0,.25);
     max-width: 100%;

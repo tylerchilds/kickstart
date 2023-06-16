@@ -336,7 +336,9 @@ $.flair(`
     position: relative;
     transform-style: preserve-3d;
     width: 100%;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    pointer-events: none;
   }
   & .wheel {
     display: grid;
