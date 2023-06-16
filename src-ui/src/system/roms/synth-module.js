@@ -285,7 +285,7 @@ $.draw(() => {
 
 function controls() {
 	return `
-		<div class="controls" style="display: none;">
+		<div class="controls">
 			<button class="octave-up"></button>
 			<button class="pitch-up"></button>
 			<button class="pitch-down"></button>
@@ -308,8 +308,8 @@ $.flair(`
   & .wheel {
     display: grid;
     grid-template-areas: "slot";
-    grid-template-rows: 45vmin;
-    grid-template-columns: 40vmin;
+    grid-template-rows: 30vmin;
+    grid-template-columns: 25vmin;
     place-content: start center;
     padding: 0 1rem;
     height: 90vmin;

@@ -89,6 +89,7 @@ const metadata = notes.reduce((meta, midi) => {
 }, {})
 
 const context = new AudioContext();
+const oscillators = {}
 
 async function loadSample(url) {
   const sample = await fetch(url)
@@ -98,44 +99,21 @@ async function loadSample(url) {
 }
 
 function playSample(note, frequency) {
-  var oscillator = context.createOscillator();
-  oscillator.type = 'sine';
-  oscillator.frequency.value = parseFloat(frequency); // value in hertz
-  oscillator.connect(context.destination);
-  oscillator.start()
-
-  setInterval(
-    function() {
-      oscillator.frequency.value = parseFloat(getFrequency((Math.random() * 127) << 0)); // value in hertz
-    }, 20);
-
-  setTimeout(
-    function() {
-      oscillator.stop();
-    }, 200);
+  stopSample(note)
+  oscillators[note] = context.createOscillator();
+  oscillators[note].type = 'sine';
+  oscillators[note].frequency.value = parseFloat(frequency); // value in hertz
+  oscillators[note].connect(context.destination);
+  oscillators[note].start()
 }
 
-let synths = []
-Promise.all([
-  loadSample('/samples/1.mp3'),
-  loadSample('/samples/2.mp3'),
-  loadSample('/samples/3.mp3'),
-  loadSample('/samples/4.mp3'),
-  loadSample('/samples/5.mp3'),
-  loadSample('/samples/6.mp3'),
-  loadSample('/samples/7.mp3'),
-  loadSample('/samples/8.mp3'),
-]).then(s => synths = s)
+function stopSample(note) {
+  if(oscillators[note]) {
+    oscillators[note].stop();
+  }
+}
 
-const $ = module('hyper-piano', {
-  colors: [],
-  start: 120,
-  length: 360,
-  octave: 4,
-  reverse: false,
-	pitch: 0,
-	synth: 0
-})
+const $ = module('hyper-piano')
 
 const synaesthesia = Object.keys(metadata).map(midi => metadata[midi])
 
@@ -154,24 +132,6 @@ function midiToColor(specimens) {
 const strumVelocity = 75
 const sustainedDuration = 100
 const actionableFPS = 4 
-
-const majorScale = [
-  'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F'
-]
-
-const minorScale = [
-  'a', 'e', 'b', 'f#', 'c#', 'g#', 'd#', 'bb', 'f', 'c', 'g', 'd'
-]
-
-const lightnessStops = [
-  [5, 30],
-  [20, 45],
-  [35, 60],
-  [50, 75],
-  [65, 90],
-  [80, 105],
-  [95, 120]
-]
 
 const octaveUp = () => {
 	const octave = $.learn().octave + 1
@@ -210,12 +170,13 @@ function attack(event) {
   const { note, frequency } = event.target.dataset
 
   playSample(note, frequency);
-  //synths[synth].triggerAttack(`${note}${octave}`, "2n");
 	event.target.classList.add('active')
 }
 
 function release (event) {
+  const { note } = event.target.dataset
 	event.preventDefault()
+  stopSample(note);
 	event.target.classList.remove('active')
 }
 
@@ -347,7 +308,7 @@ $.draw(() => {
 
 function controls() {
 	return `
-		<div class="controls">
+		<div class="controls" style="display: none;">
 			<button class="octave-up"></button>
 			<button class="pitch-up"></button>
 			<button class="pitch-down"></button>
@@ -368,13 +329,16 @@ $.flair(`
     place-content: end;
   }
   & .window {
+    perspective-origin: center;
+    perspective: 1000px;
+    position: relative;
+    transform-style: preserve-3d;
     width: 100%;
-    overflow-x: auto;
+    overflow: hidden;
   }
   & .wheel {
     display: grid;
     grid-template-columns: repeat(7, 72px 36px 72px 36px 72px 72px 36px 72px 36px 72px 36px 72px);
-    grid-template-rows: 216px;
     padding: 0 1rem;
 		user-select: none; /* supported by Chrome and Opera */
 		-webkit-user-select: none; /* Safari */
@@ -382,6 +346,7 @@ $.flair(`
 		-moz-user-select: none; /* Firefox */
 		-ms-user-select: none; /* Internet Explorer/Edge */
     touch-action: manipulation;
+    transform: rotateX(30deg);
   }
   & .group {
     grid-area: slot;
@@ -402,12 +367,12 @@ $.flair(`
 		position: relative;
     border-left: 1px solid white;
     border-right: 1px solid white;
-    height: 216px;
-    max-height: 50vh;
+    height: 50vh;
   }
 
   & .step.accidental-true {
     border-color: black;
+    transform: translateY(-72px);
   }
   & .step.accidental-true::after {
     transform: rotateZ(180deg);
@@ -441,7 +406,6 @@ $.flair(`
     background: url('/experiences/sss-game/boxart.svg');
 		position: absolute;
 		inset: 0;
-    background-position-y: calc(-3250px / 7);
     background-repeat: no-repeat;
     background-size: calc(5000px / 7);
   }
