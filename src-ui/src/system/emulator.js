@@ -161,11 +161,13 @@ $.flair(`
     background: white;
     position: fixed;
     left: 8px;
-    bottom: 36px;
+    bottom: 0;
     width: 100%;
     height: 100%;
-    max-height: 640px;
-    max-width: 320px;
+    height: 640px;
+    width: 320px;
+    max-width: 100%;
+    max-height: 100%;
     overflow: auto;
     z-index: 5;
   }
@@ -275,7 +277,7 @@ $.flair(`
 
   & .stack #command-line {
     position: fixed;
-    bottom: 36px;
+    bottom: 0;
     max-width: 320px;
   }
 `)
