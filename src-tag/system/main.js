@@ -11,17 +11,17 @@ console.log.apply(null, [
 
 const $ = module('system-emulator', {
   rootActive: false,
-	stickies: getStickies(),
+	panes: getPanes(),
 	activeEmbed: `
 		<iframe src="/music-verse/"></iframe>
 	`,
 })
 
 $.draw((target) => {
-	const { stickies, activeEmbed, rootActive } = $.learn()
+	const { panes, activeEmbed, rootActive } = $.learn()
 	const filtered = Object
-		.keys(stickies)
-		.map(key => stickies[key])
+		.keys(panes)
+		.map(key => panes[key])
 		.filter(thinking)
 
 	const list = filtered
@@ -59,7 +59,7 @@ function thinking(about) {
 	return about ? true : false
 }
 
-function getStickies() {
+function getPanes() {
 	return {
 		'0': {
 			key: '0',
@@ -133,7 +133,7 @@ $.when('click', 'button.switcher', switcher)
 
 $.when('click', 'button[data-key]', (event) => {
 	const { key } = event.target.dataset
-	const { embed } = $.learn().stickies[key]
+	const { embed } = $.learn().panes[key]
 	$.teach({
 		activeEmbed: embed,
 		rootActive: false
@@ -167,19 +167,28 @@ $.flair(`
   & .switcher {
     display: block;
     position: fixed;
-    height: 2rem;
     background: orange;
     left: 0;
     right: 0;
     z-index: 10;
     border: 0;
-    bottom: 0;
-    width: 100%;
+    top: 0;
+		right: 0;
+		content: '';
+    background: url(/experiences/sss-game/boxart.svg);
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    background-size: calc(5000px / 7);
+    width: 72px;
+    height: 72px;
   }
 
   & .active .switcher {
-    bottom: auto;
-    top: 0;
+    top: auto;
+    right: auto;
+		bottom: 0;
+		left: 0;
   }
 
 	& .leaf {

@@ -30,7 +30,20 @@ $.draw((target) => {
   return `
     <div class="${rootClass}">
       <div class="root">
-        ${list}
+        <div class="stack">
+          <details open id="filters">
+            <summary>Filters</summary>
+            <div class="list-item">
+            beep boop form elements
+            </div>
+          </details>
+          <div id="root">
+            ${list}
+          </div>
+          <form id="command-line">
+            <input type="text" placeholder=":" name="command" />
+          </form>
+        </div>
       </div>
       <button aria-label="Switcher" class="switcher"></button>
       <div class="leaf">
@@ -40,9 +53,14 @@ $.draw((target) => {
   `
 })
 
+$.when('submit', '#command-line', function (event) {
+  event.preventDefault()
+  const { value } = event.target['command']
+  alert(value)
+})
+
 function switcher({ target }) {
   const rootActive = !$.learn().rootActive
-  toggleFullScreen(!rootActive, target)
   $.teach({ rootActive })
 }
 
@@ -138,12 +156,18 @@ $.when('click', 'button[data-href]', (event) => {
 
 $.flair(`
   & .root {
+    border-top: 8px solid orange;
     display: none;
     background: white;
     position: fixed;
-    inset: 0;
-    padding: 2rem 0 1rem;
+    left: 8px;
+    bottom: 36px;
+    width: 100%;
+    height: 100%;
+    max-height: 640px;
+    max-width: 320px;
     overflow: auto;
+    z-index: 5;
   }
 
   & .root::before {
@@ -160,28 +184,47 @@ $.flair(`
     border-bottom: 1px solid cyan;
   }
 
+  & #command-line {
+    position: absolute;
+    bottom: 0;
+    background: white;
+    padding-left: 72px;
+  }
+
+  & #command-line input {
+    display: block;
+    height: 2rem;
+    font-size: 2rem;
+    border: 0;
+    box-shadow: -72px -16px 72px 16px rgba(0,0,0,.25);
+    max-width: 100%;
+  }
+
   & .switcher {
     display: block;
     position: fixed;
     height: 2rem;
     background: orange;
-    left: 0;
+    top: 0;
     right: 0;
     z-index: 10;
     border: 0;
-    bottom: 0;
-    width: 100%;
+    width: 72px;
+    height: 72px;
+    border-radius: 100%;
   }
 
   & .active .switcher {
-    bottom: auto;
-    top: 0;
+    bottom: 0;
+    top: auto;
+    right: auto;
+    left: 0;
   }
 
   & .leaf {
     background: white;
     position: fixed;
-    inset: 0 0 2rem 0;
+    inset: 0;
     transform: translateY(0);
     transition: transform 200ms ease-in-out;
   }
@@ -197,8 +240,7 @@ $.flair(`
   }
 
   & .active .leaf {
-    display: none;
-    transform: translateY(-100%);
+    filter: grayscale(1) brightness(0.5) contrast(0.5);
   }
 
   & .launch {
@@ -208,6 +250,33 @@ $.flair(`
     color: blue;
     padding: .5rem;
     margin: .5rem;
+  }
+
+  & .stack {
+    position: absolute;
+    inset: 0;
+  }
+
+  & .stack #filters {
+    position: sticky;
+    top: 0;
+    background: white;
+    border-bottom: 4px solid orange;
+  }
+
+  & .stack #root {
+    border-top: 4px solid orange;
+    padding-bottom: 4rem;
+  }
+
+  & summary {
+    color: orange;
+  }
+
+  & .stack #command-line {
+    position: fixed;
+    bottom: 36px;
+    max-width: 320px;
   }
 `)
 
@@ -220,10 +289,6 @@ window.addEventListener('keydown', (event) => {
     }
   }
 });
-
-function toggleFullScreen(yes, what) {
-  yes ? openFullScreen(what) : closeFullScreen()
-}
 
 function openFullScreen(element) {
   try {

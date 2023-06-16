@@ -304,6 +304,9 @@ $.flair(`
     height: 100%;
     display: grid;
     place-content: center;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
   }
   & .wheel {
     display: grid;
@@ -337,6 +340,7 @@ $.flair(`
     place-items: start;
     color: black;
 		position: relative;
+    pointer-events: auto;
   }
 
   & .step.half {

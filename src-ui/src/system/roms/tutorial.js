@@ -13,10 +13,10 @@ $.when('click', '.start', () => {
   $.teach({ html: `
     <section class="layout">
       <div class="horizon"></div>
-      <hyper-piano></hyper-piano>
-      <synth-module></synth-module>
     </section>
   ` })
+  document.body.insertAdjacentHTML("beforeend", '<hyper-piano></hyper-piano>')
+  document.body.insertAdjacentHTML("beforeend", '<synth-module></synth-module>')
 })
 
 $.when('click', '.remix', async () => {
@@ -229,7 +229,7 @@ $.flair(`
 
  & synth-module,
  & hyper-piano {
-   grid-area: 1 / 1 / -3 / -1;
+   grid-area: 1 / 1 / -1 / -1;
  }
 
  & .horizon {

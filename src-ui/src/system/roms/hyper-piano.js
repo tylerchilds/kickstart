@@ -101,7 +101,7 @@ async function loadSample(url) {
 function playSample(note, frequency) {
   stopSample(note)
   oscillators[note] = context.createOscillator();
-  oscillators[note].type = 'sine';
+  oscillators[note].type = 'square';
   oscillators[note].frequency.value = parseFloat(frequency); // value in hertz
   oscillators[note].connect(context.destination);
   oscillators[note].start()
@@ -327,6 +327,8 @@ $.flair(`
     height: 100%;
     display: grid;
     place-content: end;
+    pointer-events: none;
+    transform: translateY(-72px);
   }
   & .window {
     perspective-origin: center;
@@ -358,6 +360,7 @@ $.flair(`
     gap: 1px;
   }
   & .step {
+    pointer-events: auto;
     border: none;
     width: 100%;
     height: auto;
