@@ -99,7 +99,6 @@ async function loadSample(url) {
 }
 
 function playSample(note, frequency) {
-  stopSample(note)
   oscillators[note] = context.createOscillator();
   oscillators[note].type = 'sine';
   oscillators[note].frequency.value = parseFloat(frequency); // value in hertz
