@@ -99,6 +99,7 @@ async function loadSample(url) {
 }
 
 function playSample(note, frequency) {
+  stopSample(note)
   oscillators[note] = context.createOscillator();
   oscillators[note].type = 'sine';
   oscillators[note].frequency.value = parseFloat(frequency); // value in hertz
@@ -299,7 +300,6 @@ $.draw(() => {
     ${controls()}
     <div class="window">
       <div class="wheel">
-        ${biomes.map(x=>`<div class="backdrop-${biome}">`).join('')}
         ${wheel}
       </div>
     </div>
