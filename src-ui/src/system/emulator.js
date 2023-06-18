@@ -106,19 +106,15 @@ function getBookmarks() {
       title: 'Video Reddit',
       href: '/video-reddit/',
     },
-    'http://sillonious:8765': {
+    'https://gun.1998.social': {
       title: 'Gun',
-      href: 'http://sillonious:8765',
+      href: 'https://gun.1998.social',
     },
-    'http://sillonious:1989/messages': {
+    'https://braid.1998.social/messages': {
       title: 'Braid',
-      href: 'http://sillonious:1989/messages',
+      href: 'https://braid.sillmessages',
     },
-    'http://sillonious:8226/examples': {
-      title: 'Tag',
-      href: 'http://sillonious:8226/examples',
-    },
-    'http://sillonious:3000': {
+    'https://solid.1998.social': {
       title: 'Solid',
       href: 'http://sillonious:3000',
     },
@@ -188,7 +184,7 @@ $.flair(`
 
   & #command-line {
     position: absolute;
-    bottom: 0;
+    bottom: 9px;
     background: white;
     padding-left: 72px;
   }
