@@ -11,12 +11,8 @@ const $ = tag('tutorial')
 
 $.when('click', '.start', () => {
   $.teach({ html: `
-    <section class="layout">
-      <div class="horizon"></div>
-    </section>
+  <div style="width:100%;height:0px;position:relative;padding-bottom:56.25%;"><iframe src="https://streamyard.com/watch/wgMVimwjtpM2?embed=true" width="100%" height="100%" frameborder="0" allowfullscreen style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"></iframe></div>
   ` })
-  document.body.insertAdjacentHTML("beforeend", '<hyper-piano></hyper-piano>')
-  document.body.insertAdjacentHTML("beforeend", '<synth-module></synth-module>')
 })
 
 $.when('click', '.remix', async () => {
