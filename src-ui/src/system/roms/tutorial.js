@@ -6,12 +6,13 @@ import '../rainbow-button.js'
 import "../variable-text.js"
 import './hyper-piano.js'
 import './synth-module.js'
+import './script-type.js'
 
 const $ = tag('tutorial')
 
 $.when('click', '.start', () => {
   $.teach({ html: `
-  <div style="width:100%;height:0px;position:relative;padding-bottom:56.25%;"><iframe src="https://streamyard.com/watch/wgMVimwjtpM2?embed=true" width="100%" height="100%" frameborder="0" allowfullscreen style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"></iframe></div>
+    <script-type src="war-on-clowns-by-bills-pc"></script-type>
   ` })
 })
 

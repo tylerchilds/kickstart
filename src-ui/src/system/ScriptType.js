@@ -9,12 +9,12 @@ const DYNAMIC_MODE = Symbol('dynamic')
 
 export const compile = (script) => {
   const ScriptType = {
-    '#': append.bind({}, 'address'),
-    '@': append.bind({}, 'character'),
-    '"': append.bind({}, 'quote'),
-    '(': append.bind({}, 'parenthetical'),
-    '!': append.bind({}, 'information'),
-    '^': append.bind({}, 'effect'),
+    '#': append.bind({}, 'scripttype-address'),
+    '@': append.bind({}, 'scripttype-character'),
+    '"': append.bind({}, 'scripttype-quote'),
+    '(': append.bind({}, 'scripttype-parenthetical'),
+    '!': append.bind({}, 'scripttype-information'),
+    '^': append.bind({}, 'scripttype-effect'),
     '<': plugin,
     '{': scope,
   }
@@ -78,8 +78,10 @@ export const compile = (script) => {
     const [key, value] = line.split(':')
 
     if(!value) {
-      headers()
-      title()
+      if(isolate.scope === 'typewriter') {
+        headers()
+        title()
+      }
       return setMode(NORMAL_MODE)
     }
 
@@ -165,7 +167,7 @@ body {
   }
 }
 
-typewriter-title {
+scripttype-title {
   display: block;
   height: 100%;
   width: 100%;
@@ -205,58 +207,58 @@ title-agent {
   grid-area: agent;
 }
 
-typewriter-address,
-typewriter-character,
-typewriter-quote,
-typewriter-parenthetical,
-typewriter-information,
-typewriter-effect,
-typewriter-freetext,
-typewriter-blank {
+scripttype-address,
+scripttype-character,
+scripttype-quote,
+scripttype-parenthetical,
+scripttype-information,
+scripttype-effect,
+scripttype-freetext,
+scripttype-blank {
   display: block;
 }
 
-typewriter-address,
-typewriter-information {
+scripttype-address,
+scripttype-information {
   text-transform: uppercase;
   margin: 1rem 0;
 }
 
-typewriter-character,
-typewriter-parenthetical {
+scripttype-character,
+scripttype-parenthetical {
   text-align: center;
 }
 
-typewriter-character {
+scripttype-character {
   text-align: center;
   text-transform: uppercase;
   margin: 1rem 0 0;
 }
 
-typewriter-effect {
+scripttype-effect {
   margin: 1rem 0;
   text-align: right;
 }
 
-typewriter-quote {
+scripttype-quote {
   margin: 0 1in;
 }
 
-typewriter-quote:first-child::before {
+scripttype-quote:first-child::before {
   content: "(CONT'D)" !important;
   display: block;
   text-align: center;
 }
 
-typewriter-parenthetical::before {
+scripttype-parenthetical::before {
   content: '(';
 }
 
-typewriter-parenthetical::after {
+scripttype-parenthetical::after {
   content: ')';
 }
 
-typewriter-freetext {
+scripttype-freetext {
   margin: 1rem 0;
 }
       </style>
@@ -278,7 +280,7 @@ typewriter-freetext {
       agent
     } = bus.state[isolate.scope]
 
-    append('title', `
+    append('scripttype-title', `
       <title-cover>
         <title-main>
           <title-title>
@@ -312,18 +314,18 @@ typewriter-freetext {
   }
 
   function freetext(line) {
-    append('freetext', line)
+    append('scripttype-freetext', line)
   }
 
   function blank() {
-    append("blankline", "")
+    append("script-type-blankline", "")
   }
 
   function append(tag, content) {
     const html = `
-      <${isolate.scope}-${tag}>
+      <${tag}>
         ${content}
-      </${isolate.scope}-${tag}>
+      </${tag}>
     `
     isolate.result += html
   }
