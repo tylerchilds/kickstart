@@ -12,7 +12,10 @@ const $ = tag('tutorial')
 
 $.when('click', '.start', () => {
   $.teach({ html: `
+    <iframe src="https://1998.social" title="1998.social"></iframe>
+    <!--
     <script-type src="war-on-clowns-by-bills-pc"></script-type>
+    -->
   ` })
 })
 
