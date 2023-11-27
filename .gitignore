@@ -3,5 +3,5 @@ src-tauri/binaries/
 logs/
 tmp/
 
-src-owncast/owncast-install-backups
-src-owncast/owncast
+src-owncast/owncast-install-backups/
+src-owncast/owncast/

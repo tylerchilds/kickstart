@@ -2,11 +2,12 @@ import { Pup } from "https://deno.land/x/pup/mod.ts"
 
 const processConfiguration = {
   notorious: 'sillonious',
-  tag: true,
+  tag: false,
   solid: false,
-  braid: true,
-  gun: true,
-  edge: true,
+  braid: false,
+  gun: false,
+  edge: false,
+  owncast: true,
   features: {
     tag: {
       "id": "sillonious-tag",
@@ -31,6 +32,11 @@ const processConfiguration = {
     edge: {
       "id": "sillonious-edge",
       "cmd": "deno task start-edge",
+      "autostart": true
+    },
+    owncast: {
+      "id": "sillonious-owncast",
+      "cmd": "deno task start-owncast",
       "autostart": true
     }
   }
