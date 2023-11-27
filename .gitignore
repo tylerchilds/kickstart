@@ -2,3 +2,6 @@ src-tauri/binaries/
 .pup.json-tmp
 logs/
 tmp/
+
+src-owncast/owncast-install-backups
+src-owncast/owncast
