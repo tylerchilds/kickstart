@@ -1,6 +1,7 @@
 {
   "tasks": {
     "start": "deno run -A --unstable mod.js",
+    "start-caddy": "caddy start --config src-caddy/Caddyfile",
     "start-native": "cargo tauri dev",
     "build-native": "cargo tauri build",
     "start-ui": "cd src-ui && deno task develop-client",

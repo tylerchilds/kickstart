@@ -2,13 +2,19 @@ import { Pup } from "https://deno.land/x/pup/mod.ts"
 
 const processConfiguration = {
   notorious: 'sillonious',
+  caddy: true, // joey the cat or charlie boots?
   tag: false,
   solid: false,
-  braid: false,
-  gun: false,
+  braid: true,
+  gun: true,
   edge: false,
   owncast: true,
   features: {
+    caddy: {
+      "id": "sillonious-caddy",
+      "cmd": "deno task start-caddy",
+      "autostart": true
+    },
     tag: {
       "id": "sillonious-tag",
       "cmd": "deno task start-tag",
