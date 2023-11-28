@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "start": "curl -s https://owncast.online/install.sh | bash && cd owncast && ./owncast"
+    "install": "curl -s https://owncast.online/install.sh | bash",
+    "start": "cd owncast && ./owncast"
   },
   "compilerOptions": {
   }

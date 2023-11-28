@@ -2,7 +2,7 @@ import { Pup } from "https://deno.land/x/pup/mod.ts"
 
 const processConfiguration = {
   notorious: 'sillonious',
-  caddy: true, // joey the cat or charlie boots?
+  caddy: false, // joey the cat or charlie boots?
   tag: false,
   solid: false,
   braid: true,
