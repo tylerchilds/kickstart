@@ -1,8 +1,15 @@
+thelanding.page {
+  reverse_proxy localhost:8000
+}
+
 94404-969-g-edgewater-blvd-123.thelanding.page {
   reverse_proxy localhost:8080
 }
 
-thelanding.page { reverse_proxy localhost:8000 }
+owncast.thelanding.page {
+  reverse_proxy localhost:1935
+}
+
 braid.thelanding.page { reverse_proxy localhost:1989 }
 gun.thelanding.page { reverse_proxy localhost:8765 }
 
