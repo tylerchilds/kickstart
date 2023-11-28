@@ -5,8 +5,8 @@ const processConfiguration = {
   caddy: false, // joey the cat or charlie boots?
   tag: false,
   solid: false,
-  braid: true,
-  gun: true,
+  braid: false,
+  gun: false,
   edge: false,
   owncast: true,
   features: {
