@@ -6,33 +6,82 @@ thelanding.page {
   reverse_proxy localhost:8080
 }
 
+live.thelanding.page {
+  reverse_proxy localhost:8080
+}
+
 owncast.thelanding.page {
   reverse_proxy localhost:1935
 }
+braid.thelanding.page {
+  reverse_proxy localhost:1989
+}
+gun.thelanding.page {
+  reverse_proxy localhost:8765
+}
 
-braid.thelanding.page { reverse_proxy localhost:1989 }
-gun.thelanding.page { reverse_proxy localhost:8765 }
+sillyz.computer {
+  reverse_proxy localhost:8000
+}
+1998.social {
+  reverse_proxy localhost:8000
+}
+yourlovedones.online {
+  reverse_proxy localhost:8000
+}
+ncity.executiontime.pub {
+  reverse_proxy localhost:8000
+}
+css.ceo {
+  reverse_proxy localhost:8000
+}
+y2k38.info {
+  reverse_proxy localhost:8000
+}
+tychi.me {
+  reverse_proxy localhost:8000
+}
 
-sillyz.computer { reverse_proxy localhost:8000 }
-1998.social { reverse_proxy localhost:8000 }
-yourlovedones.online { reverse_proxy localhost:8000 }
-ncity.executiontime.pub { reverse_proxy localhost:8000 }
-css.ceo { reverse_proxy localhost:8000 }
-y2k38.info { reverse_proxy localhost:8000 }
-tychi.me { reverse_proxy localhost:8000 }
+braid.sillyz.computer {
+  reverse_proxy localhost:1989
+}
+braid.1998.social {
+  reverse_proxy localhost:1989
+}
+braid.yourlovedones.online {
+  reverse_proxy localhost:1989
+}
+braid.ncity.executiontime.pub {
+  reverse_proxy localhost:1989
+}
+braid.css.ceo {
+  reverse_proxy localhost:1989
+}
+braid.y2k38.info {
+  reverse_proxy localhost:1989
+}
+braid.tychi.me {
+  reverse_proxy localhost:1989
+}
 
-braid.sillyz.computer { reverse_proxy localhost:1989 }
-braid.1998.social { reverse_proxy localhost:1989 }
-braid.yourlovedones.online { reverse_proxy localhost:1989 }
-braid.ncity.executiontime.pub { reverse_proxy localhost:1989 }
-braid.css.ceo { reverse_proxy localhost:1989 }
-braid.y2k38.info { reverse_proxy localhost:1989 }
-braid.tychi.me { reverse_proxy localhost:1989 }
-
-gun.sillyz.computer { reverse_proxy localhost:8765 }
-gun.1998.social { reverse_proxy localhost:8765 }
-gun.yourlovedones.online { reverse_proxy localhost:8765 }
-gun.ncity.executiontime.pub { reverse_proxy localhost:8765 }
-gun.css.ceo { reverse_proxy localhost:8765 }
-gun.y2k38.info { reverse_proxy localhost:8765 }
-gun.tychi.me { reverse_proxy localhost:8765 }
+gun.sillyz.computer {
+  reverse_proxy localhost:8765
+}
+gun.1998.social {
+  reverse_proxy localhost:8765
+}
+gun.yourlovedones.online {
+  reverse_proxy localhost:8765
+}
+gun.ncity.executiontime.pub {
+  reverse_proxy localhost:8765
+}
+gun.css.ceo {
+  reverse_proxy localhost:8765
+}
+gun.y2k38.info {
+  reverse_proxy localhost:8765
+}
+gun.tychi.me {
+  reverse_proxy localhost:8765
+}
