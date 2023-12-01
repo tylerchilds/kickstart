@@ -2,13 +2,14 @@ import { Pup } from "https://deno.land/x/pup/mod.ts"
 
 const processConfiguration = {
   notorious: 'sillonious',
-  caddy: false, // joey the cat or charlie boots?
+  caddy: false,
   tag: false,
   solid: false,
-  braid: true,
+  statebus: true,
   gun: true,
   edge: false,
   owncast: true,
+  dropserver: false,
   features: {
     caddy: {
       "id": "sillonious-caddy",
@@ -25,9 +26,9 @@ const processConfiguration = {
       "cmd": "deno task start-solid",
       "autostart": true
     },
-    braid: {
-      "id": "sillonious-braid",
-      "cmd": "deno task start-braid",
+    statebus: {
+      "id": "sillonious-statebus",
+      "cmd": "deno task start-statebus",
       "autostart": true
     },
     gun: {
@@ -44,7 +45,13 @@ const processConfiguration = {
       "id": "sillonious-owncast",
       "cmd": "deno task start-owncast",
       "autostart": true
+    },
+    dropserver: {
+      "id": "sillonious-dropserver",
+      "cmd": "deno task start-owncast",
+      "autostart": true
     }
+
   }
 }
 

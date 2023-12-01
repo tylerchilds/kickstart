@@ -10,7 +10,7 @@
     "start-edge": "deno task build-ui && cd src-edge && deno task start",
     "start-gun": "cd src-gun && deno task start",
     "start-owncast": "cd src-owncast && deno task start",
-    "start-braid": "cd src-braid && deno task start",
+    "start-statebus": "cd src-statebus && deno task start",
     "start-solid": "cd src-solid && deno task start",
     "package-tag": "cd src-tag && deno task package",
     "publish-tag": "cd src-tag && deno task publish"
