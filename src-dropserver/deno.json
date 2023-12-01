@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "install": "wget https://github.com/teleclimber/Dropserver/releases/download/v0.12.0/ds-dev-amd64-linux.tar.gz -O - | tar -xz",
+    "start": "./ds-dev -app=apps"
+  },
+  "compilerOptions": {
+  }
+}
