@@ -7,6 +7,7 @@ const processConfiguration = {
   solid: false,
   statebus: true,
   gun: true,
+  rust9p: true,
   plan98: true,
   owncast: true,
   dropserver: false,
@@ -34,6 +35,11 @@ const processConfiguration = {
     gun: {
       "id": "sillonious-gun",
       "cmd": "deno task start-gun",
+      "autostart": true
+    },
+    rust9p: {
+      "id": "sillonious-rust9p",
+      "cmd": "deno task start-rust9p",
       "autostart": true
     },
     plan98: {
