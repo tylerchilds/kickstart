@@ -7,7 +7,7 @@ const processConfiguration = {
   solid: false,
   statebus: true,
   gun: true,
-  edge: false,
+  plan98: true,
   owncast: true,
   dropserver: false,
   features: {
@@ -36,9 +36,9 @@ const processConfiguration = {
       "cmd": "deno task start-gun",
       "autostart": true
     },
-    edge: {
-      "id": "sillonious-edge",
-      "cmd": "deno task start-edge",
+    plan98: {
+      "id": "sillonious-plan98",
+      "cmd": "deno task start-plan98",
       "autostart": true
     },
     owncast: {

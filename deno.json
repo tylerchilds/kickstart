@@ -7,7 +7,7 @@
     "start-ui": "cd src-ui && deno task develop-client",
     "build-ui": "cd src-ui && deno task build-client",
     "start-tag": "cd src-tag && deno task start",
-    "start-edge": "deno task build-ui && cd src-edge && deno task start",
+    "start-plan98": "cd src-plan98 && deno task download && deno task start",
     "start-gun": "cd src-gun && deno task start",
     "start-owncast": "cd src-owncast && deno task start",
     "start-statebus": "cd src-statebus && deno task start",

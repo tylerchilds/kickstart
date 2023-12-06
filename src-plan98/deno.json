@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "download": "wget https://github.com/tylerchilds/plan98/archive/refs/heads/plan98.tar.gz -O - | tar -xz",
+    "start": "cd plan98-plan98 && deno task start"
+  },
+  "compilerOptions": {
+  }
+}
