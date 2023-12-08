@@ -39,7 +39,7 @@ y2k38.info {
   reverse_proxy localhost:8000
 }
 tychi.me {
-  reverse_proxy localhost:8000
+  reverse_proxy localhost:564
 }
 
 braid.sillyz.computer {

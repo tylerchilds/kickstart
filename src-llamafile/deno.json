@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "download": "echo 'todo: automatic quick start https://github.com/Mozilla-Ocho/llamafile'",
+    "start": "echo 'todo: start the llamas'"
+  },
+  "compilerOptions": {
+  }
+}

@@ -1,6 +1,7 @@
 {
   "tasks": {
     "download": "wget https://github.com/tylerchilds/plan98/archive/refs/heads/plan98.tar.gz -O - | tar -xz",
+    "tunnel": "ssh -N -R 1998:localhost:8000 94404-969-g-edgewater-blvd-123.thelanding.page",
     "start": "cd plan98-plan98 && deno task start"
   },
   "compilerOptions": {

@@ -11,6 +11,7 @@ const processConfiguration = {
   plan98: true,
   owncast: true,
   dropserver: false,
+  llamafile: false,
   features: {
     caddy: {
       "id": "sillonious-caddy",
@@ -56,8 +57,12 @@ const processConfiguration = {
       "id": "sillonious-dropserver",
       "cmd": "deno task start-owncast",
       "autostart": true
+    },
+    llamafile: {
+      "id": "sillonious-llamafile",
+      "cmd": "deno task start-llamafile",
+      "autostart": true
     }
-
   }
 }
 

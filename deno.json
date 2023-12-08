@@ -1,6 +1,7 @@
 {
   "tasks": {
     "start": "deno run -A --unstable mod.js",
+    "start-llamafile": "cd src-llamafile && deno task start",
     "start-caddy": "caddy start --config src-caddy/Caddyfile",
     "start-native": "cargo tauri dev",
     "build-native": "cargo tauri build",
@@ -8,7 +9,10 @@
     "build-ui": "cd src-ui && deno task build-client",
     "start-tag": "cd src-tag && deno task start",
     "start-rust9p": "cd src-rust9p && deno task download && deno task start",
+    "mount-rust9p": "cd src-rust9p && deno task mount",
+    "unmount-rust9p": "cd src-rust9p && deno task unmount",
     "start-plan98": "cd src-plan98 && deno task download && deno task start",
+    "tunnel-plan98": "cd src-plan98 && deno task tunnel",
     "start-gun": "cd src-gun && deno task start",
     "start-owncast": "cd src-owncast && deno task start",
     "start-statebus": "cd src-statebus && deno task start",
