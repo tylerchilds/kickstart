@@ -2,6 +2,7 @@
   "tasks": {
     "start": "deno run -A --unstable mod.js",
     "start-llamafile": "cd src-llamafile && deno task start",
+    "start-saas": "cd src-saas && deno task start",
     "start-caddy": "caddy start --config src-caddy/Caddyfile",
     "start-native": "cargo tauri dev",
     "build-native": "cargo tauri build",
